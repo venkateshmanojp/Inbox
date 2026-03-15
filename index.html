@@ -930,9 +930,10 @@ var isMobile      = window.innerWidth < 769;
 
 // ─── URL BASED AUTO ROLE ───
 function detectRoleFromURL() {
-  var url = window.location.href.toLowerCase();
-  if (url.includes("yogesh") || url.includes("inhouse")) return "inhouse";
-  if (url.includes("manoj")  || url.includes("vastmywealth")) return "vastmywealth";
+  var params = new URLSearchParams(window.location.search);
+  var role   = params.get("role");
+  if (role === "inhouse")      return "inhouse";
+  if (role === "vastmywealth") return "vastmywealth";
   return "admin";
 }
 
