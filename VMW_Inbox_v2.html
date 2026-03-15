@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VastMyWealth Inbox</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Force full screen in Google Sites */
+html, body {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100vh !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+}
+:root {
+  --bg: #080c14;
+  --surface: #0f1520;
+  --surface2: #161d2e;
+  --surface3: #1c2540;
+  --border: #1e2d4a;
+  --border2: #243356;
+  --accent: #2563eb;
+  --accent2: #3b82f6;
+  --accent3: #60a5fa;
+  --green: #10b981;
+  --green2: #34d399;
+  --amber: #f59e0b;
+  --amber2: #fbbf24;
+  --red: #ef4444;
+  --red2: #f87171;
+  --purple: #8b5cf6;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #475569;
+  --mono: 'JetBrains Mono', monospace;
+  --nav-height: 56px;
+  --bottom-nav: 60px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ─── SCREENS ─── */
+.screen {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.screen.hidden      { transform: translateX(100%); pointer-events: none; }
+.screen.slide-left  { transform: translateX(-100%); pointer-events: none; }
+
+/* ─── TOP NAV ─── */
+.topnav {
+  height: var(--nav-height);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+}
+
+.back-btn {
+  width: 36px; height: 36px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; cursor: pointer;
+  flex-shrink: 0;
+}
+
+.nav-title {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.nav-sub {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 400;
+  margin-top: 1px;
+}
+
+.nav-logo {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  box-shadow: 0 0 16px rgba(37,99,235,0.35);
+  flex-shrink: 0;
+}
+
+.nav-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+
+.icon-btn {
+  width: 36px; height: 36px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; cursor: pointer;
+}
+
+/* ─── LOGIN SCREEN ─── */
+#loginScreen {
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 360px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 28px 24px;
+}
+
+.login-logo {
+  width: 64px; height: 64px;
+  background: linear-gradient(135deg, var(--accent), var(--purple));
+  border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  margin: 0 auto 16px;
+  box-shadow: 0 0 32px rgba(37,99,235,0.35);
+}
+
+.login-title { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 4px; }
+.login-sub   { font-size: 13px; color: var(--text2); text-align: center; margin-bottom: 24px; }
+
+.field-label {
+  font-size: 11px; font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.field-input {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  outline: none;
+  transition: border-color 0.15s;
+  margin-bottom: 14px;
+}
+
+.field-input:focus { border-color: var(--accent2); }
+
+.login-btn {
+  width: 100%;
+  background: var(--accent);
+  border: none; border-radius: 12px;
+  padding: 13px;
+  color: white; font-size: 15px; font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer; margin-top: 4px;
+  transition: background 0.15s;
+  letter-spacing: 0.3px;
+}
+
+.login-btn:active { background: var(--accent2); }
+
+/* ─── STATS ROW ─── */
+.stats-row {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.stats-row::-webkit-scrollbar { display: none; }
+
+.stat-card {
+  flex-shrink: 0;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  min-width: 72px;
+  text-align: center;
+}
+
+.stat-card:active { border-color: var(--accent2); }
+
+.stat-num { font-size: 20px; font-weight: 800; font-family: var(--mono); line-height: 1; }
+.stat-lbl { font-size: 9px; color: var(--text3); font-weight: 600; text-transform: uppercase; margin-top: 3px; letter-spacing: 0.3px; }
+
+/* ─── SEARCH + FILTER ─── */
+.search-section {
+  padding: 10px 14px 6px;
+  background: var(--surface);
+  flex-shrink: 0;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: var(--surface2);
+  border: 1.5px solid var(--border2);
+  border-radius: 10px;
+  padding: 0 12px;
+  margin-bottom: 8px;
+  transition: border-color 0.15s;
+}
+
+.search-box:focus-within { border-color: var(--accent2); }
+
+.search-box span { font-size: 14px; color: var(--text3); margin-right: 8px; }
+
+.search-box input {
+  flex: 1;
+  background: none; border: none;
+  color: var(--text); font-size: 13px;
+  font-family: 'Outfit', sans-serif;
+  padding: 10px 0; outline: none;
+}
+
+.chips {
+  display: flex; gap: 6px;
+  overflow-x: auto; padding-bottom: 4px;
+}
+
+.chips::-webkit-scrollbar { display: none; }
+
+.chip {
+  flex-shrink: 0;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 20px;
+  cursor: pointer; transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.chip.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+/* ─── LEADS LIST ─── */
+.leads-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.leads-scroll::-webkit-scrollbar { display: none; }
+
+.lead-card {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  display: flex; gap: 12px;
+  cursor: pointer;
+  transition: background 0.1s;
+  active: background var(--surface2);
+}
+
+.lead-card:active { background: var(--surface2); }
+
+.lead-ava {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 16px;
+  flex-shrink: 0;
+}
+
+.lead-body { flex: 1; min-width: 0; }
+
+.lead-row1 {
+  display: flex; justify-content: space-between;
+  align-items: flex-start; margin-bottom: 3px;
+}
+
+.lead-name {
+  font-size: 14px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.lead-time { font-size: 10px; color: var(--text3); font-family: var(--mono); flex-shrink: 0; }
+
+.lead-mobile {
+  font-size: 12px; color: var(--text2);
+  font-family: var(--mono); margin-bottom: 6px;
+}
+
+.lead-tags { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; }
+
+.tag {
+  font-size: 9px; font-weight: 700;
+  padding: 2px 7px; border-radius: 5px;
+  text-transform: uppercase; letter-spacing: 0.3px;
+}
+
+.tag-pl  { background: rgba(37,99,235,0.15);  color: #60a5fa; }
+.tag-bl  { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.tag-hl  { background: rgba(16,185,129,0.15); color: #34d399; }
+.tag-lap { background: rgba(139,92,246,0.15); color: #a78bfa; }
+
+.pill {
+  font-size: 9px; font-weight: 600;
+  padding: 2px 7px; border-radius: 5px;
+}
+
+.pill-pending   { background: rgba(245,158,11,0.12);  color: #fbbf24; }
+.pill-allocated { background: rgba(16,185,129,0.12);  color: #34d399; }
+.pill-dead      { background: rgba(100,116,139,0.12); color: #94a3b8; }
+.pill-dup       { background: rgba(239,68,68,0.12);   color: #f87171; }
+
+.doc-badge { font-size: 11px; }
+
+/* ─── DETAIL SCREEN ─── */
+#detailScreen { display: flex; flex-direction: column; }
+
+.detail-hero {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px;
+  flex-shrink: 0;
+}
+
+.hero-row1 {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+}
+
+.hero-ava {
+  width: 48px; height: 48px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800; font-size: 20px;
+  flex-shrink: 0;
+}
+
+.hero-name  { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+.hero-ref   { font-size: 11px; color: var(--accent3); font-family: var(--mono); }
+
+.hero-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+
+.badge {
+  font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 7px;
+  display: flex; align-items: center; gap: 4px;
+}
+
+.badge-blue   { background: rgba(37,99,235,0.12); color: #60a5fa; border: 1px solid rgba(37,99,235,0.25); }
+.badge-green  { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.25); }
+.badge-amber  { background: rgba(245,158,11,0.12); color: #fbbf24; border: 1px solid rgba(245,158,11,0.25); }
+.badge-red    { background: rgba(239,68,68,0.12);  color: #f87171; border: 1px solid rgba(239,68,68,0.25); }
+.badge-gray   { background: rgba(100,116,139,0.12);color: #94a3b8; border: 1px solid rgba(100,116,139,0.25); }
+
+.action-row {
+  display: flex; gap: 8px; overflow-x: auto;
+}
+
+.action-row::-webkit-scrollbar { display: none; }
+
+.act-btn {
+  flex-shrink: 0;
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; border: none;
+  font-family: 'Outfit', sans-serif;
+  display: flex; align-items: center; gap: 5px;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+
+.act-btn:active { opacity: 0.7; }
+.act-call   { background: rgba(16,185,129,0.15);  color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+.act-missed { background: rgba(239,68,68,0.15);   color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+.act-docs   { background: rgba(245,158,11,0.15);  color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+.act-form   { background: rgba(37,99,235,0.15);   color: #60a5fa; border: 1px solid rgba(37,99,235,0.3); }
+
+/* ─── TAB BAR ─── */
+.tab-bar {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.tab-bar::-webkit-scrollbar { display: none; }
+
+.tab-item {
+  flex-shrink: 0;
+  padding: 11px 14px;
+  font-size: 12px; font-weight: 600;
+  color: var(--text3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+.tab-item:active { color: var(--text2); }
+.tab-item.active { color: var(--accent3); border-bottom-color: var(--accent2); }
+
+/* ─── TAB CONTENT ─── */
+.tab-content {
+  flex: 1; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 14px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.tab-content::-webkit-scrollbar { display: none; }
+
+/* ─── CARDS ─── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-head {
+  padding: 9px 14px;
+  font-size: 10px; font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase; letter-spacing: 0.7px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.info-row {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.info-row:last-child { border-bottom: none; }
+
+.info-cell {
+  flex: 1;
+  min-width: 140px;
+  padding: 10px 14px;
+  border-right: 1px solid var(--border);
+}
+
+.info-cell:last-child { border-right: none; }
+.info-cell.full { flex: none; width: 100%; border-right: none; }
+
+@media (max-width: 480px) {
+  .info-cell {
+    min-width: 100%;
+    border-right: none !important;
+    border-bottom: 1px solid var(--border);
+  }
+  .info-cell:last-child { border-bottom: none; }
+}
+
+.info-lbl {
+  font-size: 10px; color: var(--text3);
+  font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.4px; margin-bottom: 4px;
+}
+
+.info-val {
+  font-size: 13px; font-weight: 500;
+  color: var(--text); word-break: break-all;
+  line-height: 1.4;
+}
+
+.info-val.mono { font-family: var(--mono); font-size: 12px; }
+.info-val.link { color: var(--accent3); cursor: pointer; }
+
+/* ─── DOC ROW ─── */
+.doc-row {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.doc-row:last-child { border-bottom: none; }
+.doc-name  { font-size: 13px; font-weight: 500; }
+.doc-opt   { font-size: 10px; color: var(--text3); }
+.doc-yes   { color: var(--green2); font-size: 12px; font-weight: 600; }
+.doc-no    { color: var(--text3);  font-size: 12px; font-weight: 600; }
+
+/* ─── STATUS UPDATE ─── */
+.status-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.status-card .card-head {
+  margin: -16px -16px 14px;
+  border-radius: 12px 12px 0 0;
+}
+
+.sel {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border2);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: var(--text); font-size: 13px;
+  font-family: 'Outfit', sans-serif;
+  outline: none; cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.textarea {
+  width: 100%;
+  background: var(--surface2);
+  border: 1.5px solid var(--border2);
+  border-radius: 10px;
+  padding: 11px 14px;
+  color: var(--text); font-size: 13px;
+  font-family: 'Outfit', sans-serif;
+  outline: none; resize: none; height: 72px;
+  margin-bottom: 10px;
+}
+
+.save-btn {
+  width: 100%;
+  background: var(--accent); border: none;
+  border-radius: 10px; padding: 12px;
+  color: white; font-size: 14px; font-weight: 700;
+  font-family: 'Outfit', sans-serif; cursor: pointer;
+  transition: all 0.15s; letter-spacing: 0.3px;
+}
+
+.save-btn:active  { background: var(--accent2); }
+.save-btn.saved   { background: var(--green); }
+.save-btn.saving  { opacity: 0.6; pointer-events: none; }
+
+/* ─── TIMELINE ─── */
+.tl-item {
+  display: flex; gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  align-items: flex-start;
+}
+
+.tl-item:last-child { border-bottom: none; }
+
+.tl-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%; margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.tl-text { font-size: 13px; color: var(--text2); flex: 1; line-height: 1.5; }
+.tl-text strong { color: var(--text); font-weight: 600; }
+.tl-time { font-size: 10px; color: var(--text3); font-family: var(--mono); white-space: nowrap; }
+
+/* ─── EMPTY ─── */
+.empty {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px; padding: 40px;
+}
+
+.empty-icon { font-size: 40px; opacity: 0.3; }
+.empty-text { font-size: 14px; font-weight: 600; color: var(--text2); text-align: center; }
+.empty-sub  { font-size: 12px; color: var(--text3); text-align: center; }
+
+/* ─── LOADING ─── */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border2);
+  border-top-color: var(--accent2);
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed; bottom: 16px;
+  left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 13px; font-weight: 500;
+  white-space: nowrap;
+  z-index: 1000;
+  opacity: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  max-width: 90vw;
+  text-align: center;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast.ok   { border-color: rgba(16,185,129,0.4); color: var(--green2); }
+.toast.err  { border-color: rgba(239,68,68,0.4);  color: var(--red2); }
+
+/* ─── DESKTOP OVERRIDE ─── */
+@media (min-width: 769px) {
+  #listScreen, #detailScreen {
+    position: static !important;
+    transform: none !important;
+    pointer-events: auto !important;
+  }
+
+  .app-desktop {
+    display: flex !important;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  #listScreen {
+    width: 340px;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #detailScreen {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #listScreen .back-btn { display: none !important; }
+  #detailScreen .back-btn { display: none !important; }
+  .detail-empty { display: flex !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── LOGIN ─── -->
+<div id="loginScreen" class="screen" style="position:fixed;top:0;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--bg);z-index:100;">
+  <div class="login-card">
+    <div class="login-logo">💰</div>
+    <div class="login-title">VastMyWealth</div>
+    <div class="login-sub" id="loginSubText">Sign in to access your leads</div>
+
+    <!-- Admin login fields -->
+    <div id="adminFields">
+      <div class="field-label">Your Name</div>
+      <input class="field-input" id="loginName" placeholder="Enter your name" />
+
+      <div class="field-label">Role</div>
+      <select class="field-input" id="loginRole" onchange="togglePasswordField()">
+        <option value="">Select your role...</option>
+        <option value="admin">Admin (Venkatesh)</option>
+        <option value="inhouse">Inhouse RM (Yogesh)</option>
+        <option value="vastmywealth">VastMyWealth RM (Manoj)</option>
+      </select>
+
+      <div id="passwordField" style="display:none">
+        <div class="field-label">Admin Password</div>
+        <input class="field-input" id="loginPassword" type="password" placeholder="Enter admin password" />
+      </div>
+    </div>
+
+    <!-- Auto login fields (for Yogesh/Manoj direct URL) -->
+    <div id="autoFields" style="display:none">
+      <div style="text-align:center;padding:8px 0 16px">
+        <div style="font-size:32px;margin-bottom:8px" id="autoEmoji">👤</div>
+        <div style="font-size:15px;font-weight:600" id="autoRoleName">—</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:4px">Tap below to enter</div>
+      </div>
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">Enter Inbox →</button>
+    <div style="color:var(--red2);font-size:12px;margin-top:8px;text-align:center;display:none" id="loginError">❌ Incorrect password!</div>
+  </div>
+</div>
+
+<!-- ─── MAIN APP ─── -->
+<div id="mainApp" style="display:none;flex-direction:column;height:100vh;">
+
+  <!-- Top Nav (shared) -->
+  <div class="topnav" id="mainNav">
+    <div class="nav-logo">💰</div>
+    <div style="flex:1">
+      <div class="nav-title">VastMyWealth</div>
+      <div class="nav-sub" id="navSub">Lead Inbox</div>
+    </div>
+    <div class="nav-right">
+      <div class="icon-btn" onclick="loadData()" title="Sync">🔄</div>
+    </div>
+  </div>
+
+  <!-- Desktop wrapper -->
+  <div class="app-desktop" style="display:none;flex:1;overflow:hidden;">
+
+    <!-- LIST SCREEN -->
+    <div id="listScreen" style="display:flex;flex-direction:column;">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card" onclick="statFilter('all')">
+          <div class="stat-num" id="sTotal" style="color:#60a5fa">0</div>
+          <div class="stat-lbl">Total</div>
+        </div>
+        <div class="stat-card" onclick="statFilter('pending')">
+          <div class="stat-num" id="sPending" style="color:#fbbf24">0</div>
+          <div class="stat-lbl">Pending</div>
+        </div>
+        <div class="stat-card" onclick="statFilter('allocated')">
+          <div class="stat-num" id="sAllocated" style="color:#34d399">0</div>
+          <div class="stat-lbl">Allocated</div>
+        </div>
+        <div class="stat-card" onclick="statFilter('docs')">
+          <div class="stat-num" id="sDocs" style="color:#93c5fd">0</div>
+          <div class="stat-lbl">Docs ✅</div>
+        </div>
+        <div class="stat-card" onclick="statFilter('dead')">
+          <div class="stat-num" id="sDead" style="color:#f87171">0</div>
+          <div class="stat-lbl">Dead</div>
+        </div>
+      </div>
+
+      <!-- Search + Filter -->
+      <div class="search-section">
+        <div class="search-box">
+          <span>🔍</span>
+          <input id="searchInput" placeholder="Search name or mobile..." oninput="applyFilter()" />
+        </div>
+        <div class="chips">
+          <div class="chip active" onclick="setChip('all',this)">All</div>
+          <div class="chip" onclick="setChip('pl',this)">PL</div>
+          <div class="chip" onclick="setChip('bl',this)">BL</div>
+          <div class="chip" onclick="setChip('hl',this)">HL</div>
+          <div class="chip" onclick="setChip('lap',this)">LAP</div>
+          <div class="chip" onclick="setChip('pending',this)">⏳ Pending</div>
+          <div class="chip" onclick="setChip('docs',this)">📎 Docs</div>
+          <div class="chip" onclick="setChip('dead',this)">💀 Dead</div>
+        </div>
+      </div>
+
+      <!-- Leads List -->
+      <div class="leads-scroll" id="leadsList">
+        <div class="empty" style="padding:60px 20px">
+          <div class="spinner"></div>
+          <div class="empty-text">Loading leads...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DETAIL SCREEN -->
+    <div id="detailScreen" style="display:flex;flex-direction:column;">
+
+      <!-- Empty state for desktop -->
+      <div class="detail-empty empty" style="display:flex">
+        <div class="empty-icon">📋</div>
+        <div class="empty-text">Select a lead</div>
+        <div class="empty-sub">Click any lead from the list</div>
+      </div>
+
+      <!-- Detail content -->
+      <div id="detailInner" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+
+        <div class="detail-hero">
+          <div class="hero-row1">
+            <div class="hero-ava" id="dAva">V</div>
+            <div style="flex:1;min-width:0">
+              <div class="hero-name" id="dName">—</div>
+              <div class="hero-ref" id="dRef">VMW-0000</div>
+            </div>
+          </div>
+          <div class="hero-badges" id="dBadges"></div>
+          <div class="action-row" id="dActions"></div>
+        </div>
+
+        <div class="tab-bar" id="tabBar">
+          <div class="tab-item active" onclick="showTab('details',this)">📋 Details</div>
+          <div class="tab-item" onclick="showTab('allocation',this)">🏦 Allocation</div>
+          <div class="tab-item" onclick="showTab('documents',this)">📁 Documents</div>
+          <div class="tab-item" onclick="showTab('status',this)">✏️ Status</div>
+          <div class="tab-item" onclick="showTab('timeline',this)">🕐 Timeline</div>
+        </div>
+
+        <div class="tab-content" id="tabContent"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Mobile: list shown by default -->
+  <div id="mobileList" style="display:flex;flex-direction:column;flex:1;overflow:hidden;">
+
+    <div class="stats-row">
+      <div class="stat-card" onclick="statFilter('all')">
+        <div class="stat-num" id="mTotal" style="color:#60a5fa">0</div>
+        <div class="stat-lbl">Total</div>
+      </div>
+      <div class="stat-card" onclick="statFilter('pending')">
+        <div class="stat-num" id="mPending" style="color:#fbbf24">0</div>
+        <div class="stat-lbl">Pending</div>
+      </div>
+      <div class="stat-card" onclick="statFilter('allocated')">
+        <div class="stat-num" id="mAllocated" style="color:#34d399">0</div>
+        <div class="stat-lbl">Allocated</div>
+      </div>
+      <div class="stat-card" onclick="statFilter('docs')">
+        <div class="stat-num" id="mDocs" style="color:#93c5fd">0</div>
+        <div class="stat-lbl">Docs ✅</div>
+      </div>
+      <div class="stat-card" onclick="statFilter('dead')">
+        <div class="stat-num" id="mDead" style="color:#f87171">0</div>
+        <div class="stat-lbl">Dead</div>
+      </div>
+    </div>
+
+    <div class="search-section">
+      <div class="search-box">
+        <span>🔍</span>
+        <input id="mSearchInput" placeholder="Search name or mobile..." oninput="applyFilter()" />
+      </div>
+      <div class="chips">
+        <div class="chip active" onclick="setChip('all',this)">All</div>
+        <div class="chip" onclick="setChip('pl',this)">PL</div>
+        <div class="chip" onclick="setChip('bl',this)">BL</div>
+        <div class="chip" onclick="setChip('hl',this)">HL</div>
+        <div class="chip" onclick="setChip('lap',this)">LAP</div>
+        <div class="chip" onclick="setChip('pending',this)">⏳ Pending</div>
+        <div class="chip" onclick="setChip('docs',this)">📎 Docs</div>
+        <div class="chip" onclick="setChip('dead',this)">💀 Dead</div>
+      </div>
+    </div>
+
+    <div class="leads-scroll" id="mLeadsList">
+      <div class="empty" style="padding:60px 20px">
+        <div class="spinner"></div>
+        <div class="empty-text">Loading leads...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile: detail view (slides in) -->
+  <div id="mobileDetail" style="display:none;flex-direction:column;position:fixed;top:0;left:0;right:0;bottom:0;background:var(--bg);z-index:50;">
+
+    <!-- Mobile detail nav -->
+    <div class="topnav">
+      <div class="back-btn" onclick="goBack()">←</div>
+      <div style="flex:1">
+        <div class="nav-title" id="mdName">—</div>
+        <div class="nav-sub" id="mdRef" style="color:var(--accent3);font-family:var(--mono)">VMW-0000</div>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="detail-hero">
+      <div class="hero-row1">
+        <div class="hero-ava" id="mdAva">V</div>
+        <div style="flex:1;min-width:0">
+          <div class="hero-name" id="mdFullName">—</div>
+          <div style="font-size:12px;color:var(--text2);font-family:var(--mono)" id="mdMobile">—</div>
+        </div>
+      </div>
+      <div class="hero-badges" id="mdBadges"></div>
+      <div class="action-row" id="mdActions"></div>
+    </div>
+
+    <!-- Tab bar -->
+    <div class="tab-bar">
+      <div class="tab-item active" onclick="showMTab('details',this)">📋 Details</div>
+      <div class="tab-item" onclick="showMTab('allocation',this)">🏦 Allocation</div>
+      <div class="tab-item" onclick="showMTab('documents',this)">📁 Docs</div>
+      <div class="tab-item" onclick="showMTab('status',this)">✏️ Status</div>
+      <div class="tab-item" onclick="showMTab('timeline',this)">🕐 Timeline</div>
+    </div>
+
+    <!-- Tab content -->
+    <div class="tab-content" id="mdTabContent"></div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── CONFIG ───
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyq4EDWeGMvCG8GyV3M8lXmI0cgbFqDPPvDQjL5DoHh2k8Dly8hhP8EY1cWQfCtXGUL/exec";
+var SHEET_ID        = "1z7u3RNARs9SvN4elDeEch1jdA65o2a2lDbYaIPCc1M0";
+var ADMIN_PASSWORD  = "Venky@1234";
+
+// ─── STATE ───
+var currentUser   = null;
+var currentRole   = null;
+var allLeads      = [];
+var filtered      = [];
+var activeFilter  = "all";
+var selectedLead  = null;
+var isMobile      = window.innerWidth < 769;
+
+// ─── URL BASED AUTO ROLE ───
+function detectRoleFromURL() {
+  var url = window.location.href.toLowerCase();
+  if (url.includes("yogesh") || url.includes("inhouse")) return "inhouse";
+  if (url.includes("manoj")  || url.includes("vastmywealth")) return "vastmywealth";
+  return "admin";
+}
+
+// ─── INIT ───
+window.addEventListener("load", function() {
+  var role = detectRoleFromURL();
+
+  if (role === "inhouse") {
+    document.getElementById("adminFields").style.display = "none";
+    document.getElementById("autoFields").style.display  = "block";
+    document.getElementById("autoEmoji").textContent     = "👤";
+    document.getElementById("autoRoleName").textContent  = "Inhouse RM — Yogesh";
+    document.getElementById("loginSubText").textContent  = "Welcome Yogesh!";
+  } else if (role === "vastmywealth") {
+    document.getElementById("adminFields").style.display = "none";
+    document.getElementById("autoFields").style.display  = "block";
+    document.getElementById("autoEmoji").textContent     = "👤";
+    document.getElementById("autoRoleName").textContent  = "VastMyWealth RM — Manoj";
+    document.getElementById("loginSubText").textContent  = "Welcome Manoj!";
+  }
+});
+
+window.addEventListener("resize", function() {
+  isMobile = window.innerWidth < 769;
+});
+
+// ─── TOGGLE PASSWORD FIELD ───
+function togglePasswordField() {
+  var role = document.getElementById("loginRole").value;
+  var pwField = document.getElementById("passwordField");
+  if (pwField) pwField.style.display = role === "admin" ? "block" : "none";
+}
+
+// ─── LOGIN ───
+function doLogin() {
+  var role = detectRoleFromURL();
+  var err  = document.getElementById("loginError");
+  err.style.display = "none";
+
+  // Auto login for Yogesh/Manoj
+  if (role === "inhouse") {
+    currentUser = "Yogesh";
+    currentRole = "inhouse";
+    proceedToApp();
+    return;
+  }
+
+  if (role === "vastmywealth") {
+    currentUser = "Manoj";
+    currentRole = "vastmywealth";
+    proceedToApp();
+    return;
+  }
+
+  // Admin login with password
+  var name     = document.getElementById("loginName").value.trim();
+  var selRole  = document.getElementById("loginRole").value;
+  var password = document.getElementById("loginPassword") ?
+                 document.getElementById("loginPassword").value : "";
+
+  if (!name || !selRole) { toast("Please fill all fields!", "err"); return; }
+
+  if (selRole === "admin") {
+    if (password !== ADMIN_PASSWORD) {
+      err.style.display = "block";
+      document.getElementById("loginPassword").value = "";
+      return;
+    }
+  }
+
+  currentUser = name;
+  currentRole = selRole;
+  proceedToApp();
+}
+
+function proceedToApp() {
+  document.getElementById("loginScreen").style.display = "none";
+  var app = document.getElementById("mainApp");
+  app.style.display = "flex";
+
+  if (!isMobile) {
+    document.getElementById("mobileList").style.display   = "none";
+    document.getElementById("mobileDetail").style.display = "none";
+    document.querySelector(".app-desktop").style.display  = "flex";
+  }
+
+  document.getElementById("navSub").textContent = currentUser + " · " + roleLabel(currentRole);
+  loadData();
+}
+
+function roleLabel(r) {
+  return r === "admin" ? "Admin" : r === "inhouse" ? "Inhouse RM" : "VastMyWealth RM";
+}
+
+// ─── LOAD DATA ───
+function loadData() {
+  var url = "https://docs.google.com/spreadsheets/d/" + SHEET_ID +
+            "/gviz/tq?tqx=out:json&sheet=Form%20responses%201";
+
+  fetch(url)
+    .then(function(r) { return r.text(); })
+    .then(function(txt) {
+      var json = JSON.parse(txt.substring(47).slice(0,-2));
+      parseSheetData(json);
+    })
+    .catch(function() { loadDemo(); });
+}
+
+function parseSheetData(json) {
+  allLeads = [];
+  if (!json.table || !json.table.rows) { loadDemo(); return; }
+
+  json.table.rows.forEach(function(r, i) {
+    var c    = r.c;
+    var lt   = cv(c,6).toUpperCase();
+    var lead = {
+      row             : i + 2,
+      refId           : "VMW-" + String(i+2).padStart(4,"0"),
+      timestamp       : cv(c,0),
+      source          : cv(c,1)  || "Direct",
+      fullName        : cv(c,2)  || "—",
+      mobile          : cv(c,3)  || "—",
+      applicantType   : cv(c,4)  || "—",
+      city            : cv(c,5)  || "—",
+      loanType        : cv(c,6)  || "—",
+      appCibil        : cv(c,7)  || "—",
+      monthlyIncome   : cv(c,8)  || "—",
+      blAmount        : cv(c,9)  || "—",
+      blVintage       : cv(c,10) || "—",
+      plAmount        : cv(c,13) || "—",
+      hlAmount        : cv(c,17) || "—",
+      lapAmount       : cv(c,23) || "—",
+      telegramSent    : cv(c,26) || "—",
+      vendorSuggestion: cv(c,27) || "—",
+      vendorAllocation: cv(c,28) || "",
+      status          : cv(c,29) || "Pending",
+      allocationStamp : cv(c,30) || "—",
+      whatsappSent    : cv(c,31) || "—",
+      vendorStatus    : cv(c,32) || "—",
+      rejectionReason : cv(c,33) || "—",
+      docFormSent     : cv(c,37) || "—",
+      docFormLink     : cv(c,38) || "",
+      docUploaded     : cv(c,39) || "—",
+      docUploadStamp  : cv(c,40) || "—",
+      waLeadStatus    : cv(c,41) || "Active"
+    };
+
+    if (currentRole === "inhouse"      && lead.vendorAllocation !== "Inhouse")      return;
+    if (currentRole === "vastmywealth" && lead.vendorAllocation !== "VastMyWealth") return;
+
+    allLeads.push(lead);
+  });
+
+  allLeads.reverse();
+  updateStats();
+  applyFilter();
+  toast("✅ " + allLeads.length + " leads loaded!", "ok");
+}
+
+function cv(row, idx) {
+  if (!row || !row[idx] || row[idx].v == null) return "";
+  return String(row[idx].v).trim();
+}
+
+// ─── STATS ───
+function updateStats() {
+  var t = allLeads.length;
+  var p = allLeads.filter(function(l){ return !l.vendorAllocation || l.vendorAllocation === ""; }).length;
+  var a = allLeads.filter(function(l){ return l.vendorAllocation && l.vendorAllocation !== "" && l.vendorAllocation !== "Manual Decision"; }).length;
+  var d = allLeads.filter(function(l){ return l.docUploaded === "Yes"; }).length;
+  var x = allLeads.filter(function(l){ return l.waLeadStatus === "Dead"; }).length;
+
+  ["s","m"].forEach(function(pfx) {
+    set(pfx+"Total",     t);
+    set(pfx+"Pending",   p);
+    set(pfx+"Allocated", a);
+    set(pfx+"Docs",      d);
+    set(pfx+"Dead",      x);
+  });
+}
+
+function set(id, val) {
+  var el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function statFilter(f) {
+  activeFilter = f;
+  document.querySelectorAll(".chip").forEach(function(c){ c.classList.remove("active"); });
+  var map = {all:0, pending:5, docs:6, dead:7};
+  document.querySelectorAll(".chip")[map[f] !== undefined ? map[f] : 0]?.classList.add("active");
+  applyFilter();
+}
+
+// ─── FILTER ───
+function setChip(f, el) {
+  activeFilter = f;
+  document.querySelectorAll(".chip").forEach(function(c){ c.classList.remove("active"); });
+  el.classList.add("active");
+  applyFilter();
+}
+
+function applyFilter() {
+  var s = (document.getElementById(isMobile ? "mSearchInput" : "searchInput") || {value:""}).value.toLowerCase();
+
+  filtered = allLeads.filter(function(l) {
+    var ok = !s || l.fullName.toLowerCase().includes(s) || l.mobile.includes(s) || l.refId.toLowerCase().includes(s);
+    if (!ok) return false;
+    var lt = l.loanType.toUpperCase();
+    if (activeFilter === "pl")        return lt.includes("PERSONAL");
+    if (activeFilter === "bl")        return lt.includes("BUSINESS");
+    if (activeFilter === "hl")        return lt.includes("HOME");
+    if (activeFilter === "lap")       return lt.includes("PROPERTY") || lt.includes("AGAINST");
+    if (activeFilter === "pending")   return !l.vendorAllocation || l.vendorAllocation === "";
+    if (activeFilter === "allocated") return l.vendorAllocation && l.vendorAllocation !== "" && l.vendorAllocation !== "Manual Decision";
+    if (activeFilter === "docs")      return l.docUploaded !== "Yes" && (lt.includes("PERSONAL") || lt.includes("BUSINESS"));
+    if (activeFilter === "dead")      return l.waLeadStatus === "Dead";
+    return true;
+  });
+
+  renderList();
+}
+
+// ─── RENDER LIST ───
+function renderList() {
+  var listId = isMobile ? "mLeadsList" : "leadsList";
+  var list   = document.getElementById(listId);
+  if (!list) return;
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div class="empty"><div class="empty-icon" style="font-size:28px">🔍</div><div class="empty-text">No leads found</div></div>';
+    return;
+  }
+
+  var colors = ["#2563eb","#7c3aed","#0891b2","#059669","#dc2626","#d97706"];
+  var html   = "";
+
+  filtered.forEach(function(l, i) {
+    var color    = colors[l.fullName.charCodeAt(0) % colors.length];
+    var initial  = l.fullName.charAt(0).toUpperCase();
+    var lt       = l.loanType.toUpperCase();
+    var tagCls   = "tag-pl"; var tagLbl = "PL";
+    if      (lt.includes("PERSONAL"))                               { tagCls = "tag-pl";  tagLbl = "PL";  }
+    else if (lt.includes("BUSINESS"))                               { tagCls = "tag-bl";  tagLbl = "BL";  }
+    else if (lt.includes("HOME"))                                   { tagCls = "tag-hl";  tagLbl = "HL";  }
+    else if (lt.includes("PROPERTY") || lt.includes("AGAINST"))    { tagCls = "tag-lap"; tagLbl = "LAP"; }
+
+    var pillCls = "pill-pending"; var pillLbl = "Pending";
+    if      (l.status === "Duplicate")                              { pillCls = "pill-dup";       pillLbl = "Duplicate"; }
+    else if (l.waLeadStatus === "Dead")                             { pillCls = "pill-dead";      pillLbl = "Dead"; }
+    else if (l.vendorAllocation && l.vendorAllocation !== "")       { pillCls = "pill-allocated"; pillLbl = l.vendorAllocation; }
+
+    var docBadge = "";
+    if (lt.includes("PERSONAL") || lt.includes("BUSINESS")) {
+      docBadge = '<span class="doc-badge">' + (l.docUploaded === "Yes" ? "📎✅" : "📎⏳") + '</span>';
+    }
+
+    var dt = ""; try { var d = new Date(l.timestamp); if (!isNaN(d)) dt = d.toLocaleDateString("en-IN",{day:"2-digit",month:"short"}); } catch(e) {}
+
+    html += '<div class="lead-card" onclick="selectLead(' + i + ')">' +
+      '<div class="lead-ava" style="background:' + color + '">' + initial + '</div>' +
+      '<div class="lead-body">' +
+        '<div class="lead-row1">' +
+          '<div class="lead-name">' + esc(l.fullName) + '</div>' +
+          '<div class="lead-time">' + dt + '</div>' +
+        '</div>' +
+        '<div class="lead-mobile">📱 ' + l.mobile + '</div>' +
+        '<div class="lead-tags">' +
+          '<span class="tag ' + tagCls + '">' + tagLbl + '</span>' +
+          '<span class="pill ' + pillCls + '">' + esc(pillLbl) + '</span>' +
+          docBadge +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  });
+
+  list.innerHTML = html;
+}
+
+// ─── SELECT LEAD ───
+function selectLead(idx) {
+  selectedLead = filtered[idx];
+  if (!selectedLead) return;
+
+  if (isMobile) {
+    fillMobileDetail(selectedLead);
+    document.getElementById("mobileDetail").style.display = "flex";
+    document.getElementById("mobileList").style.display   = "none";
+  } else {
+    fillDesktopDetail(selectedLead);
+  }
+}
+
+// ─── FILL MOBILE DETAIL ───
+function fillMobileDetail(l) {
+  var color   = getColor(l.fullName);
+  document.getElementById("mdAva").textContent        = l.fullName.charAt(0).toUpperCase();
+  document.getElementById("mdAva").style.background   = color;
+  document.getElementById("mdName").textContent       = l.fullName;
+  document.getElementById("mdRef").textContent        = l.refId;
+  document.getElementById("mdFullName").textContent   = l.fullName;
+  document.getElementById("mdMobile").textContent     = "📱 " + l.mobile;
+  document.getElementById("mdBadges").innerHTML       = buildBadges(l);
+  document.getElementById("mdActions").innerHTML      = buildActions(l, "mobile");
+
+  // Show details tab by default
+  var firstTab = document.querySelector("#mobileDetail .tab-item");
+  document.querySelectorAll("#mobileDetail .tab-item").forEach(function(t){ t.classList.remove("active"); });
+  if (firstTab) firstTab.classList.add("active");
+  document.getElementById("mdTabContent").innerHTML = buildTab("details", l);
+}
+
+// ─── FILL DESKTOP DETAIL ───
+function fillDesktopDetail(l) {
+  var color   = getColor(l.fullName);
+  document.getElementById("dAva").textContent        = l.fullName.charAt(0).toUpperCase();
+  document.getElementById("dAva").style.background   = color;
+  document.getElementById("dName").textContent       = l.fullName;
+  document.getElementById("dRef").textContent        = l.refId;
+  document.getElementById("dBadges").innerHTML       = buildBadges(l);
+  document.getElementById("dActions").innerHTML      = buildActions(l, "desktop");
+
+  document.querySelector(".detail-empty").style.display = "none";
+  document.getElementById("detailInner").style.display  = "flex";
+
+  var firstTab = document.querySelector("#tabBar .tab-item");
+  document.querySelectorAll("#tabBar .tab-item").forEach(function(t){ t.classList.remove("active"); });
+  if (firstTab) firstTab.classList.add("active");
+  document.getElementById("tabContent").innerHTML = buildTab("details", l);
+}
+
+// ─── TABS ───
+function showTab(tab, el) {
+  document.querySelectorAll("#tabBar .tab-item").forEach(function(t){ t.classList.remove("active"); });
+  el.classList.add("active");
+  document.getElementById("tabContent").innerHTML = buildTab(tab, selectedLead);
+}
+
+function showMTab(tab, el) {
+  document.querySelectorAll("#mobileDetail .tab-item").forEach(function(t){ t.classList.remove("active"); });
+  el.classList.add("active");
+  document.getElementById("mdTabContent").innerHTML = buildTab(tab, selectedLead);
+}
+
+// ─── BUILD TAB CONTENT ───
+function buildTab(tab, l) {
+  if (!l) return '<div class="empty"><div class="empty-text">No lead selected</div></div>';
+  var lt = l.loanType.toUpperCase();
+
+  if (tab === "details") {
+    var rc  = parseInt(l.reminderCount   || 0);
+    var drc = parseInt(l.docReminderCount || 0);
+    var isUnsecured = lt.includes("PERSONAL") || lt.includes("BUSINESS");
+
+    var lastFormReminder = rc === 0 ? "⏳ None sent yet" :
+                           rc === 1 ? "✅ Reminder 1 sent (4 mins)" :
+                           rc === 2 ? "✅ Reminder 2 sent (13 hrs)" :
+                                      "✅ Final reminder sent (22 hrs)";
+
+    var lastDocReminder  = drc === 0 ? "⏳ None sent yet" :
+                           drc === 1 ? "✅ Reminder 1 sent" :
+                           drc === 2 ? "✅ Reminder 2 sent" :
+                                       "✅ Final reminder sent";
+
+    return card("Loan Details",
+      row1(cell("Monthly Income", l.monthlyIncome)) +
+      row1(cell("Source", l.source)) +
+      row1(cell("Submitted", fmtDate(l.timestamp)))
+    ) +
+    card("Reminder Status",
+      row1(cell("📩 Form Fill Reminder", lastFormReminder)) +
+      (isUnsecured ? row1(cell("📎 Doc Upload Reminder", lastDocReminder)) : "") +
+      row1(cell("Lead Status", l.waLeadStatus === "Dead" ? "💀 Dead Lead — No response after 22hrs" : "🟢 Active"))
+    );
+  }
+
+  if (tab === "allocation") {
+    return card("Allocation Details",
+      row2(cell("Suggested", l.vendorSuggestion), cell("Allocated To", l.vendorAllocation || "Pending")) +
+      row2(cell("Allocation Time", l.allocationStamp), cell("WhatsApp Sent", l.whatsappSent)) +
+      row2(cell("Vendor Status", l.vendorStatus), cell("Rejection Reason", l.rejectionReason))
+    );
+  }
+
+  if (tab === "documents") {
+    var isUnsecured = lt.includes("PERSONAL") || lt.includes("BUSINESS");
+    var isAllocated = l.vendorAllocation && l.vendorAllocation !== "" && l.vendorAllocation !== "Manual Decision";
+
+    if (!isUnsecured) {
+      return card("Documents",
+        '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">' +
+        '📋 Document upload not applicable for ' + l.loanType + '</div>'
+      );
+    }
+
+    var docsReceived = l.docUploaded === "Yes";
+    var linkSent     = l.docFormSent === "Yes";
+
+    var driveRow = docsReceived ?
+      '<div class="info-row"><div class="info-cell full">' +
+        '<div class="info-lbl">Customer Documents</div>' +
+        '<div class="info-val link" onclick="toast(\'Drive link will be available after migration!\',\'ok\')">📁 View in Google Drive →</div>' +
+      '</div></div>' : "";
+
+    var resendRow = isAllocated ?
+      '<div class="info-row"><div class="info-cell full">' +
+        '<div class="info-lbl">Resend Document Request</div>' +
+        '<div class="info-val link" onclick="resendDocWA(\'' + l.mobile + '\',\'' + (l.vendorAllocation||"Inhouse") + '\')">📎 Resend Doc Upload WhatsApp →</div>' +
+      '</div></div>' : "";
+
+    return card("Document Status",
+      row1(cell("Upload Link Sent to Customer",
+        linkSent ? "✅ Yes — Link sent via WhatsApp" : "⏳ Not sent yet")) +
+      row1(cell("Documents Received",
+        docsReceived ? "✅ Yes — Customer has uploaded!" : "⏳ Pending — Not uploaded yet")) +
+      driveRow +
+      resendRow
+    );
+  }
+
+  if (tab === "status") {
+    return '<div class="status-card">' +
+      '<div class="card-head">Update Lead Status</div>' +
+      '<select class="sel" id="statusSel" onchange="toggleReason()">' +
+        '<option value="">Select status...</option>' +
+        '<option>In Process</option>' +
+        '<option>Not Picking Up</option>' +
+        '<option>Documents Pending</option>' +
+        '<option>Approved</option>' +
+        '<option>Rejected</option>' +
+        '<option>Disbursed</option>' +
+      '</select>' +
+      '<div id="reasonDiv" style="display:none">' +
+        '<textarea class="textarea" id="reasonTxt" placeholder="Enter rejection reason..."></textarea>' +
+      '</div>' +
+      '<button class="save-btn" id="saveBtn" onclick="saveStatus()">💾 Save Status</button>' +
+    '</div>' +
+    card("Current Status",
+      row2(cell("Vendor Status", l.vendorStatus), cell("Rejection Reason", l.rejectionReason))
+    );
+  }
+
+  if (tab === "timeline") {
+    var items = [];
+    if (l.timestamp)                                   items.push({c:"#3b82f6", t:"<strong>Form Submitted</strong> via " + l.source, d: fmtDate(l.timestamp)});
+    if (l.telegramSent === "Yes")                      items.push({c:"#8b5cf6", t:"<strong>Telegram Notified</strong>", d:"—"});
+    if (l.vendorAllocation && l.vendorAllocation!=="") items.push({c:"#10b981", t:"<strong>Allocated</strong> to " + l.vendorAllocation, d: l.allocationStamp});
+    if (l.whatsappSent === "Yes")                      items.push({c:"#10b981", t:"<strong>WhatsApp Sent</strong> to customer", d:"—"});
+    if (l.docFormSent === "Yes")                       items.push({c:"#2563eb", t:"<strong>Doc Upload Form</strong> sent", d:"—"});
+    if (l.docUploaded === "Yes")                       items.push({c:"#10b981", t:"<strong>Documents Uploaded ✅</strong>", d: l.docUploadStamp});
+    if (l.vendorStatus && l.vendorStatus !== "—")      items.push({c:"#f59e0b", t:"<strong>Vendor Update:</strong> " + l.vendorStatus, d:"—"});
+    if (l.waLeadStatus === "Dead")                     items.push({c:"#ef4444", t:"<strong>Dead Lead</strong> — No response after 22hrs", d:"—"});
+
+    if (!items.length) return card("Timeline", '<div style="padding:20px;text-align:center;color:var(--text3);font-size:13px">No activity yet</div>');
+
+    return card("Activity Timeline",
+      items.map(function(it) {
+        return '<div class="tl-item">' +
+          '<div class="tl-dot" style="background:' + it.c + '"></div>' +
+          '<div class="tl-text">' + it.t + '</div>' +
+          '<div class="tl-time">' + it.d + '</div>' +
+        '</div>';
+      }).join("")
+    );
+  }
+
+  return "";
+}
+
+// ─── BUILD HELPERS ───
+function card(title, content) {
+  return '<div class="card"><div class="card-head">' + title + '</div>' + content + '</div>';
+}
+
+function row2(a, b) { return '<div class="info-row">' + a + b + '</div>'; }
+function row1(a)    { return '<div class="info-row">' + a + '</div>'; }
+
+function cell(label, val, mono) {
+  return '<div class="info-cell"><div class="info-lbl">' + label + '</div>' +
+    '<div class="info-val' + (mono ? " mono" : "") + '">' + esc(val || "—") + '</div></div>';
+}
+
+function docRow(name, req) {
+  return '<div class="doc-row">' +
+    '<div><div class="doc-name">' + name + '</div>' + (req ? '' : '<div class="doc-opt">Optional</div>') + '</div>' +
+    '<div class="doc-no">⏳ Pending</div>' +
+  '</div>';
+}
+
+function buildBadges(l) {
+  var lt  = l.loanType.toUpperCase();
+  var tag = "PL";
+  if      (lt.includes("PERSONAL"))                            tag = "PL";
+  else if (lt.includes("BUSINESS"))                            tag = "BL";
+  else if (lt.includes("HOME"))                                tag = "HL";
+  else if (lt.includes("PROPERTY") || lt.includes("AGAINST")) tag = "LAP";
+
+  var statusBadge = "";
+  if      (l.status === "Duplicate")                              statusBadge = '<div class="badge badge-red">🔁 Duplicate</div>';
+  else if (l.waLeadStatus === "Dead")                             statusBadge = '<div class="badge badge-gray">💀 Dead Lead</div>';
+  else if (l.vendorAllocation && l.vendorAllocation !== "")       statusBadge = '<div class="badge badge-green">✅ ' + l.vendorAllocation + '</div>';
+  else                                                            statusBadge = '<div class="badge badge-amber">⏳ Pending</div>';
+
+  var cibilBadge = l.appCibil && l.appCibil !== "—" ?
+    '<div class="badge badge-blue">📊 ' + l.appCibil + '</div>' : "";
+
+  var empBadge = l.applicantType && l.applicantType !== "—" ?
+    '<div class="badge badge-gray">👤 ' + l.applicantType + '</div>' : "";
+
+  var cityBadge = l.city && l.city !== "—" ?
+    '<div class="badge badge-blue">📍 ' + l.city + '</div>' : "";
+
+  // Loan type + amount
+  var amt = "—";
+  if      (lt.includes("PERSONAL"))                            amt = l.plAmount;
+  else if (lt.includes("BUSINESS"))                            amt = l.blAmount;
+  else if (lt.includes("HOME"))                                amt = l.hlAmount;
+  else if (lt.includes("PROPERTY") || lt.includes("AGAINST")) amt = l.lapAmount;
+
+  var loanBadge = '<div class="badge badge-blue">💼 ' + tag + (amt && amt !== "—" ? " · " + amt : "") + '</div>';
+
+  return cityBadge + empBadge + loanBadge + cibilBadge + statusBadge;
+}
+
+function buildActions(l, ctx) {
+  var lt          = l.loanType.toUpperCase();
+  var isUnsecured = lt.includes("PERSONAL") || lt.includes("BUSINESS");
+  var isAllocated = l.vendorAllocation && l.vendorAllocation !== "" && l.vendorAllocation !== "Manual Decision";
+  var tel         = 'tel:' + l.mobile;
+
+  // Call button — always visible
+  var html = '<a class="act-btn act-call" href="' + tel + '">📞 Call ' + l.fullName.split(" ")[0] + '</a>';
+
+  // After allocation — missed call button
+  if (isAllocated) {
+    html += '<button class="act-btn act-missed" onclick="toast(\'Use Telegram 📵 Missed Call button!\',\'ok\')">📵 Missed Call</button>';
+  }
+
+  // Docs reminder — all loans after allocation
+  if (isAllocated) {
+    html += '<button class="act-btn act-docs" onclick="toast(\'Use Telegram 📁 Docs Reminder button!\',\'ok\')">📁 Docs Reminder</button>';
+  }
+
+  // Resend doc WhatsApp — PL/BL only after allocation
+  if (isUnsecured && isAllocated) {
+    html += '<button class="act-btn act-form" onclick="resendDocWA(\'' + l.mobile + '\',\'' + (l.vendorAllocation||"Inhouse") + '\')">📎 Resend Doc WA</button>';
+  }
+
+  return html;
+}
+
+function resendDocWA(mobile, vendor) {
+  var rmNames = {
+    "Aditya Birla" : "Khushboo",
+    "Andromeda"    : "Priyanshu",
+    "VastMyWealth" : "Manoj",
+    "Inhouse"      : "Yogesh"
+  };
+  var rmName = rmNames[vendor] || "Yogesh";
+  toast("📎 Sending doc upload WhatsApp...", "ok");
+
+  fetch(APPS_SCRIPT_URL + "?action=resendDocWA&mobile=" + mobile + "&vendor=" + encodeURIComponent(vendor) + "&rmName=" + encodeURIComponent(rmName))
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      toast("✅ Doc upload WhatsApp sent to " + mobile + "!", "ok");
+    })
+    .catch(function() {
+      toast("✅ Request sent!", "ok");
+    });
+}
+
+function saveStatus() {
+  var sel    = document.getElementById("statusSel");
+  var reason = document.getElementById("reasonTxt");
+  var btn    = document.getElementById("saveBtn");
+  if (!sel || !sel.value) { toast("Please select a status!", "err"); return; }
+  if (!selectedLead) return;
+
+  btn.classList.add("saving");
+  btn.textContent = "Saving...";
+
+  var url = APPS_SCRIPT_URL +
+    "?action=updateStatus" +
+    "&row="    + selectedLead.row +
+    "&status=" + encodeURIComponent(sel.value) +
+    "&reason=" + encodeURIComponent(reason ? reason.value : "") +
+    "&vendor=" + encodeURIComponent(selectedLead.vendorAllocation || "");
+
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      btn.classList.remove("saving");
+      btn.classList.add("saved");
+      btn.textContent = "✅ Saved!";
+      toast("✅ Status updated: " + sel.value, "ok");
+      setTimeout(function() {
+        btn.classList.remove("saved");
+        btn.textContent = "💾 Save Status";
+      }, 2000);
+      setTimeout(loadData, 1500);
+    })
+    .catch(function() {
+      btn.classList.remove("saving");
+      btn.textContent = "💾 Save Status";
+      toast("⚠️ Could not save. Check connection!", "err");
+    });
+}
+
+// ─── BACK ───
+function goBack() {
+  document.getElementById("mobileDetail").style.display = "none";
+  document.getElementById("mobileList").style.display   = "flex";
+}
+
+// ─── UTILS ───
+function getColor(name) {
+  var colors = ["#2563eb","#7c3aed","#0891b2","#059669","#dc2626","#d97706"];
+  return colors[name.charCodeAt(0) % colors.length];
+}
+
+function fmtDate(ts) {
+  if (!ts) return "—";
+  try {
+    var d = new Date(ts);
+    if (isNaN(d)) return ts;
+    return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}) + " " +
+           d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+  } catch(e) { return ts; }
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function toast(msg, type) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast " + (type || "");
+  t.classList.add("show");
+  setTimeout(function(){ t.classList.remove("show"); }, 3000);
+}
+
+// ─── DEMO DATA ───
+function loadDemo() {
+  allLeads = [
+    { row:2, refId:"VMW-0002", timestamp:"2026-03-15T10:32:00", source:"Meta Ad",
+      fullName:"Venkatesh Patil", mobile:"9594592020", applicantType:"Salaried",
+      city:"Mumbai", loanType:"Personal Loan", appCibil:"Above 700",
+      monthlyIncome:"75,000", plAmount:"5 - 10 Lacs", blAmount:"—", hlAmount:"—", lapAmount:"—", blVintage:"—",
+      vendorSuggestion:"Aditya Birla", vendorAllocation:"Inhouse",
+      status:"Allocated", allocationStamp:"15/03/2026 10:35",
+      whatsappSent:"Yes", vendorStatus:"In Process", rejectionReason:"—",
+      docFormSent:"Yes", docFormLink:"https://forms.gle/PJys5mXesTEhnW6Y9",
+      docUploaded:"Yes", docUploadStamp:"15/03/2026 11:00", waLeadStatus:"Active",
+      reminderCount:"0", docReminderCount:"0" },
+
+    { row:3, refId:"VMW-0003", timestamp:"2026-03-15T09:15:00", source:"OD/KK/26-01",
+      fullName:"Rajesh Kumar", mobile:"9876543210", applicantType:"Business",
+      city:"Pune", loanType:"Business Loan", appCibil:"Above 650",
+      monthlyIncome:"1,20,000", blAmount:"10 - 15 Lacs", plAmount:"—", hlAmount:"—", lapAmount:"—", blVintage:"2 Years",
+      vendorSuggestion:"Aditya Birla", vendorAllocation:"Aditya Birla",
+      status:"Allocated", allocationStamp:"15/03/2026 09:20",
+      whatsappSent:"Yes", vendorStatus:"Documents Pending", rejectionReason:"—",
+      docFormSent:"Yes", docFormLink:"https://forms.gle/PJys5mXesTEhnW6Y9",
+      docUploaded:"No", docUploadStamp:"—", waLeadStatus:"Active",
+      reminderCount:"1", docReminderCount:"2" },
+
+    { row:4, refId:"VMW-0004", timestamp:"2026-03-15T08:50:00", source:"Meta Ad",
+      fullName:"Suresh Sharma", mobile:"8765432109", applicantType:"Salaried",
+      city:"Mumbai", loanType:"Home Loan", appCibil:"Above 700",
+      monthlyIncome:"1,50,000", hlAmount:"25 - 50 Lacs", plAmount:"—", blAmount:"—", lapAmount:"—", blVintage:"—",
+      vendorSuggestion:"Aditya Birla", vendorAllocation:"",
+      status:"Pending", allocationStamp:"—",
+      whatsappSent:"—", vendorStatus:"—", rejectionReason:"—",
+      docFormSent:"—", docFormLink:"", docUploaded:"—", docUploadStamp:"—", waLeadStatus:"Active" },
+
+    { row:5, refId:"VMW-0005", timestamp:"2026-03-14T15:20:00", source:"Meta Ad",
+      fullName:"Priya Desai", mobile:"7654321098", applicantType:"Business",
+      city:"Nashik", loanType:"Loan Against Property", appCibil:"Above 700",
+      monthlyIncome:"2,00,000", lapAmount:"50 Lacs - 1 Cr", plAmount:"—", blAmount:"—", hlAmount:"—", blVintage:"—",
+      vendorSuggestion:"Andromeda", vendorAllocation:"Andromeda",
+      status:"Allocated", allocationStamp:"14/03/2026 15:25",
+      whatsappSent:"Yes", vendorStatus:"Not Picking Up", rejectionReason:"—",
+      docFormSent:"—", docFormLink:"", docUploaded:"—", docUploadStamp:"—", waLeadStatus:"Active" },
+
+    { row:6, refId:"VMW-0006", timestamp:"2026-03-14T11:10:00", source:"Meta Ad",
+      fullName:"Amit Joshi", mobile:"6543210987", applicantType:"Salaried",
+      city:"Thane", loanType:"Personal Loan", appCibil:"Above 700",
+      monthlyIncome:"45,000", plAmount:"2 - 5 Lacs", blAmount:"—", hlAmount:"—", lapAmount:"—", blVintage:"—",
+      vendorSuggestion:"Aditya Birla", vendorAllocation:"VastMyWealth",
+      status:"Allocated", allocationStamp:"14/03/2026 11:15",
+      whatsappSent:"Yes", vendorStatus:"Approved", rejectionReason:"—",
+      docFormSent:"Yes", docFormLink:"https://forms.gle/PJys5mXesTEhnW6Y9",
+      docUploaded:"Yes", docUploadStamp:"14/03/2026 12:00", waLeadStatus:"Active" },
+
+    { row:7, refId:"VMW-0007", timestamp:"2026-03-13T09:00:00", source:"OD/KK/26-01",
+      fullName:"Meera Singh", mobile:"5432109876", applicantType:"Salaried",
+      city:"Mumbai", loanType:"Personal Loan", appCibil:"Above 650",
+      monthlyIncome:"35,000", plAmount:"2 - 5 Lacs", blAmount:"—", hlAmount:"—", lapAmount:"—", blVintage:"—",
+      vendorSuggestion:"Aditya Birla", vendorAllocation:"",
+      status:"Pending", allocationStamp:"—",
+      whatsappSent:"—", vendorStatus:"—", rejectionReason:"—",
+      docFormSent:"—", docFormLink:"", docUploaded:"—", docUploadStamp:"—", waLeadStatus:"Dead" }
+  ];
+
+  updateStats();
+  applyFilter();
+  toast("⚠️ Demo mode — Paste Apps Script URL for live data", "err");
+}
+
+// Auto refresh every 2 mins
+setInterval(function(){ if (currentUser) loadData(); }, 120000);
+</script>
+</body>
+</html>
