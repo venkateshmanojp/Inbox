@@ -7,16 +7,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* Force full screen */
-html, body {
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 100vh !important;
-  overflow: hidden !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
+html {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 :root {
@@ -43,16 +54,6 @@ html, body {
 }
 
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
-body {
-  font-family: 'Outfit', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
 
 /* ─── LOGIN ─── */
 #loginScreen {
@@ -110,7 +111,15 @@ body {
 .login-err { color: var(--r2); font-size: 12px; margin-top: 8px; text-align: center; display: none; }
 
 /* ─── MAIN APP ─── */
-#mainApp { display: none; flex-direction: column; height: 100vh; overflow: hidden; }
+#mainApp {
+  display: none;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+}
 
 /* ─── TOP NAV ─── */
 .topnav {
@@ -466,35 +475,63 @@ body {
 
 /* ─── DESKTOP ─── */
 @media (min-width: 769px) {
-  #mainApp { flex-direction: column; }
-
   .app-body {
-    flex: 1; display: flex; overflow: hidden;
+    flex: 1; display: flex; overflow: hidden; min-height: 0;
   }
 
   #listPanel {
     width: 320px; flex-shrink: 0;
     border-right: 1px solid var(--b1);
     display: flex; flex-direction: column;
-    overflow: hidden;
+    overflow: hidden; min-height: 0;
   }
 
   #detailScreen {
     position: static !important;
     display: flex !important;
-    flex: 1; z-index: auto;
+    flex: 1; z-index: auto; min-height: 0;
   }
 
   .back-btn { display: none !important; }
-  #mobileListWrap { display: none; }
-  #desktopListWrap { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+  #desktopListWrap { display: flex; flex-direction: column; flex-shrink: 0; }
 }
 
+/* ─── MOBILE ─── */
 @media (max-width: 768px) {
-  .app-body { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-  #listPanel { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .app-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  #listPanel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+  }
+
   #detailScreen { display: none; }
-  #desktopListWrap { display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+
+  #desktopListWrap {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+  }
+
+  .leads-list {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stats-row { flex-shrink: 0; }
+  .search-wrap { flex-shrink: 0; }
+  .topnav { flex-shrink: 0; }
 }
 </style>
 </head>
@@ -676,7 +713,7 @@ var ADMIN_PASSWORD  = "Venky@1234";
 var RM_CONFIG = {
   "Aditya Birla" : {name: "Khushboo", mobile: "8459008116"},
   "Andromeda"    : {name: "Priyanshu", mobile: "8459008116"},
-  "VastMyWealth" : {name: "Manoj",    mobile: "8459008116"},
+  "VastMyWealth" : {name: "Manoj",    mobile: "9594592020"},
   "Inhouse"      : {name: "Yogesh",   mobile: "8459008116"}
 };
 
@@ -775,8 +812,9 @@ function doLogin() {
 
 function proceedToApp() {
   document.getElementById("loginScreen").style.display = "none";
-  document.getElementById("mainApp").style.display     = "flex";
-  document.getElementById("navSub").textContent        = currentUser + " · " + roleLabel(currentRole);
+  var app = document.getElementById("mainApp");
+  app.style.display = "flex";
+  document.getElementById("navSub").textContent = currentUser + " · " + roleLabel(currentRole);
 
   if (!isMobile) {
     document.getElementById("detailScreen").style.display = "flex";
@@ -1412,4 +1450,3 @@ setInterval(function(){ if (currentUser) loadData(); }, 120000);
 </script>
 </body>
 </html>
-
