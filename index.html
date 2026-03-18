@@ -713,7 +713,7 @@ var ADMIN_PASSWORD  = "Venky@1234";
 var RM_CONFIG = {
   "Aditya Birla" : {name: "Khushboo", mobile: "8459008116"},
   "Andromeda"    : {name: "Priyanshu", mobile: "8459008116"},
-  "VastMyWealth" : {name: "Manoj",    mobile: "9594592020"},
+  "VastMyWealth" : {name: "Manoj",    mobile: "8459008116"},
   "Inhouse"      : {name: "Yogesh",   mobile: "8459008116"}
 };
 
@@ -897,10 +897,20 @@ function parseData(json) {
     if (currentRole === "inhouse"      && lead.vendorAllocation !== "Inhouse")      return;
     if (currentRole === "vastmywealth" && lead.vendorAllocation !== "VastMyWealth") return;
 
+    // Hide Rejected + Duplicate from Yogesh/Manoj
+    if (currentRole !== "admin") {
+      var vs = (lead.vendorStatus || "").toLowerCase();
+      if (lead.status === "Duplicate")          return;
+      if (vs.indexOf("reject")   !== -1)        return;
+      if (vs.indexOf("disburse") !== -1)        return;
+    }
+
     allLeads.push(lead);
   });
 
-  allLeads.reverse();
+  // Sort latest first by row number
+  allLeads.sort(function(a, b) { return b.row - a.row; });
+
   updateStats();
   applyFilter();
   toast("✅ " + allLeads.length + " leads loaded!", "ok");
@@ -1433,12 +1443,29 @@ function loadDemo() {
      vendorStatus:"—", rejectionReason:"—", disbursedAmount:"—"}
   ];
 
-  // Role filter for demo
+  // Role filter + hide rejected/duplicate for RM roles
   if (currentRole === "inhouse") {
-    allLeads = allLeads.filter(function(l){ return l.vendorAllocation === "Inhouse"; });
+    allLeads = allLeads.filter(function(l){
+      if (l.vendorAllocation !== "Inhouse") return false;
+      var vs = (l.vendorStatus || "").toLowerCase();
+      if (l.status === "Duplicate")     return false;
+      if (vs.indexOf("reject")   !== -1) return false;
+      if (vs.indexOf("disburse") !== -1) return false;
+      return true;
+    });
   } else if (currentRole === "vastmywealth") {
-    allLeads = allLeads.filter(function(l){ return l.vendorAllocation === "VastMyWealth"; });
+    allLeads = allLeads.filter(function(l){
+      if (l.vendorAllocation !== "VastMyWealth") return false;
+      var vs = (l.vendorStatus || "").toLowerCase();
+      if (l.status === "Duplicate")     return false;
+      if (vs.indexOf("reject")   !== -1) return false;
+      if (vs.indexOf("disburse") !== -1) return false;
+      return true;
+    });
   }
+
+  // Sort latest first
+  allLeads.sort(function(a, b) { return b.row - a.row; });
 
   updateStats();
   applyFilter();
