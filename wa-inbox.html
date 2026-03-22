@@ -692,7 +692,7 @@ html, body {
 // ============================================================
 //  CONFIG
 // ============================================================
-var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyq4EDWeGMvCG8GyV3M8lXmI0cgbFqDPPvDQjL5DoHh2k8Dly8hhP8EY1cWQfCtXGUL/exec";
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytDsEm2Z1_JD1Gpn-faYSdF1lVMIXxotMQ3qcB4P_7QIZC3juK8PZuhSTinkdlhASdEA/exec";
 
 // Quick replies — customize these!
 var QUICK_REPLIES = [
@@ -750,16 +750,23 @@ function syncMessages() {
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (btn) btn.textContent = "🔄";
-      if (d.success && d.messages) {
-        allChats = d.messages;
+      if (d.success) {
+        // Success even if empty array!
+        allChats = d.messages || [];
         filterChats();
-        toast("✅ " + allChats.length + " chats loaded!", "ok");
+        if (allChats.length > 0) {
+          toast("✅ " + allChats.length + " chats loaded!", "ok");
+        } else {
+          toast("📭 No messages yet! Customers will appear here.", "ok");
+        }
       } else {
+        toast("❌ " + (d.error || "Failed to load!"), "err");
         loadDemoChats();
       }
     })
-    .catch(function() {
+    .catch(function(err) {
       if (btn) btn.textContent = "🔄";
+      toast("❌ Connection error! Check Apps Script.", "err");
       loadDemoChats();
     });
 }
