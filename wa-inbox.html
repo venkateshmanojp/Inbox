@@ -957,25 +957,45 @@ function openTemplates() {
   var overlay = document.getElementById("templateOverlay");
   var list    = document.getElementById("templateList");
 
-  if (templates.length === 0) {
-    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3)">No templates found! Run testGetTemplates first.</div>';
-  } else {
-    var html = "";
-    templates.forEach(function(t, i) {
-      var catCls = t.category === "MARKETING" ? "pi-cat-marketing" : "pi-cat-utility";
-      html += '<div class="popup-item" onclick="selectTemplate(' + i + ')">' +
-        '<div class="pi-name">' +
-          esc(t.name) +
-          '<span class="pi-cat ' + catCls + '">' + esc(t.category) + '</span>' +
-        '</div>' +
-        '<div class="pi-body">' + esc(t.body || "—") + '</div>' +
-        (t.varCount > 0 ? '<div class="pi-vars">Requires ' + t.varCount + ' variable(s)</div>' : '') +
-      '</div>';
-    });
-    list.innerHTML = html;
-  }
-
   overlay.classList.add("show");
+
+  if (templates.length === 0) {
+    // Fetch now!
+    list.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;padding:30px;gap:10px"><div class="spinner"></div><div style="font-size:13px;color:var(--text3)">Loading templates...</div></div>';
+
+    fetch(APPS_SCRIPT_URL + "?action=getTemplates")
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        if (d.success && d.templates && d.templates.length > 0) {
+          templates = d.templates;
+          renderTemplateList();
+        } else {
+          list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3)">No approved templates found!<br>Check Meta WABA has approved templates.</div>';
+        }
+      })
+      .catch(function(err) {
+        list.innerHTML = '<div style="padding:20px;text-align:center;color:#991b1b">Connection error!<br>Check Apps Script URL.</div>';
+      });
+  } else {
+    renderTemplateList();
+  }
+}
+
+function renderTemplateList() {
+  var list = document.getElementById("templateList");
+  var html = "";
+  templates.forEach(function(t, i) {
+    var catCls = t.category === "MARKETING" ? "pi-cat-marketing" : "pi-cat-utility";
+    html += '<div class="popup-item" onclick="selectTemplate(' + i + ')">' +
+      '<div class="pi-name">' +
+        esc(t.name) +
+        '<span class="pi-cat ' + catCls + '">' + esc(t.category) + '</span>' +
+      '</div>' +
+      '<div class="pi-body">' + esc(t.body || "—") + '</div>' +
+      (t.varCount > 0 ? '<div class="pi-vars">Requires ' + t.varCount + ' variable(s)</div>' : '') +
+    '</div>';
+  });
+  list.innerHTML = html;
 }
 
 // ============================================================
