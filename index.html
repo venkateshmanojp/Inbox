@@ -548,16 +548,12 @@ body {
       <div class="flabel">Your Name</div>
       <input class="finput" id="loginName" placeholder="Enter your name" />
       <div class="flabel">Role</div>
-      <select class="finput" id="loginRole" onchange="onRoleChange()">
+      <select class="finput" id="loginRole">
         <option value="">Select your role...</option>
         <option value="admin">Admin (Venkatesh)</option>
         <option value="inhouse">Inhouse RM (Yogesh)</option>
         <option value="vastmywealth">VastMyWealth RM (Manoj)</option>
       </select>
-      <div id="pwField" style="display:none">
-        <div class="flabel">Password</div>
-        <input class="finput" id="loginPw" type="password" placeholder="Enter admin password" />
-      </div>
     </div>
 
     <div id="autoLoginFields" style="display:none">
@@ -569,7 +565,7 @@ body {
     </div>
 
     <button class="login-btn" onclick="doLogin()">Enter Inbox →</button>
-    <div class="login-err" id="loginErr">❌ Incorrect password!</div>
+    <div class="login-err" id="loginErr"></div>
   </div>
 </div>
 
@@ -672,7 +668,6 @@ body {
         <div class="tab active" onclick="showTab('details',this)">📋 Details</div>
         <div class="tab" onclick="showTab('allocation',this)">🏦 Allocation</div>
         <div class="tab" onclick="showTab('status',this)">✏️ Status</div>
-        <div class="tab" onclick="showTab('timeline',this)">🕐 Timeline</div>
       </div>
 
       <!-- Tab body -->
@@ -794,16 +789,10 @@ function doLogin() {
     proceedToApp(); return;
   }
 
-  var name   = document.getElementById("loginName").value.trim();
-  var selRole= document.getElementById("loginRole").value;
-  var pw     = document.getElementById("loginPw") ? document.getElementById("loginPw").value : "";
+  var name    = document.getElementById("loginName").value.trim();
+  var selRole = document.getElementById("loginRole").value;
 
   if (!name || !selRole) { toast("Please fill all fields!", "err"); return; }
-  if (selRole === "admin" && pw !== ADMIN_PASSWORD) {
-    err.style.display = "block";
-    document.getElementById("loginPw").value = "";
-    return;
-  }
 
   currentUser = name;
   currentRole = selRole;
@@ -897,12 +886,24 @@ function parseData(json) {
     if (currentRole === "inhouse"      && lead.vendorAllocation !== "Inhouse")      return;
     if (currentRole === "vastmywealth" && lead.vendorAllocation !== "VastMyWealth") return;
 
-    // Hide Rejected + Duplicate from Yogesh/Manoj
+    // Hide non-active leads from Yogesh/Manoj
     if (currentRole !== "admin") {
-      var vs = (lead.vendorStatus || "").toLowerCase();
-      if (lead.status === "Duplicate")          return;
-      if (vs.indexOf("reject")   !== -1)        return;
-      if (vs.indexOf("disburse") !== -1)        return;
+      var vs  = String(lead.vendorStatus || "").toLowerCase().trim();
+      var st  = String(lead.status       || "").toLowerCase().trim();
+      var va  = String(lead.vendorAllocation || "").toLowerCase().trim();
+
+      if (st.indexOf("duplicate")  !== -1) return;
+      if (st.indexOf("dead")       !== -1) return;
+      if (vs.indexOf("reject")     !== -1) return;
+      if (vs.indexOf("disburse")   !== -1) return;
+      if (vs.indexOf("closed")     !== -1) return;
+      if (vs.indexOf("cancel")     !== -1) return;
+    }
+
+    // Hide ONLY Rejected for Admin
+    if (currentRole === "admin") {
+      var vs = String(lead.vendorStatus || "").toLowerCase().trim();
+      if (vs.indexOf("reject") !== -1) return;
     }
 
     allLeads.push(lead);
@@ -1120,17 +1121,12 @@ function buildBadges(l) {
 function buildActions(l) {
   var isAllocated = l.vendorAllocation && l.vendorAllocation !== "" && l.vendorAllocation !== "Manual Decision";
 
-  // Call button
+  // Call button — always visible
   var html = '<a class="act act-call" href="tel:' + l.mobile + '">📞 Call ' + l.fullName.split(" ")[0] + '</a>';
 
-  // WhatsApp button (after allocation)
+  // WhatsApp button — after allocation
   if (isAllocated) {
     html += '<button class="act act-wa" onclick="showWAPopup()">💬 WhatsApp</button>';
-  }
-
-  // Admin only buttons
-  if (currentRole === "admin" && isAllocated) {
-    html += '<button class="act act-real" onclick="showTab(\'status\', document.querySelector(\'.tab-bar .tab:nth-child(3)\'))">🔄 Reallocate</button>';
   }
 
   return html;
@@ -1145,10 +1141,17 @@ function buildTab(tab, l) {
 
   // ── DETAILS ──
   if (tab === "details") {
+    var isAllocated = l.vendorAllocation && l.vendorAllocation !== "" && l.vendorAllocation !== "Manual Decision";
+
     return card("Loan Details",
       irow(icell("Monthly Income", l.monthlyIncome)) +
       irow(icell("Source", l.source)) +
       irow(icell("Submitted", fmtDate(l.timestamp)))
+    ) +
+    card("Allocation",
+      irow(icell("Allocated To", isAllocated ? l.vendorAllocation : "⏳ Pending")) +
+      irow(icell("Allocation Time", l.allocationStamp || "—")) +
+      irow(icell("Vendor Status", l.vendorStatus || "—"))
     );
   }
 
