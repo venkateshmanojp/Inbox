@@ -638,7 +638,7 @@ html, body {
         <button class="send-btn" onclick="sendMessage()" title="Send">➤</button>
 
         <!-- Hidden file inputs -->
-        <input type="file" id="galleryInput" accept="image/*,video/*" style="display:none" onchange="handleFile(this,'image')" />
+        <input type="file" id="galleryInput" accept="image/,video/" style="display:none" onchange="handleFile(this,'image')" />
         <input type="file" id="fileInput" style="display:none" onchange="handleFile(this,'document')" />
       </div>
 
@@ -694,27 +694,27 @@ html, body {
 // ============================================================
 var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytDsEm2Z1_JD1Gpn-faYSdF1lVMIXxotMQ3qcB4P_7QIZC3juK8PZuhSTinkdlhASdEA/exec";
 
-// Quick replies — customize these!
+// Quick replies — customized for VastMyWealth flow
 var QUICK_REPLIES = [
   {
-    name: "Welcome",
-    text: "Hi! Welcome to VastMyWealth! 🎉\n\nWe help you get the best loan deals!\n\nPlease fill our quick form to get started:\nhttps://forms.gle/bvJodXgvmEQ6drgE9\n\nTakes only 2 minutes! ⚡"
+    name: "Fill Form First",
+    text: "Hi! 👋 Thank you for contacting VastMyWealth!\n\nTo help you better and connect you with the right lender, please fill our quick form first:\n\nhttps://forms.gle/bvJodXgvmEQ6drgE9\n\nOur team will review your details and call you back shortly! ✅"
   },
   {
     name: "Form Reminder",
-    text: "Hi! Just checking in. 😊\n\nPlease fill this quick loan form so we can understand your requirement and guide you better:\nhttps://forms.gle/bvJodXgvmEQ6drgE9\n\nIf you've already submitted, kindly ignore this message."
+    text: "Hi! 😊 Just checking in!\n\nPlease fill our quick form so we can understand your requirement better and match you with the best lender:\n\nhttps://forms.gle/bvJodXgvmEQ6drgE9\n\nTakes only 2 minutes! ⚡"
   },
   {
-    name: "Documents Request",
-    text: "Hi! 👋\n\nTo process your loan application, please share the following documents:\n• PAN Card\n• Aadhaar Card\n• Last 3 months salary slips\n• Last 6 months bank statement\n\nYou can WhatsApp them directly here! ✅"
+    name: "Please Pick Up Call",
+    text: "Hi! 📞 I tried reaching you regarding your loan application!\n\nTo speed up your loan process and align your profile with the best lender, it is important that we connect over a call.\n\nPlease pick up my call or call me back at your earliest convenience!\n\nThis will help us get you the best deal faster! 🏆"
   },
   {
-    name: "Not Reachable",
-    text: "Hi! I tried calling you but couldn't connect. 📵\n\nI'm Yogesh from VastMyWealth regarding your loan application.\n\nPlease call me back at: 8459008116\n\nOr reply here and I'll get back to you! 😊"
+    name: "Need More Details",
+    text: "Hi! 😊 Thank you for reaching out to VastMyWealth!\n\nCould you please share the following details:\n→ Property location?\n→ Approximate property value?\n→ Loan amount required?\n→ Purpose of loan?\n\nThis will help us match you with the best lender! ✅"
   },
   {
-    name: "Loan Approved",
-    text: "Congratulations! 🎉🎉\n\nGreat news from VastMyWealth!\n\nYour loan application has been APPROVED! ✅\n\nPlease contact me for the next steps:\n📱 8459008116\n\nThank you for choosing VastMyWealth! 💰"
+    name: "Not Eligible",
+    text: "Hi! 🙏 Thank you for contacting VastMyWealth!\n\nBased on your current requirements we are unable to assist at this time.\n\nWe will reach out when suitable options become available for you!\n\nThank you for your interest! 😊"
   }
 ];
 
@@ -1013,209 +1013,4 @@ function selectTemplate(idx) {
   var t = templates[idx];
   if (!t) return;
 
-  closeOverlays();
-
-  if (t.varCount > 0) {
-    // Show variable input popup
-    pendingTemplate = t;
-    showVarPopup(t);
-  } else {
-    // Send directly
-    doSendTemplate(selectedChat.mobile, t.name, []);
-  }
-}
-
-// ============================================================
-//  SHOW VAR POPUP
-// ============================================================
-function showVarPopup(t) {
-  document.getElementById("varTitle").textContent = "📋 " + t.name;
-  var inputs = "";
-  for (var i = 1; i <= t.varCount; i++) {
-    inputs += '<div style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;margin-bottom:4px">Variable ' + i + '</div>' +
-      '<input class="var-input" id="var' + i + '" placeholder="Enter value for {{' + i + '}}" />';
-  }
-  document.getElementById("varInputs").innerHTML = inputs;
-  document.getElementById("varPopup").classList.add("show");
-}
-
-function closeVarPopup() {
-  document.getElementById("varPopup").classList.remove("show");
-  pendingTemplate = null;
-}
-
-function confirmSendTemplate() {
-  if (!pendingTemplate || !selectedChat) return;
-  var params = [];
-  for (var i = 1; i <= pendingTemplate.varCount; i++) {
-    var val = (document.getElementById("var" + i)||{}).value || "";
-    params.push(val);
-  }
-  doSendTemplate(selectedChat.mobile, pendingTemplate.name, params);
-  closeVarPopup();
-}
-
-// ============================================================
-//  DO SEND TEMPLATE
-// ============================================================
-function doSendTemplate(mobile, templateName, params) {
-  if (!mobile) { toast("No customer selected!", "err"); return; }
-
-  toast("📤 Sending " + templateName + "...", "ok");
-
-  var url = APPS_SCRIPT_URL +
-    "?action=sendTemplate" +
-    "&mobile=" + encodeURIComponent(mobile) +
-    "&templateName=" + encodeURIComponent(templateName) +
-    "&params=" + encodeURIComponent(JSON.stringify(params));
-
-  fetch(url)
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      if (d.success) {
-        toast("✅ Template sent!", "ok");
-        // Add to messages
-        var msgs = document.getElementById("messages");
-        var now  = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
-        msgs.innerHTML += '<div class="msg-template">' +
-          '<div class="template-header">📋 ' + esc(templateName) + '</div>' +
-          '<div class="template-body">Template sent successfully! ✅</div>' +
-          '<div class="msg-time">' + now + '</div>' +
-        '</div>';
-        msgs.scrollTop = msgs.scrollHeight;
-        // Update chat in list
-        if (selectedChat) {
-          selectedChat.templateSent = "Yes";
-          selectedChat.templateName = templateName;
-        }
-        renderChatList();
-      } else {
-        toast("❌ Send failed!", "err");
-      }
-    })
-    .catch(function() {
-      toast("❌ Connection error!", "err");
-    });
-}
-
-// ============================================================
-//  OPEN QUICK REPLIES
-// ============================================================
-function openQuickReplies() {
-  document.getElementById("attachPopup").classList.remove("show");
-  var list = document.getElementById("qrList");
-  var html = "";
-  QUICK_REPLIES.forEach(function(qr, i) {
-    html += '<div class="qr-item" onclick="sendQuickReply(' + i + ')">' +
-      '<div class="qr-name">/' + esc(qr.name) + '</div>' +
-      '<div class="qr-text">' + esc(qr.text.substring(0, 80)) + (qr.text.length > 80 ? "..." : "") + '</div>' +
-    '</div>';
-  });
-  list.innerHTML = html;
-  document.getElementById("qrOverlay").classList.add("show");
-}
-
-function sendQuickReply(idx) {
-  var qr = QUICK_REPLIES[idx];
-  if (!qr) return;
-  closeOverlays();
-  document.getElementById("msgInput").value = qr.text;
-  autoResize(document.getElementById("msgInput"));
-}
-
-// ============================================================
-//  GALLERY + FILE
-// ============================================================
-function openGallery() {
-  document.getElementById("attachPopup").classList.remove("show");
-  document.getElementById("galleryInput").click();
-}
-
-function openFile() {
-  document.getElementById("attachPopup").classList.remove("show");
-  document.getElementById("fileInput").click();
-}
-
-function handleFile(input, type) {
-  if (!input.files || !input.files[0]) return;
-  toast("📎 File selected: " + input.files[0].name + " (Media sending coming soon!)", "ok");
-  input.value = "";
-}
-
-// ============================================================
-//  SEND MESSAGE (text)
-// ============================================================
-function sendMessage() {
-  var input = document.getElementById("msgInput");
-  var text  = input.value.trim();
-  if (!text) return;
-  if (!selectedChat) { toast("Select a chat first!", "err"); return; }
-
-  // Add to chat view
-  var msgs = document.getElementById("messages");
-  var now  = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
-  msgs.innerHTML += '<div class="msg-bubble msg-out">' +
-    esc(text).replace(/\n/g,"<br>") +
-    '<div class="msg-time">' + now + ' ✓✓</div>' +
-  '</div>';
-  msgs.scrollTop = msgs.scrollHeight;
-
-  input.value = "";
-  input.style.height = "auto";
-  toast("ℹ️ Text note saved locally. Use templates for official messages!", "ok");
-}
-
-function handleKey(e) {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
-}
-
-function autoResize(el) {
-  el.style.height = "auto";
-  el.style.height = Math.min(el.scrollHeight, 80) + "px";
-}
-
-// ============================================================
-//  CLOSE OVERLAYS
-// ============================================================
-function closeOverlays(e) {
-  if (e && e.target !== document.getElementById("templateOverlay") &&
-           e.target !== document.getElementById("qrOverlay")) return;
-  document.getElementById("templateOverlay").classList.remove("show");
-  document.getElementById("qrOverlay").classList.remove("show");
-}
-
-// ============================================================
-//  UTILS
-// ============================================================
-function esc(s) {
-  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
-
-function toast(msg, type) {
-  var t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className = "toast " + (type || "");
-  t.classList.add("show");
-  setTimeout(function(){ t.classList.remove("show"); }, 3000);
-}
-
-// ============================================================
-//  DEMO DATA
-// ============================================================
-function loadDemoChats() {
-  allChats = [
-    {timestamp:"2026-03-22T10:32:00", mobile:"919876543210", message:"Personal Loan", loanType:"Personal Loan", templateSent:"No",  templateName:""},
-    {timestamp:"2026-03-22T10:15:00", mobile:"918765432109", message:"Business Loan", loanType:"Business Loan", templateSent:"Yes", templateName:"welcome_unsecured"},
-    {timestamp:"2026-03-22T09:50:00", mobile:"917654321098", message:"Home Loan",     loanType:"Home Loan",     templateSent:"No",  templateName:""},
-    {timestamp:"2026-03-22T09:30:00", mobile:"916543210987", message:"LAP",           loanType:"Loan Against Property", templateSent:"Yes", templateName:"welcome_lap"},
-    {timestamp:"2026-03-21T18:00:00", mobile:"915432109876", message:"Personal Loan", loanType:"Personal Loan", templateSent:"No",  templateName:""}
-  ];
-  filterChats();
-  toast("⚠️ Demo mode — Sync for live data!", "err");
-}
-</script>
-</body>
-</html>
+  closeOverlays()
