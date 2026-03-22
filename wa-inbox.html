@@ -638,7 +638,7 @@ html, body {
         <button class="send-btn" onclick="sendMessage()" title="Send">➤</button>
 
         <!-- Hidden file inputs -->
-        <input type="file" id="galleryInput" accept="image/,video/" style="display:none" onchange="handleFile(this,'image')" />
+        <input type="file" id="galleryInput" accept="image/*,video/*" style="display:none" onchange="handleFile(this,'image')" />
         <input type="file" id="fileInput" style="display:none" onchange="handleFile(this,'document')" />
       </div>
 
@@ -1013,4 +1013,238 @@ function selectTemplate(idx) {
   var t = templates[idx];
   if (!t) return;
 
-  closeOverlays()
+  closeOverlays();
+
+  if (t.varCount > 0) {
+    // Show variable input popup
+    pendingTemplate = t;
+    showVarPopup(t);
+  } else {
+    // Send directly
+    doSendTemplate(selectedChat.mobile, t.name, []);
+  }
+}
+
+// ============================================================
+//  SHOW VAR POPUP
+// ============================================================
+function showVarPopup(t) {
+  document.getElementById("varTitle").textContent = "📋 " + t.name;
+  var inputs = "";
+  for (var i = 1; i <= t.varCount; i++) {
+    inputs += '<div style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;margin-bottom:4px">Variable ' + i + '</div>' +
+      '<input class="var-input" id="var' + i + '" placeholder="Enter value for {{' + i + '}}" />';
+  }
+  document.getElementById("varInputs").innerHTML = inputs;
+  document.getElementById("varPopup").classList.add("show");
+}
+
+function closeVarPopup() {
+  document.getElementById("varPopup").classList.remove("show");
+  pendingTemplate = null;
+}
+
+function confirmSendTemplate() {
+  if (!pendingTemplate || !selectedChat) return;
+  var params = [];
+  for (var i = 1; i <= pendingTemplate.varCount; i++) {
+    var val = (document.getElementById("var" + i)||{}).value || "";
+    params.push(val);
+  }
+  doSendTemplate(selectedChat.mobile, pendingTemplate.name, params);
+  closeVarPopup();
+}
+
+// ============================================================
+//  DO SEND TEMPLATE
+// ============================================================
+function doSendTemplate(mobile, templateName, params) {
+  if (!mobile) { toast("No customer selected!", "err"); return; }
+
+  toast("📤 Sending " + templateName + "...", "ok");
+
+  var url = APPS_SCRIPT_URL +
+    "?action=sendTemplate" +
+    "&mobile=" + encodeURIComponent(mobile) +
+    "&templateName=" + encodeURIComponent(templateName) +
+    "&params=" + encodeURIComponent(JSON.stringify(params));
+
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        toast("✅ Template sent!", "ok");
+        // Add to messages
+        var msgs = document.getElementById("messages");
+        var now  = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+        msgs.innerHTML += '<div class="msg-template">' +
+          '<div class="template-header">📋 ' + esc(templateName) + '</div>' +
+          '<div class="template-body">Template sent successfully! ✅</div>' +
+          '<div class="msg-time">' + now + '</div>' +
+        '</div>';
+        msgs.scrollTop = msgs.scrollHeight;
+        // Update chat in list
+        if (selectedChat) {
+          selectedChat.templateSent = "Yes";
+          selectedChat.templateName = templateName;
+        }
+        renderChatList();
+      } else {
+        toast("❌ Send failed!", "err");
+      }
+    })
+    .catch(function() {
+      toast("❌ Connection error!", "err");
+    });
+}
+
+// ============================================================
+//  OPEN QUICK REPLIES
+// ============================================================
+function openQuickReplies() {
+  document.getElementById("attachPopup").classList.remove("show");
+  var list = document.getElementById("qrList");
+  var html = "";
+  QUICK_REPLIES.forEach(function(qr, i) {
+    html += '<div class="qr-item" onclick="sendQuickReply(' + i + ')">' +
+      '<div class="qr-name">/' + esc(qr.name) + '</div>' +
+      '<div class="qr-text">' + esc(qr.text.substring(0, 80)) + (qr.text.length > 80 ? "..." : "") + '</div>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+  document.getElementById("qrOverlay").classList.add("show");
+}
+
+function sendQuickReply(idx) {
+  var qr = QUICK_REPLIES[idx];
+  if (!qr) return;
+  closeOverlays();
+  // Paste in input box - user can edit before sending!
+  document.getElementById("msgInput").value = qr.text;
+  autoResize(document.getElementById("msgInput"));
+  document.getElementById("msgInput").focus();
+  toast("✅ Quick reply loaded! Edit if needed then send!", "ok");
+}
+
+// ============================================================
+//  GALLERY + FILE
+// ============================================================
+function openGallery() {
+  document.getElementById("attachPopup").classList.remove("show");
+  document.getElementById("galleryInput").click();
+}
+
+function openFile() {
+  document.getElementById("attachPopup").classList.remove("show");
+  document.getElementById("fileInput").click();
+}
+
+function handleFile(input, type) {
+  if (!input.files || !input.files[0]) return;
+  toast("📎 File selected: " + input.files[0].name + " (Media sending coming soon!)", "ok");
+  input.value = "";
+}
+
+// ============================================================
+//  SEND MESSAGE (text) — via Meta API within 24hr window
+// ============================================================
+function sendMessage() {
+  var input = document.getElementById("msgInput");
+  var text  = input.value.trim();
+  if (!text) return;
+  if (!selectedChat) { toast("Select a chat first!", "err"); return; }
+
+  var mobile = selectedChat.mobile;
+  var msgs   = document.getElementById("messages");
+  var now    = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+
+  // Show in chat immediately
+  msgs.innerHTML += '<div class="msg-bubble msg-out">' +
+    esc(text).replace(/\n/g,"<br>") +
+    '<div class="msg-time">' + now + ' ⏳</div>' +
+  '</div>';
+  msgs.scrollTop = msgs.scrollHeight;
+
+  input.value = "";
+  input.style.height = "auto";
+
+  // Send via Apps Script → Meta API
+  var url = APPS_SCRIPT_URL +
+    "?action=sendText" +
+    "&mobile=" + encodeURIComponent(mobile) +
+    "&message=" + encodeURIComponent(text);
+
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        toast("✅ Message sent!", "ok");
+        // Update tick to double tick
+        var lastMsg = msgs.lastElementChild;
+        if (lastMsg) {
+          var timeDiv = lastMsg.querySelector(".msg-time");
+          if (timeDiv) timeDiv.textContent = now + " ✓✓";
+        }
+      } else {
+        toast("❌ Failed! Try template instead.", "err");
+      }
+    })
+    .catch(function() {
+      toast("❌ Connection error!", "err");
+    });
+}
+
+function handleKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 80) + "px";
+}
+
+// ============================================================
+//  CLOSE OVERLAYS
+// ============================================================
+function closeOverlays(e) {
+  if (e && e.target !== document.getElementById("templateOverlay") &&
+           e.target !== document.getElementById("qrOverlay")) return;
+  document.getElementById("templateOverlay").classList.remove("show");
+  document.getElementById("qrOverlay").classList.remove("show");
+}
+
+// ============================================================
+//  UTILS
+// ============================================================
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function toast(msg, type) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast " + (type || "");
+  t.classList.add("show");
+  setTimeout(function(){ t.classList.remove("show"); }, 3000);
+}
+
+// ============================================================
+//  DEMO DATA
+// ============================================================
+function loadDemoChats() {
+  allChats = [
+    {timestamp:"2026-03-22T10:32:00", mobile:"919876543210", message:"Personal Loan", loanType:"Personal Loan", templateSent:"No",  templateName:""},
+    {timestamp:"2026-03-22T10:15:00", mobile:"918765432109", message:"Business Loan", loanType:"Business Loan", templateSent:"Yes", templateName:"welcome_unsecured"},
+    {timestamp:"2026-03-22T09:50:00", mobile:"917654321098", message:"Home Loan",     loanType:"Home Loan",     templateSent:"No",  templateName:""},
+    {timestamp:"2026-03-22T09:30:00", mobile:"916543210987", message:"LAP",           loanType:"Loan Against Property", templateSent:"Yes", templateName:"welcome_lap"},
+    {timestamp:"2026-03-21T18:00:00", mobile:"915432109876", message:"Personal Loan", loanType:"Personal Loan", templateSent:"No",  templateName:""}
+  ];
+  filterChats();
+  toast("⚠️ Demo mode — Sync for live data!", "err");
+}
+</script>
+</body>
+</html>
