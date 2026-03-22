@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VMW WhatsApp Inbox</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ─── RESET ─── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html, body {
+  height: 100%; width: 100%;
+  overflow: hidden; position: fixed;
+  top:0; left:0; right:0; bottom:0;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ─── VARIABLES ─── */
+:root {
+  --wa-green:    #25d366;
+  --wa-green2:   #128c7e;
+  --wa-green3:   #dcf8c6;
+  --wa-bg:       #efeae2;
+  --wa-header:   #075e54;
+  --wa-header2:  #128c7e;
+  --white:       #ffffff;
+  --surface:     #f0f2f5;
+  --border:      #e9edef;
+  --text:        #111b21;
+  --text2:       #54656f;
+  --text3:       #8696a0;
+  --blue:        #1d4ed8;
+  --bubble-out:  #d9fdd3;
+  --bubble-in:   #ffffff;
+  --mono:        'JetBrains Mono', monospace;
+}
+
+/* ─── LAYOUT ─── */
+#app {
+  display: flex; height: 100vh; width: 100%;
+  background: var(--surface);
+}
+
+/* ─── LEFT PANEL — CHAT LIST ─── */
+#chatPanel {
+  width: 100%; max-width: 380px;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  flex-shrink: 0;
+}
+
+/* ─── RIGHT PANEL — CHAT VIEW ─── */
+#chatView {
+  flex: 1; display: flex; flex-direction: column;
+  background: var(--wa-bg);
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4c9b8' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ─── WA HEADER ─── */
+.wa-header {
+  background: var(--wa-header);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
+}
+
+.wa-header-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%; background: var(--wa-green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+
+.wa-header-info { flex: 1; }
+.wa-header-name { font-size: 16px; font-weight: 600; color: white; }
+.wa-header-sub  { font-size: 12px; color: rgba(255,255,255,0.7); }
+
+.wa-header-actions { display: flex; gap: 8px; }
+
+.wa-icon-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%; background: rgba(255,255,255,0.1);
+  border: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: white; transition: background 0.15s;
+}
+
+.wa-icon-btn:hover { background: rgba(255,255,255,0.2); }
+
+/* ─── SEARCH BAR ─── */
+.search-bar {
+  padding: 8px 12px;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.search-input-wrap {
+  background: var(--surface);
+  border-radius: 8px;
+  display: flex; align-items: center;
+  padding: 0 12px; gap: 8px;
+}
+
+.search-input-wrap span { font-size: 14px; color: var(--text3); }
+
+.search-input {
+  flex: 1; background: none; border: none;
+  padding: 8px 0; font-size: 14px; color: var(--text);
+  font-family: 'Outfit', sans-serif; outline: none;
+}
+
+/* ─── CHAT LIST HEADER ─── */
+.cl-header {
+  background: var(--wa-header);
+  padding: 12px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.cl-title { font-size: 20px; font-weight: 700; color: white; }
+
+.cl-actions { display: flex; gap: 8px; }
+
+/* ─── FILTER TABS ─── */
+.filter-tabs {
+  display: flex; gap: 0;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  overflow-x: auto;
+}
+.filter-tabs::-webkit-scrollbar { display: none; }
+
+.ftab {
+  flex-shrink: 0;
+  padding: 10px 16px;
+  font-size: 13px; font-weight: 600;
+  color: var(--text3); cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.ftab.active { color: var(--wa-header); border-bottom-color: var(--wa-header); }
+
+/* ─── CHAT LIST ITEMS ─── */
+.chat-list {
+  flex: 1; overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.chat-list::-webkit-scrollbar { display: none; }
+
+.chat-item {
+  display: flex; gap: 12px; padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.1s;
+  align-items: center;
+}
+
+.chat-item:hover  { background: var(--surface); }
+.chat-item.active { background: #f0f2f5; }
+
+.ci-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 20px; color: white;
+  flex-shrink: 0;
+}
+
+.ci-body { flex: 1; min-width: 0; }
+
+.ci-row1 {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 3px;
+}
+
+.ci-name { font-size: 15px; font-weight: 600; color: var(--text); }
+.ci-time { font-size: 11px; color: var(--text3); }
+.ci-msg  { font-size: 13px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.ci-badge {
+  min-width: 20px; height: 20px;
+  background: var(--wa-green);
+  border-radius: 10px; padding: 0 6px;
+  font-size: 11px; font-weight: 700; color: white;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.loan-badge {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 10px;
+  display: inline-block; margin-top: 3px;
+}
+
+.loan-pl  { background: #dbeafe; color: #1d4ed8; }
+.loan-bl  { background: #fef3c7; color: #92400e; }
+.loan-hl  { background: #d1fae5; color: #065f46; }
+.loan-lap { background: #ede9fe; color: #5b21b6; }
+.loan-unk { background: #f3f4f6; color: #6b7280; }
+
+.sent-badge {
+  font-size: 10px; font-weight: 600;
+  padding: 2px 7px; border-radius: 10px;
+  margin-left: 4px;
+}
+
+.sent-yes { background: #d1fae5; color: #065f46; }
+.sent-no  { background: #fee2e2; color: #991b1b; }
+
+/* ─── CHAT VIEW HEADER ─── */
+.cv-header {
+  background: var(--wa-header);
+  padding: 10px 16px;
+  display: flex; align-items: center; gap: 12px;
+  flex-shrink: 0;
+}
+
+.cv-back {
+  font-size: 20px; color: white; cursor: pointer;
+  display: none;
+}
+
+.cv-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%; background: var(--wa-green);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+
+.cv-info { flex: 1; }
+.cv-name { font-size: 15px; font-weight: 600; color: white; }
+.cv-sub  { font-size: 12px; color: rgba(255,255,255,0.7); }
+
+/* ─── MESSAGES ─── */
+.messages {
+  flex: 1; overflow-y: auto; padding: 12px 16px;
+  display: flex; flex-direction: column; gap: 4px;
+  -webkit-overflow-scrolling: touch;
+}
+.messages::-webkit-scrollbar { display: none; }
+
+.msg-date {
+  text-align: center; margin: 8px 0;
+  font-size: 11px; color: var(--text2);
+  background: rgba(255,255,255,0.8);
+  display: inline-block; padding: 3px 10px;
+  border-radius: 8px; align-self: center;
+}
+
+.msg-bubble {
+  max-width: 75%; padding: 8px 12px;
+  border-radius: 8px; position: relative;
+  font-size: 13px; line-height: 1.5; color: var(--text);
+}
+
+.msg-in {
+  background: var(--bubble-in);
+  border-radius: 0 8px 8px 8px;
+  align-self: flex-start;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.msg-out {
+  background: var(--bubble-out);
+  border-radius: 8px 0 8px 8px;
+  align-self: flex-end;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.msg-time {
+  font-size: 10px; color: var(--text3);
+  text-align: right; margin-top: 3px;
+}
+
+.msg-template {
+  background: var(--bubble-out);
+  border-radius: 8px 0 8px 8px;
+  align-self: flex-end;
+  border: 1px solid #a7f3d0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  max-width: 80%;
+}
+
+.template-header {
+  background: var(--wa-green2);
+  color: white; font-size: 11px; font-weight: 600;
+  padding: 4px 10px; border-radius: 6px 6px 0 0;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+.template-body {
+  padding: 8px 12px;
+  font-size: 13px; color: var(--text); line-height: 1.5;
+}
+
+.template-btn {
+  border-top: 1px solid var(--border);
+  padding: 8px 12px;
+  font-size: 13px; color: var(--blue);
+  font-weight: 600; text-align: center;
+  cursor: pointer;
+}
+
+/* ─── INPUT BAR ─── */
+.input-bar {
+  padding: 8px 12px;
+  background: var(--surface);
+  display: flex; align-items: flex-end; gap: 8px;
+  flex-shrink: 0;
+}
+
+.attach-btn {
+  width: 42px; height: 42px;
+  border-radius: 50%; background: none; border: none;
+  font-size: 22px; cursor: pointer; color: var(--text2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: color 0.15s;
+}
+
+.attach-btn:hover { color: var(--text); }
+
+.msg-input-wrap {
+  flex: 1; background: var(--white);
+  border-radius: 22px; padding: 10px 16px;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.msg-input {
+  flex: 1; background: none; border: none;
+  font-size: 14px; color: var(--text);
+  font-family: 'Outfit', sans-serif; outline: none;
+  resize: none; max-height: 80px; overflow-y: auto;
+}
+
+.msg-input::placeholder { color: var(--text3); }
+
+.send-btn {
+  width: 42px; height: 42px;
+  border-radius: 50%; background: var(--wa-green);
+  border: none; cursor: pointer; color: white;
+  font-size: 18px; display: flex;
+  align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.15s;
+  box-shadow: 0 2px 8px rgba(37,211,102,0.4);
+}
+
+.send-btn:hover  { background: var(--wa-green2); }
+.send-btn:active { transform: scale(0.95); }
+
+/* ─── ATTACH POPUP ─── */
+.attach-popup {
+  position: absolute; bottom: 70px; left: 12px;
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  padding: 8px; display: none;
+  flex-direction: column; gap: 2px;
+  z-index: 100; min-width: 200px;
+}
+
+.attach-popup.show { display: flex; }
+
+.attach-option {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: 8px;
+  cursor: pointer; transition: background 0.1s;
+  font-size: 14px; color: var(--text); font-weight: 500;
+}
+
+.attach-option:hover { background: var(--surface); }
+
+.attach-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+
+/* ─── TEMPLATE POPUP ─── */
+.overlay {
+  position: fixed; top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.5); z-index: 200;
+  display: none; align-items: flex-end;
+  justify-content: center;
+}
+.overlay.show { display: flex; }
+
+.popup-sheet {
+  background: var(--white);
+  border-radius: 16px 16px 0 0;
+  width: 100%; max-width: 500px;
+  max-height: 80vh;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+.popup-header {
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between;
+  align-items: center; flex-shrink: 0;
+}
+
+.popup-title { font-size: 16px; font-weight: 700; color: var(--text); }
+.popup-close { font-size: 20px; color: var(--text3); cursor: pointer; }
+
+.popup-list { overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.popup-list::-webkit-scrollbar { display: none; }
+
+.popup-item {
+  padding: 12px 20px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.1s;
+}
+
+.popup-item:hover { background: var(--surface); }
+.popup-item:last-child { border-bottom: none; }
+
+.pi-name {
+  font-size: 14px; font-weight: 600; color: var(--text);
+  margin-bottom: 3px; display: flex; align-items: center; gap: 8px;
+}
+
+.pi-cat {
+  font-size: 10px; font-weight: 600;
+  padding: 2px 7px; border-radius: 10px;
+}
+
+.pi-cat-marketing { background: #fef3c7; color: #92400e; }
+.pi-cat-utility   { background: #dbeafe; color: #1d4ed8; }
+
+.pi-body { font-size: 12px; color: var(--text2); line-height: 1.4; }
+
+.pi-vars {
+  font-size: 10px; color: var(--text3); margin-top: 4px;
+  font-family: var(--mono);
+}
+
+/* ─── QUICK REPLY ITEM ─── */
+.qr-item {
+  padding: 12px 20px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background 0.1s;
+}
+.qr-item:hover { background: var(--surface); }
+.qr-name { font-size: 13px; font-weight: 600; color: var(--wa-header); margin-bottom: 2px; }
+.qr-text { font-size: 13px; color: var(--text2); line-height: 1.4; }
+
+/* ─── EMPTY STATE ─── */
+.empty-chat {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px; padding: 40px;
+}
+
+.empty-chat-icon {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: var(--wa-green3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+}
+
+.empty-chat-text { font-size: 18px; font-weight: 600; color: var(--text2); }
+.empty-chat-sub  { font-size: 13px; color: var(--text3); text-align: center; }
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed; bottom: 80px;
+  left: 50%; transform: translateX(-50%) translateY(60px);
+  background: #1f2937; color: white;
+  border-radius: 10px; padding: 9px 16px;
+  font-size: 13px; font-weight: 500;
+  z-index: 1000; opacity: 0; transition: all 0.3s;
+  white-space: nowrap; pointer-events: none;
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast.ok  { background: #065f46; }
+.toast.err { background: #991b1b; }
+
+/* ─── LOADING ─── */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid #e5e7eb; border-top-color: var(--wa-green);
+  border-radius: 50%; animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ─── MOBILE ─── */
+@media (max-width: 768px) {
+  #chatPanel { max-width: 100%; }
+  #chatView  { display: none; position: fixed; top:0; left:0; right:0; bottom:0; z-index: 50; }
+  #chatView.open { display: flex; }
+  .cv-back { display: block !important; }
+}
+
+/* ─── VAR POPUP ─── */
+.var-popup {
+  position: fixed; top:0; left:0; right:0; bottom:0;
+  background: rgba(0,0,0,0.5); z-index: 300;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.var-popup.show { display: flex; }
+.var-card {
+  background: white; border-radius: 16px; padding: 20px;
+  width: 100%; max-width: 360px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+.var-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; color: var(--text); }
+.var-input {
+  width: 100%; background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 13px; font-family: 'Outfit', sans-serif;
+  color: var(--text); outline: none; margin-bottom: 8px;
+}
+.var-input:focus { border-color: var(--wa-green); }
+.var-btns { display: flex; gap: 8px; margin-top: 6px; }
+.var-cancel {
+  flex:1; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 10px; padding: 11px; font-size: 13px; font-weight: 600;
+  font-family: 'Outfit', sans-serif; cursor: pointer; color: var(--text2);
+}
+.var-send {
+  flex:2; background: var(--wa-green); border: none;
+  border-radius: 10px; padding: 11px; font-size: 13px; font-weight: 700;
+  font-family: 'Outfit', sans-serif; cursor: pointer; color: white;
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ─── LEFT: CHAT LIST ─── -->
+  <div id="chatPanel">
+
+    <!-- Header -->
+    <div class="cl-header">
+      <div class="cl-title">VMW WhatsApp</div>
+      <div class="cl-actions">
+        <button class="wa-icon-btn" onclick="syncMessages()" title="Sync">🔄</button>
+        <button class="wa-icon-btn" onclick="window.history.back()" title="Back">✕</button>
+      </div>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="filter-tabs">
+      <div class="ftab active" onclick="setFilter('all',this)">All</div>
+      <div class="ftab" onclick="setFilter('pending',this)">📩 Pending</div>
+      <div class="ftab" onclick="setFilter('sent',this)">✅ Sent</div>
+      <div class="ftab" onclick="setFilter('pl',this)">PL</div>
+      <div class="ftab" onclick="setFilter('bl',this)">BL</div>
+      <div class="ftab" onclick="setFilter('hl',this)">HL</div>
+      <div class="ftab" onclick="setFilter('lap',this)">LAP</div>
+    </div>
+
+    <!-- Search -->
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <span>🔍</span>
+        <input class="search-input" id="searchInput" placeholder="Search or start new chat" oninput="filterChats()" />
+      </div>
+    </div>
+
+    <!-- Chat list -->
+    <div class="chat-list" id="chatList">
+      <div style="display:flex;align-items:center;justify-content:center;padding:40px;gap:10px;flex-direction:column">
+        <div class="spinner"></div>
+        <div style="font-size:13px;color:var(--text3)">Loading messages...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ─── RIGHT: CHAT VIEW ─── -->
+  <div id="chatView">
+
+    <!-- Empty state -->
+    <div class="empty-chat" id="emptyChat">
+      <div class="empty-chat-icon">💬</div>
+      <div class="empty-chat-text">VMW WhatsApp Inbox</div>
+      <div class="empty-chat-sub">Select a chat to view messages<br>and send templates to customers</div>
+    </div>
+
+    <!-- Active chat -->
+    <div id="activeChat" style="display:none;flex-direction:column;flex:1;overflow:hidden;">
+
+      <!-- Chat header -->
+      <div class="cv-header">
+        <div class="cv-back" onclick="closeChat()">←</div>
+        <div class="cv-avatar" id="cvAvatar">C</div>
+        <div class="cv-info">
+          <div class="cv-name" id="cvName">Customer</div>
+          <div class="cv-sub" id="cvSub">tap here for contact info</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="wa-icon-btn" title="Search">🔍</button>
+          <button class="wa-icon-btn" title="More">⋮</button>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="messages" id="messages"></div>
+
+      <!-- Input bar -->
+      <div class="input-bar" style="position:relative">
+        <button class="attach-btn" onclick="toggleAttach()" title="Attach">📎</button>
+
+        <!-- Attach popup -->
+        <div class="attach-popup" id="attachPopup">
+          <div class="attach-option" onclick="openTemplates()">
+            <div class="attach-icon" style="background:#e8f5e9">📋</div>
+            <span>Templates</span>
+          </div>
+          <div class="attach-option" onclick="openQuickReplies()">
+            <div class="attach-icon" style="background:#e3f2fd">⚡</div>
+            <span>Quick Replies</span>
+          </div>
+          <div class="attach-option" onclick="openGallery()">
+            <div class="attach-icon" style="background:#fce4ec">🖼️</div>
+            <span>Gallery</span>
+          </div>
+          <div class="attach-option" onclick="openFile()">
+            <div class="attach-icon" style="background:#fff3e0">📄</div>
+            <span>File</span>
+          </div>
+        </div>
+
+        <div class="msg-input-wrap">
+          <textarea class="msg-input" id="msgInput" placeholder="Type a message" rows="1"
+            oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+        </div>
+
+        <button class="send-btn" onclick="sendMessage()" title="Send">➤</button>
+
+        <!-- Hidden file inputs -->
+        <input type="file" id="galleryInput" accept="image/*,video/*" style="display:none" onchange="handleFile(this,'image')" />
+        <input type="file" id="fileInput" style="display:none" onchange="handleFile(this,'document')" />
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── TEMPLATE POPUP ─── -->
+<div class="overlay" id="templateOverlay" onclick="closeOverlays(event)">
+  <div class="popup-sheet">
+    <div class="popup-header">
+      <div class="popup-title">📋 Select Template</div>
+      <div class="popup-close" onclick="closeOverlays()">✕</div>
+    </div>
+    <div class="popup-list" id="templateList">
+      <div style="padding:20px;text-align:center">
+        <div class="spinner" style="margin:0 auto"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── QUICK REPLY POPUP ─── -->
+<div class="overlay" id="qrOverlay" onclick="closeOverlays(event)">
+  <div class="popup-sheet">
+    <div class="popup-header">
+      <div class="popup-title">⚡ Quick Replies</div>
+      <div class="popup-close" onclick="closeOverlays()">✕</div>
+    </div>
+    <div class="popup-list" id="qrList"></div>
+  </div>
+</div>
+
+<!-- ─── VARIABLE INPUT POPUP ─── -->
+<div class="var-popup" id="varPopup">
+  <div class="var-card">
+    <div class="var-title" id="varTitle">Enter template variables</div>
+    <div id="varInputs"></div>
+    <div class="var-btns">
+      <button class="var-cancel" onclick="closeVarPopup()">Cancel</button>
+      <button class="var-send" onclick="confirmSendTemplate()">Send Template ➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+//  CONFIG
+// ============================================================
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyq4EDWeGMvCG8GyV3M8lXmI0cgbFqDPPvDQjL5DoHh2k8Dly8hhP8EY1cWQfCtXGUL/exec";
+
+// Quick replies — customize these!
+var QUICK_REPLIES = [
+  {
+    name: "Welcome",
+    text: "Hi! Welcome to VastMyWealth! 🎉\n\nWe help you get the best loan deals!\n\nPlease fill our quick form to get started:\nhttps://forms.gle/bvJodXgvmEQ6drgE9\n\nTakes only 2 minutes! ⚡"
+  },
+  {
+    name: "Form Reminder",
+    text: "Hi! Just checking in. 😊\n\nPlease fill this quick loan form so we can understand your requirement and guide you better:\nhttps://forms.gle/bvJodXgvmEQ6drgE9\n\nIf you've already submitted, kindly ignore this message."
+  },
+  {
+    name: "Documents Request",
+    text: "Hi! 👋\n\nTo process your loan application, please share the following documents:\n• PAN Card\n• Aadhaar Card\n• Last 3 months salary slips\n• Last 6 months bank statement\n\nYou can WhatsApp them directly here! ✅"
+  },
+  {
+    name: "Not Reachable",
+    text: "Hi! I tried calling you but couldn't connect. 📵\n\nI'm Yogesh from VastMyWealth regarding your loan application.\n\nPlease call me back at: 8459008116\n\nOr reply here and I'll get back to you! 😊"
+  },
+  {
+    name: "Loan Approved",
+    text: "Congratulations! 🎉🎉\n\nGreat news from VastMyWealth!\n\nYour loan application has been APPROVED! ✅\n\nPlease contact me for the next steps:\n📱 8459008116\n\nThank you for choosing VastMyWealth! 💰"
+  }
+];
+
+// ============================================================
+//  STATE
+// ============================================================
+var allChats     = [];
+var filteredChats= [];
+var activeFilter = "all";
+var selectedChat = null;
+var templates    = [];
+var pendingTemplate = null;
+var isMobile     = window.innerWidth < 769;
+
+window.addEventListener("resize", function() { isMobile = window.innerWidth < 769; });
+
+// ============================================================
+//  INIT
+// ============================================================
+window.addEventListener("load", function() {
+  syncMessages();
+  loadTemplates();
+});
+
+// ============================================================
+//  SYNC MESSAGES
+// ============================================================
+function syncMessages() {
+  var btn = document.querySelector('.cl-actions .wa-icon-btn');
+  if (btn) btn.textContent = "⏳";
+
+  fetch(APPS_SCRIPT_URL + "?action=getMessages")
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (btn) btn.textContent = "🔄";
+      if (d.success && d.messages) {
+        allChats = d.messages;
+        filterChats();
+        toast("✅ " + allChats.length + " chats loaded!", "ok");
+      } else {
+        loadDemoChats();
+      }
+    })
+    .catch(function() {
+      if (btn) btn.textContent = "🔄";
+      loadDemoChats();
+    });
+}
+
+// ============================================================
+//  LOAD TEMPLATES
+// ============================================================
+function loadTemplates() {
+  fetch(APPS_SCRIPT_URL + "?action=getTemplates")
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success && d.templates) {
+        templates = d.templates;
+      }
+    })
+    .catch(function() {});
+}
+
+// ============================================================
+//  FILTER CHATS
+// ============================================================
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll(".ftab").forEach(function(t){ t.classList.remove("active"); });
+  el.classList.add("active");
+  filterChats();
+}
+
+function filterChats() {
+  var s = (document.getElementById("searchInput")||{value:""}).value.toLowerCase();
+
+  filteredChats = allChats.filter(function(c) {
+    var match = !s || c.mobile.indexOf(s) !== -1;
+    if (!match) return false;
+    var lt = (c.loanType || "").toLowerCase();
+    if (activeFilter === "pending") return c.templateSent !== "Yes";
+    if (activeFilter === "sent")    return c.templateSent === "Yes";
+    if (activeFilter === "pl")      return lt.indexOf("personal") !== -1;
+    if (activeFilter === "bl")      return lt.indexOf("business") !== -1;
+    if (activeFilter === "hl")      return lt.indexOf("home") !== -1;
+    if (activeFilter === "lap")     return lt.indexOf("property") !== -1 || lt.indexOf("against") !== -1;
+    return true;
+  });
+
+  renderChatList();
+}
+
+// ============================================================
+//  RENDER CHAT LIST
+// ============================================================
+function renderChatList() {
+  var list = document.getElementById("chatList");
+
+  if (filteredChats.length === 0) {
+    list.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px;gap:8px">' +
+      '<div style="font-size:32px;opacity:0.3">💬</div>' +
+      '<div style="font-size:14px;color:var(--text3)">No chats found</div>' +
+      '<div style="font-size:12px;color:var(--text3)">Sync to load new messages</div>' +
+    '</div>';
+    return;
+  }
+
+  var COLORS = ["#25d366","#128c7e","#075e54","#1d4ed8","#7c3aed","#d97706"];
+  var html   = "";
+
+  filteredChats.forEach(function(c, i) {
+    var color = COLORS[c.mobile.charCodeAt(c.mobile.length-1) % COLORS.length];
+    var init  = c.mobile.slice(-2);
+    var lt    = (c.loanType || "").toLowerCase();
+    var loanCls  = "loan-unk"; var loanLbl = c.loanType || "Unknown";
+    if      (lt.indexOf("personal") !== -1) { loanCls = "loan-pl";  loanLbl = "Personal Loan"; }
+    else if (lt.indexOf("business") !== -1) { loanCls = "loan-bl";  loanLbl = "Business Loan"; }
+    else if (lt.indexOf("home")     !== -1) { loanCls = "loan-hl";  loanLbl = "Home Loan"; }
+    else if (lt.indexOf("property") !== -1 || lt.indexOf("against") !== -1) { loanCls = "loan-lap"; loanLbl = "LAP"; }
+
+    var sentBadge = c.templateSent === "Yes"
+      ? '<span class="sent-badge sent-yes">✅ Sent: ' + esc(c.templateName || "template") + '</span>'
+      : '<span class="sent-badge sent-no">⏳ Pending</span>';
+
+    var dt = "";
+    try { var d = new Date(c.timestamp); if (!isNaN(d)) dt = d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}); } catch(e){}
+
+    var activeClass = selectedChat && selectedChat.mobile === c.mobile ? " active" : "";
+
+    html += '<div class="chat-item' + activeClass + '" onclick="openChat(' + i + ')">' +
+      '<div class="ci-avatar" style="background:' + color + '">' + init + '</div>' +
+      '<div class="ci-body">' +
+        '<div class="ci-row1">' +
+          '<div class="ci-name">📱 ' + esc(c.mobile) + '</div>' +
+          '<div class="ci-time">' + dt + '</div>' +
+        '</div>' +
+        '<div class="ci-msg">' + esc(c.message || "—") + '</div>' +
+        '<div style="display:flex;gap:4px;align-items:center;margin-top:3px">' +
+          '<span class="loan-badge ' + loanCls + '">' + loanLbl + '</span>' +
+          sentBadge +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  });
+
+  list.innerHTML = html;
+}
+
+// ============================================================
+//  OPEN CHAT
+// ============================================================
+function openChat(idx) {
+  selectedChat = filteredChats[idx];
+  if (!selectedChat) return;
+
+  var COLORS = ["#25d366","#128c7e","#075e54","#1d4ed8","#7c3aed","#d97706"];
+  var color  = COLORS[selectedChat.mobile.charCodeAt(selectedChat.mobile.length-1) % COLORS.length];
+
+  document.getElementById("cvAvatar").textContent   = selectedChat.mobile.slice(-2);
+  document.getElementById("cvAvatar").style.background = color;
+  document.getElementById("cvName").textContent     = "📱 " + selectedChat.mobile;
+  document.getElementById("cvSub").textContent      = selectedChat.loanType || "Unknown loan type";
+
+  // Build messages
+  buildMessages(selectedChat);
+
+  document.getElementById("emptyChat").style.display  = "none";
+  document.getElementById("activeChat").style.display = "flex";
+
+  if (isMobile) {
+    document.getElementById("chatView").classList.add("open");
+  }
+
+  renderChatList();
+}
+
+// ============================================================
+//  BUILD MESSAGES
+// ============================================================
+function buildMessages(c) {
+  var msgs = document.getElementById("messages");
+  var html = "";
+
+  // Date separator
+  var dt = "";
+  try { var d = new Date(c.timestamp); if (!isNaN(d)) dt = d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}); } catch(e){}
+  if (dt) html += '<div class="msg-date">' + dt + '</div>';
+
+  // Incoming message
+  var time = "";
+  try { var d2 = new Date(c.timestamp); if (!isNaN(d2)) time = d2.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}); } catch(e){}
+
+  html += '<div class="msg-bubble msg-in">' +
+    '<div style="font-size:11px;font-weight:600;color:var(--wa-green2);margin-bottom:3px">📱 ' + esc(c.mobile) + '</div>' +
+    esc(c.message || "—") +
+    '<div class="msg-time">' + time + '</div>' +
+  '</div>';
+
+  // If template was sent
+  if (c.templateSent === "Yes" && c.templateName) {
+    html += '<div class="msg-template">' +
+      '<div class="template-header">📋 ' + esc(c.templateName) + '</div>' +
+      '<div class="template-body">Template sent successfully! ✅</div>' +
+      '<div class="template-btn">📋 Apply Now</div>' +
+    '</div>';
+  }
+
+  msgs.innerHTML = html;
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ============================================================
+//  CLOSE CHAT (mobile)
+// ============================================================
+function closeChat() {
+  document.getElementById("chatView").classList.remove("open");
+  selectedChat = null;
+  renderChatList();
+}
+
+// ============================================================
+//  TOGGLE ATTACH
+// ============================================================
+function toggleAttach() {
+  var popup = document.getElementById("attachPopup");
+  popup.classList.toggle("show");
+}
+
+document.addEventListener("click", function(e) {
+  if (!e.target.closest(".attach-btn") && !e.target.closest(".attach-popup")) {
+    document.getElementById("attachPopup").classList.remove("show");
+  }
+});
+
+// ============================================================
+//  OPEN TEMPLATES
+// ============================================================
+function openTemplates() {
+  document.getElementById("attachPopup").classList.remove("show");
+  var overlay = document.getElementById("templateOverlay");
+  var list    = document.getElementById("templateList");
+
+  if (templates.length === 0) {
+    list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3)">No templates found! Run testGetTemplates first.</div>';
+  } else {
+    var html = "";
+    templates.forEach(function(t, i) {
+      var catCls = t.category === "MARKETING" ? "pi-cat-marketing" : "pi-cat-utility";
+      html += '<div class="popup-item" onclick="selectTemplate(' + i + ')">' +
+        '<div class="pi-name">' +
+          esc(t.name) +
+          '<span class="pi-cat ' + catCls + '">' + esc(t.category) + '</span>' +
+        '</div>' +
+        '<div class="pi-body">' + esc(t.body || "—") + '</div>' +
+        (t.varCount > 0 ? '<div class="pi-vars">Requires ' + t.varCount + ' variable(s)</div>' : '') +
+      '</div>';
+    });
+    list.innerHTML = html;
+  }
+
+  overlay.classList.add("show");
+}
+
+// ============================================================
+//  SELECT TEMPLATE
+// ============================================================
+function selectTemplate(idx) {
+  if (!selectedChat) { toast("Select a chat first!", "err"); return; }
+  var t = templates[idx];
+  if (!t) return;
+
+  closeOverlays();
+
+  if (t.varCount > 0) {
+    // Show variable input popup
+    pendingTemplate = t;
+    showVarPopup(t);
+  } else {
+    // Send directly
+    doSendTemplate(selectedChat.mobile, t.name, []);
+  }
+}
+
+// ============================================================
+//  SHOW VAR POPUP
+// ============================================================
+function showVarPopup(t) {
+  document.getElementById("varTitle").textContent = "📋 " + t.name;
+  var inputs = "";
+  for (var i = 1; i <= t.varCount; i++) {
+    inputs += '<div style="font-size:11px;font-weight:600;color:#6b7280;text-transform:uppercase;margin-bottom:4px">Variable ' + i + '</div>' +
+      '<input class="var-input" id="var' + i + '" placeholder="Enter value for {{' + i + '}}" />';
+  }
+  document.getElementById("varInputs").innerHTML = inputs;
+  document.getElementById("varPopup").classList.add("show");
+}
+
+function closeVarPopup() {
+  document.getElementById("varPopup").classList.remove("show");
+  pendingTemplate = null;
+}
+
+function confirmSendTemplate() {
+  if (!pendingTemplate || !selectedChat) return;
+  var params = [];
+  for (var i = 1; i <= pendingTemplate.varCount; i++) {
+    var val = (document.getElementById("var" + i)||{}).value || "";
+    params.push(val);
+  }
+  doSendTemplate(selectedChat.mobile, pendingTemplate.name, params);
+  closeVarPopup();
+}
+
+// ============================================================
+//  DO SEND TEMPLATE
+// ============================================================
+function doSendTemplate(mobile, templateName, params) {
+  if (!mobile) { toast("No customer selected!", "err"); return; }
+
+  toast("📤 Sending " + templateName + "...", "ok");
+
+  var url = APPS_SCRIPT_URL +
+    "?action=sendTemplate" +
+    "&mobile=" + encodeURIComponent(mobile) +
+    "&templateName=" + encodeURIComponent(templateName) +
+    "&params=" + encodeURIComponent(JSON.stringify(params));
+
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        toast("✅ Template sent!", "ok");
+        // Add to messages
+        var msgs = document.getElementById("messages");
+        var now  = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+        msgs.innerHTML += '<div class="msg-template">' +
+          '<div class="template-header">📋 ' + esc(templateName) + '</div>' +
+          '<div class="template-body">Template sent successfully! ✅</div>' +
+          '<div class="msg-time">' + now + '</div>' +
+        '</div>';
+        msgs.scrollTop = msgs.scrollHeight;
+        // Update chat in list
+        if (selectedChat) {
+          selectedChat.templateSent = "Yes";
+          selectedChat.templateName = templateName;
+        }
+        renderChatList();
+      } else {
+        toast("❌ Send failed!", "err");
+      }
+    })
+    .catch(function() {
+      toast("❌ Connection error!", "err");
+    });
+}
+
+// ============================================================
+//  OPEN QUICK REPLIES
+// ============================================================
+function openQuickReplies() {
+  document.getElementById("attachPopup").classList.remove("show");
+  var list = document.getElementById("qrList");
+  var html = "";
+  QUICK_REPLIES.forEach(function(qr, i) {
+    html += '<div class="qr-item" onclick="sendQuickReply(' + i + ')">' +
+      '<div class="qr-name">/' + esc(qr.name) + '</div>' +
+      '<div class="qr-text">' + esc(qr.text.substring(0, 80)) + (qr.text.length > 80 ? "..." : "") + '</div>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+  document.getElementById("qrOverlay").classList.add("show");
+}
+
+function sendQuickReply(idx) {
+  var qr = QUICK_REPLIES[idx];
+  if (!qr) return;
+  closeOverlays();
+  document.getElementById("msgInput").value = qr.text;
+  autoResize(document.getElementById("msgInput"));
+}
+
+// ============================================================
+//  GALLERY + FILE
+// ============================================================
+function openGallery() {
+  document.getElementById("attachPopup").classList.remove("show");
+  document.getElementById("galleryInput").click();
+}
+
+function openFile() {
+  document.getElementById("attachPopup").classList.remove("show");
+  document.getElementById("fileInput").click();
+}
+
+function handleFile(input, type) {
+  if (!input.files || !input.files[0]) return;
+  toast("📎 File selected: " + input.files[0].name + " (Media sending coming soon!)", "ok");
+  input.value = "";
+}
+
+// ============================================================
+//  SEND MESSAGE (text)
+// ============================================================
+function sendMessage() {
+  var input = document.getElementById("msgInput");
+  var text  = input.value.trim();
+  if (!text) return;
+  if (!selectedChat) { toast("Select a chat first!", "err"); return; }
+
+  // Add to chat view
+  var msgs = document.getElementById("messages");
+  var now  = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+  msgs.innerHTML += '<div class="msg-bubble msg-out">' +
+    esc(text).replace(/\n/g,"<br>") +
+    '<div class="msg-time">' + now + ' ✓✓</div>' +
+  '</div>';
+  msgs.scrollTop = msgs.scrollHeight;
+
+  input.value = "";
+  input.style.height = "auto";
+  toast("ℹ️ Text note saved locally. Use templates for official messages!", "ok");
+}
+
+function handleKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 80) + "px";
+}
+
+// ============================================================
+//  CLOSE OVERLAYS
+// ============================================================
+function closeOverlays(e) {
+  if (e && e.target !== document.getElementById("templateOverlay") &&
+           e.target !== document.getElementById("qrOverlay")) return;
+  document.getElementById("templateOverlay").classList.remove("show");
+  document.getElementById("qrOverlay").classList.remove("show");
+}
+
+// ============================================================
+//  UTILS
+// ============================================================
+function esc(s) {
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function toast(msg, type) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className = "toast " + (type || "");
+  t.classList.add("show");
+  setTimeout(function(){ t.classList.remove("show"); }, 3000);
+}
+
+// ============================================================
+//  DEMO DATA
+// ============================================================
+function loadDemoChats() {
+  allChats = [
+    {timestamp:"2026-03-22T10:32:00", mobile:"919876543210", message:"Personal Loan", loanType:"Personal Loan", templateSent:"No",  templateName:""},
+    {timestamp:"2026-03-22T10:15:00", mobile:"918765432109", message:"Business Loan", loanType:"Business Loan", templateSent:"Yes", templateName:"welcome_unsecured"},
+    {timestamp:"2026-03-22T09:50:00", mobile:"917654321098", message:"Home Loan",     loanType:"Home Loan",     templateSent:"No",  templateName:""},
+    {timestamp:"2026-03-22T09:30:00", mobile:"916543210987", message:"LAP",           loanType:"Loan Against Property", templateSent:"Yes", templateName:"welcome_lap"},
+    {timestamp:"2026-03-21T18:00:00", mobile:"915432109876", message:"Personal Loan", loanType:"Personal Loan", templateSent:"No",  templateName:""}
+  ];
+  filterChats();
+  toast("⚠️ Demo mode — Sync for live data!", "err");
+}
+</script>
+</body>
+</html>
