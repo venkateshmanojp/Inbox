@@ -4,36 +4,37 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>VMW WhatsApp Inbox</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 html, body {
-  height:100%; width:100%;
-  overflow:hidden; position:fixed;
-  top:0; left:0; right:0; bottom:0;
-  font-family:'DM Sans', sans-serif;
-  background:#0f1117;
+  height:100%; width:100%; overflow:hidden;
+  font-family:'Nunito', sans-serif;
+  background:#f0f2f5;
+  color:#1a1a2e;
 }
 
 :root {
-  --bg:         #0f1117;
-  --surface:    #1a1d27;
-  --surface2:   #22263a;
-  --border:     rgba(255,255,255,0.08);
-  --border2:    rgba(255,255,255,0.12);
-  --accent:     #25d366;
-  --accent2:    #128c7e;
-  --accent3:    rgba(37,211,102,0.12);
-  --blue:       #4f8ef7;
-  --amber:      #f59e0b;
-  --red:        #ef4444;
-  --text:       #f0f2f8;
-  --text2:      #8b92a8;
-  --text3:      #555d7a;
-  --mono:       'DM Mono', monospace;
-  --bubble-out: rgba(37,211,102,0.15);
-  --bubble-in:  rgba(255,255,255,0.06);
+  --primary    : #004a99;
+  --primary2   : #0062cc;
+  --accent     : #25d366;
+  --accent2    : #128c7e;
+  --bg         : #f0f2f5;
+  --surface    : #ffffff;
+  --surface2   : #f7f8fa;
+  --border     : #e5e7eb;
+  --border2    : #d1d5db;
+  --text       : #111827;
+  --text2      : #6b7280;
+  --text3      : #9ca3af;
+  --bubble-in  : #ffffff;
+  --bubble-out : #d9fdd3;
+  --red        : #ef4444;
+  --amber      : #f59e0b;
+  --mono       : 'JetBrains Mono', monospace;
+  --shadow     : 0 1px 3px rgba(0,0,0,0.08);
+  --shadow2    : 0 4px 16px rgba(0,0,0,0.1);
 }
 
 /* ── LAYOUT ── */
@@ -44,107 +45,108 @@ html, body {
 
 /* ── LEFT PANEL ── */
 #chatPanel {
-  width:100%; max-width:360px;
+  width:100%; max-width:380px;
   background:var(--surface);
   border-right:1px solid var(--border);
   display:flex; flex-direction:column;
   flex-shrink:0;
+  box-shadow:var(--shadow2);
 }
 
 /* ── RIGHT PANEL ── */
 #chatView {
   flex:1; display:flex; flex-direction:column;
-  background:var(--bg);
+  background:#efeae2;
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23d4d0c8' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
   position:relative;
 }
 
 /* ── HEADER ── */
 .panel-header {
-  padding:16px;
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-  display:flex; align-items:center; gap:12px;
+  padding:12px 16px;
+  background:var(--primary);
+  display:flex; align-items:center; gap:10px;
   flex-shrink:0;
 }
 
 .header-logo {
-  width:38px; height:38px; border-radius:12px;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  width:36px; height:36px; border-radius:50%;
+  background:rgba(255,255,255,0.2);
   display:flex; align-items:center; justify-content:center;
   font-size:18px; flex-shrink:0;
-  box-shadow:0 4px 16px rgba(37,211,102,0.3);
 }
 
-.header-title { font-size:16px; font-weight:700; color:var(--text); flex:1; }
-.header-sub   { font-size:11px; color:var(--text3); margin-top:1px; }
+.header-title { font-size:16px; font-weight:800; color:white; flex:1; }
+.header-sub   { font-size:11px; color:rgba(255,255,255,0.7); margin-top:1px; }
 
 .icon-btn {
-  width:34px; height:34px; border-radius:10px;
-  background:var(--surface2); border:1px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  font-size:15px; cursor:pointer; color:var(--text2);
-  transition:all 0.15s; flex-shrink:0;
+  width:34px; height:34px; border-radius:50%;
+  background:rgba(255,255,255,0.15);
+  border:none; display:flex; align-items:center;
+  justify-content:center; font-size:16px;
+  cursor:pointer; color:white; flex-shrink:0;
+  transition:background 0.15s;
 }
-.icon-btn:hover { background:var(--border); color:var(--text); }
-
-/* ── FILTER TABS ── */
-.filter-tabs {
-  display:flex; overflow-x:auto;
-  border-bottom:1px solid var(--border);
-  flex-shrink:0; padding:0 4px;
-}
-.filter-tabs::-webkit-scrollbar { display:none; }
-
-.ftab {
-  flex-shrink:0; padding:10px 14px;
-  font-size:12px; font-weight:600;
-  color:var(--text3); cursor:pointer;
-  border-bottom:2px solid transparent;
-  white-space:nowrap; transition:all 0.15s;
-}
-.ftab.active { color:var(--accent); border-bottom-color:var(--accent); }
+.icon-btn:hover { background:rgba(255,255,255,0.25); }
 
 /* ── SEARCH ── */
 .search-wrap {
-  padding:10px 12px;
+  padding:8px 12px;
+  background:var(--surface);
   border-bottom:1px solid var(--border);
   flex-shrink:0;
 }
 
 .search-box {
   display:flex; align-items:center; gap:8px;
-  background:var(--surface2); border:1px solid var(--border);
-  border-radius:10px; padding:0 12px;
-  transition:border-color 0.15s;
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:20px; padding:7px 14px;
 }
-.search-box:focus-within { border-color:var(--accent); }
-.search-box span { font-size:13px; color:var(--text3); }
 .search-box input {
   flex:1; background:none; border:none;
-  color:var(--text); font-size:13px;
-  font-family:'DM Sans',sans-serif;
-  padding:9px 0; outline:none;
+  font-size:13px; color:var(--text);
+  font-family:'Nunito',sans-serif;
+  outline:none;
 }
 .search-box input::placeholder { color:var(--text3); }
+.search-icon { font-size:14px; color:var(--text3); }
 
-/* ── STATS BAR ── */
+/* ── FILTER TABS ── */
+.filter-tabs {
+  display:flex; overflow-x:auto;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0; padding:0 4px;
+}
+.filter-tabs::-webkit-scrollbar { display:none; }
+.ftab {
+  flex-shrink:0; padding:9px 14px;
+  font-size:12px; font-weight:700;
+  color:var(--text3); cursor:pointer;
+  border-bottom:2px solid transparent;
+  white-space:nowrap; transition:all 0.15s;
+}
+.ftab.active { color:var(--primary); border-bottom-color:var(--primary); }
+
+/* ── STATS ── */
 .stats-bar {
   display:flex; gap:6px; padding:8px 12px;
+  background:var(--surface);
   border-bottom:1px solid var(--border);
   flex-shrink:0; overflow-x:auto;
 }
 .stats-bar::-webkit-scrollbar { display:none; }
-
 .stat-pill {
   flex-shrink:0; padding:4px 10px;
-  border-radius:20px; font-size:11px; font-weight:600;
-  cursor:pointer; transition:all 0.15s;
-  border:1px solid var(--border);
+  border-radius:20px; font-size:11px; font-weight:700;
+  cursor:pointer; border:1.5px solid var(--border);
   color:var(--text2); background:var(--surface2);
-  display:flex; align-items:center; gap:5px;
+  display:flex; align-items:center; gap:4px;
+  transition:all 0.15s;
 }
-.stat-pill .num { font-family:var(--mono); font-size:12px; }
-.stat-pill.active { background:var(--accent3); border-color:var(--accent); color:var(--accent); }
+.stat-pill .num { font-family:var(--mono); font-size:11px; }
+.stat-pill.active { background:var(--primary); border-color:var(--primary); color:white; }
 
 /* ── CHAT LIST ── */
 .chat-list {
@@ -152,97 +154,86 @@ html, body {
   -webkit-overflow-scrolling:touch;
 }
 .chat-list::-webkit-scrollbar { width:4px; }
-.chat-list::-webkit-scrollbar-track { background:transparent; }
 .chat-list::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
 
 .chat-item {
-  display:flex; gap:12px; padding:12px 14px;
+  display:flex; gap:10px; padding:10px 14px;
   border-bottom:1px solid var(--border);
   cursor:pointer; transition:background 0.1s;
   align-items:center; position:relative;
 }
 .chat-item:hover  { background:var(--surface2); }
-.chat-item.active { background:var(--surface2); border-left:2px solid var(--accent); }
+.chat-item.active { background:#e7f3ff; border-left:3px solid var(--primary); }
 
 .ci-avatar {
-  width:46px; height:46px; border-radius:14px;
+  width:46px; height:46px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
-  font-weight:700; font-size:16px; color:white;
+  font-size:18px; font-weight:800; color:white;
   flex-shrink:0; position:relative;
 }
 
-.ci-status-dot {
-  position:absolute; bottom:0; right:0;
-  width:12px; height:12px; border-radius:50%;
-  border:2px solid var(--surface);
+.ci-dot {
+  position:absolute; bottom:1px; right:1px;
+  width:11px; height:11px; border-radius:50%;
+  border:2px solid white;
 }
-.dot-green  { background:var(--accent); }
-.dot-red    { background:var(--red); }
-.dot-gray   { background:var(--text3); }
+.dot-green { background:var(--accent); }
+.dot-red   { background:var(--red); }
+.dot-gray  { background:var(--text3); }
 
 .ci-body { flex:1; min-width:0; }
-
 .ci-row1 {
   display:flex; justify-content:space-between;
-  align-items:flex-start; margin-bottom:3px;
+  align-items:center; margin-bottom:2px;
 }
-
 .ci-name {
-  font-size:14px; font-weight:600; color:var(--text);
+  font-size:14px; font-weight:700; color:var(--text);
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  max-width:180px;
+  max-width:190px;
 }
-.ci-name.unknown { color:var(--red); font-style:italic; }
-
-.ci-time { font-size:10px; color:var(--text3); font-family:var(--mono); flex-shrink:0; }
-
-.ci-mobile { font-size:11px; color:var(--text3); font-family:var(--mono); margin-bottom:4px; }
-
+.ci-name.unknown { color:var(--red); font-style:italic; font-weight:600; }
+.ci-time { font-size:10px; color:var(--text3); font-family:var(--mono); }
+.ci-mobile { font-size:11px; color:var(--text3); font-family:var(--mono); margin-bottom:3px; }
 .ci-preview {
   font-size:12px; color:var(--text2);
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  margin-bottom:5px;
+  margin-bottom:4px;
 }
-
-.ci-tags { display:flex; gap:5px; align-items:center; flex-wrap:wrap; }
+.ci-tags { display:flex; gap:4px; flex-wrap:wrap; align-items:center; }
 
 .tag {
-  font-size:10px; font-weight:600;
-  padding:2px 7px; border-radius:6px;
+  font-size:10px; font-weight:700;
+  padding:2px 7px; border-radius:10px;
 }
-.tag-pl  { background:rgba(79,142,247,0.15); color:#4f8ef7; border:1px solid rgba(79,142,247,0.3); }
-.tag-bl  { background:rgba(245,158,11,0.15); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); }
-.tag-hl  { background:rgba(37,211,102,0.15); color:#25d366; border:1px solid rgba(37,211,102,0.3); }
-.tag-lap { background:rgba(167,139,250,0.15);color:#a78bfa; border:1px solid rgba(167,139,250,0.3); }
-.tag-unk { background:var(--surface2); color:var(--text3); border:1px solid var(--border); }
+.tag-pl  { background:#dbeafe; color:#1d4ed8; }
+.tag-bl  { background:#fef3c7; color:#92400e; }
+.tag-hl  { background:#d1fae5; color:#065f46; }
+.tag-lap { background:#ede9fe; color:#5b21b6; }
+.tag-unk { background:#f3f4f6; color:#6b7280; }
 
 .sent-tag {
-  font-size:10px; font-weight:600;
-  padding:2px 7px; border-radius:6px;
+  font-size:10px; font-weight:700;
+  padding:2px 7px; border-radius:10px;
 }
-.sent-yes { background:rgba(37,211,102,0.15); color:var(--accent); border:1px solid rgba(37,211,102,0.3); }
-.sent-no  { background:rgba(239,68,68,0.15);  color:var(--red);    border:1px solid rgba(239,68,68,0.3); }
+.sent-yes { background:#d1fae5; color:#065f46; }
+.sent-no  { background:#fee2e2; color:#991b1b; }
+.form-tag { background:#dbeafe; color:#1d4ed8; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; }
+.no-form-tag { background:#fee2e2; color:#991b1b; font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; }
 
-/* ── EMPTY / LOADING ── */
+/* ── EMPTY ── */
 .empty-state {
   flex:1; display:flex; flex-direction:column;
   align-items:center; justify-content:center;
-  gap:12px; padding:40px; text-align:center;
+  gap:10px; padding:40px; text-align:center;
 }
-.empty-icon {
-  width:64px; height:64px; border-radius:20px;
-  background:var(--surface2);
-  display:flex; align-items:center; justify-content:center;
-  font-size:28px; margin-bottom:4px;
-}
-.empty-title { font-size:15px; font-weight:600; color:var(--text2); }
+.empty-icon  { font-size:48px; opacity:0.2; }
+.empty-title { font-size:15px; font-weight:700; color:var(--text2); }
 .empty-sub   { font-size:12px; color:var(--text3); line-height:1.6; }
 
-/* ── SPINNER ── */
 .spinner {
   width:20px; height:20px;
   border:2px solid var(--border2);
-  border-top-color:var(--accent);
+  border-top-color:var(--primary);
   border-radius:50%;
   animation:spin 0.6s linear infinite;
 }
@@ -250,185 +241,177 @@ html, body {
 
 /* ── CHAT VIEW HEADER ── */
 .cv-header {
-  padding:12px 16px;
-  background:var(--surface);
-  border-bottom:1px solid var(--border);
-  display:flex; align-items:center; gap:12px;
+  padding:10px 14px;
+  background:var(--primary);
+  display:flex; align-items:center; gap:10px;
   flex-shrink:0;
 }
 
 .cv-back {
-  font-size:20px; color:var(--text2); cursor:pointer;
-  display:none; padding:4px;
+  font-size:20px; color:white; cursor:pointer;
+  display:none; padding:4px 8px 4px 0;
 }
 
 .cv-avatar {
-  width:38px; height:38px; border-radius:12px;
+  width:38px; height:38px; border-radius:50%;
   display:flex; align-items:center; justify-content:center;
-  font-size:16px; font-weight:700; color:white;
+  font-size:16px; font-weight:800; color:white;
   flex-shrink:0;
 }
 
 .cv-info { flex:1; min-width:0; }
-.cv-name { font-size:14px; font-weight:600; color:var(--text); }
-.cv-sub  { font-size:11px; color:var(--text3); margin-top:1px; }
+.cv-name { font-size:14px; font-weight:800; color:white; }
+.cv-sub  { font-size:11px; color:rgba(255,255,255,0.75); margin-top:1px; }
 
-.cv-form-status {
-  font-size:10px; font-weight:700; padding:3px 8px;
-  border-radius:6px; flex-shrink:0;
+.cv-call-btn {
+  width:36px; height:36px; border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  border:none; display:flex; align-items:center;
+  justify-content:center; font-size:17px;
+  cursor:pointer; color:white; flex-shrink:0;
+  text-decoration:none; transition:background 0.15s;
 }
-.form-filled    { background:rgba(37,211,102,0.15); color:var(--accent); }
-.form-not-filled{ background:rgba(239,68,68,0.15);  color:var(--red); }
+.cv-call-btn:hover { background:rgba(255,255,255,0.3); }
+
+.cv-form-badge {
+  font-size:10px; font-weight:700;
+  padding:3px 8px; border-radius:10px;
+  flex-shrink:0;
+}
+.form-filled     { background:rgba(255,255,255,0.2); color:white; }
+.form-not-filled { background:rgba(239,68,68,0.3); color:white; }
 
 /* ── MESSAGES ── */
 .messages {
-  flex:1; overflow-y:auto; padding:16px;
-  display:flex; flex-direction:column; gap:8px;
+  flex:1; overflow-y:auto; padding:12px 16px;
+  display:flex; flex-direction:column; gap:6px;
   -webkit-overflow-scrolling:touch;
 }
 .messages::-webkit-scrollbar { width:4px; }
-.messages::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+.messages::-webkit-scrollbar-thumb { background:rgba(0,0,0,0.15); border-radius:2px; }
 
 .msg-date {
   align-self:center;
-  font-size:11px; color:var(--text3);
-  background:var(--surface2);
+  font-size:11px; color:var(--text2);
+  background:rgba(255,255,255,0.85);
   padding:3px 10px; border-radius:8px;
-  border:1px solid var(--border);
-  margin:4px 0;
+  margin:4px 0; box-shadow:var(--shadow);
 }
 
 .msg-bubble {
-  max-width:75%; padding:10px 14px;
-  border-radius:12px; position:relative;
+  max-width:75%; padding:8px 12px;
   font-size:13px; line-height:1.6; color:var(--text);
+  position:relative;
 }
 
 .msg-in {
   background:var(--bubble-in);
-  border:1px solid var(--border);
-  border-radius:4px 12px 12px 12px;
+  border-radius:0 10px 10px 10px;
   align-self:flex-start;
+  box-shadow:var(--shadow);
 }
 
 .msg-out {
   background:var(--bubble-out);
-  border:1px solid rgba(37,211,102,0.2);
-  border-radius:12px 4px 12px 12px;
+  border-radius:10px 0 10px 10px;
   align-self:flex-end;
+  box-shadow:var(--shadow);
 }
 
 .msg-sender {
   font-size:10px; font-weight:700;
-  color:var(--accent); margin-bottom:4px;
+  color:var(--primary); margin-bottom:3px;
   font-family:var(--mono);
 }
 
 .msg-time {
   font-size:10px; color:var(--text3);
-  text-align:right; margin-top:4px;
+  text-align:right; margin-top:3px;
   font-family:var(--mono);
 }
 
 .msg-label {
-  font-size:10px; font-weight:700;
+  font-size:9px; font-weight:700;
   color:var(--text3); text-transform:uppercase;
-  letter-spacing:0.5px; margin-bottom:3px;
+  letter-spacing:0.5px; margin-bottom:2px;
 }
 
-/* Template bubble */
-.msg-template {
+/* Template card */
+.template-card {
   max-width:80%; align-self:flex-end;
-  background:var(--surface2);
-  border:1px solid var(--border2);
-  border-radius:12px 4px 12px 12px;
-  overflow:hidden;
+  background:var(--bubble-out);
+  border-radius:10px 0 10px 10px;
+  overflow:hidden; box-shadow:var(--shadow);
 }
-.template-header {
-  background:linear-gradient(135deg,var(--accent2),var(--accent));
-  padding:6px 12px;
+.template-card-header {
+  background:var(--primary);
+  padding:5px 10px;
   font-size:10px; font-weight:700; color:white;
   text-transform:uppercase; letter-spacing:0.5px;
 }
-.template-body {
-  padding:10px 12px;
+.template-card-body {
+  padding:8px 12px;
   font-size:13px; color:var(--text); line-height:1.5;
 }
-.template-meta {
-  padding:6px 12px;
+.template-card-meta {
+  padding:4px 12px 6px;
   font-size:10px; color:var(--text3);
-  border-top:1px solid var(--border);
   font-family:var(--mono);
 }
 
-/* Auto-sent info card */
+/* Auto sent card */
 .auto-sent-card {
   align-self:flex-end; max-width:80%;
-  background:rgba(37,211,102,0.08);
-  border:1px solid rgba(37,211,102,0.2);
-  border-radius:12px; padding:10px 14px;
+  background:rgba(37,211,102,0.1);
+  border:1px solid rgba(37,211,102,0.3);
+  border-radius:10px; padding:8px 12px;
+  box-shadow:var(--shadow);
 }
 .auto-sent-title {
-  font-size:11px; font-weight:700; color:var(--accent);
-  margin-bottom:4px; display:flex; align-items:center; gap:6px;
+  font-size:11px; font-weight:700;
+  color:var(--accent2); margin-bottom:3px;
 }
 .auto-sent-detail { font-size:12px; color:var(--text2); }
 
+/* No form warning */
+.no-form-warning {
+  align-self:center;
+  background:rgba(239,68,68,0.08);
+  border:1px solid rgba(239,68,68,0.2);
+  border-radius:10px; padding:7px 14px;
+  font-size:12px; color:var(--red);
+  text-align:center; margin:4px 0;
+}
+
 /* ── INPUT BAR ── */
 .input-bar {
-  padding:10px 12px;
-  background:var(--surface);
-  border-top:1px solid var(--border);
+  padding:8px 10px;
+  background:var(--bg);
   display:flex; align-items:flex-end; gap:8px;
-  flex-shrink:0; position:relative;
+  flex-shrink:0;
 }
+
+.attach-wrap { position:relative; }
 
 .attach-btn {
-  width:40px; height:40px; border-radius:12px;
-  background:var(--surface2); border:1px solid var(--border);
-  display:flex; align-items:center; justify-content:center;
-  font-size:18px; cursor:pointer; color:var(--text2);
-  flex-shrink:0; transition:all 0.15s;
+  width:40px; height:40px; border-radius:50%;
+  background:var(--surface); border:none;
+  display:flex; align-items:center;
+  justify-content:center; font-size:20px;
+  cursor:pointer; color:var(--text2);
+  flex-shrink:0; box-shadow:var(--shadow);
+  transition:all 0.15s;
 }
-.attach-btn:hover { background:var(--border); color:var(--text); }
+.attach-btn:hover { background:var(--border); }
 
-.msg-input-wrap {
-  flex:1; background:var(--surface2);
-  border:1px solid var(--border);
-  border-radius:14px; padding:10px 14px;
-  display:flex; align-items:center; gap:8px;
-  transition:border-color 0.15s;
-}
-.msg-input-wrap:focus-within { border-color:var(--accent); }
-
-.msg-input {
-  flex:1; background:none; border:none;
-  font-size:13px; color:var(--text);
-  font-family:'DM Sans',sans-serif;
-  outline:none; resize:none;
-  max-height:80px; overflow-y:auto;
-}
-.msg-input::placeholder { color:var(--text3); }
-
-.send-btn {
-  width:40px; height:40px; border-radius:12px;
-  background:var(--accent); border:none;
-  display:flex; align-items:center; justify-content:center;
-  font-size:17px; cursor:pointer; color:white;
-  flex-shrink:0; transition:all 0.15s;
-  box-shadow:0 4px 12px rgba(37,211,102,0.3);
-}
-.send-btn:hover  { background:var(--accent2); }
-.send-btn:active { transform:scale(0.95); }
-
-/* ── ATTACH POPUP ── */
 .attach-popup {
-  position:absolute; bottom:58px; left:12px;
-  background:var(--surface); border:1px solid var(--border2);
+  position:absolute; bottom:48px; left:0;
+  background:var(--surface);
   border-radius:14px; padding:6px;
   display:none; flex-direction:column; gap:2px;
   z-index:100; min-width:200px;
-  box-shadow:0 16px 40px rgba(0,0,0,0.4);
+  box-shadow:0 8px 32px rgba(0,0,0,0.15);
+  border:1px solid var(--border);
 }
 .attach-popup.show { display:flex; }
 
@@ -436,205 +419,223 @@ html, body {
   display:flex; align-items:center; gap:10px;
   padding:10px 12px; border-radius:10px;
   cursor:pointer; transition:background 0.1s;
-  font-size:13px; color:var(--text); font-weight:500;
+  font-size:13px; font-weight:600; color:var(--text);
 }
 .attach-option:hover { background:var(--surface2); }
-
 .attach-icon {
   width:34px; height:34px; border-radius:10px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:16px; flex-shrink:0;
+  display:flex; align-items:center;
+  justify-content:center; font-size:16px;
 }
 
-/* ── TEMPLATE OVERLAY ── */
+.msg-input-wrap {
+  flex:1; background:var(--surface);
+  border-radius:20px; padding:9px 16px;
+  display:flex; align-items:center;
+  box-shadow:var(--shadow);
+}
+.msg-input {
+  flex:1; background:none; border:none;
+  font-size:13px; color:var(--text);
+  font-family:'Nunito',sans-serif;
+  outline:none; resize:none;
+  max-height:80px; overflow-y:auto;
+}
+.msg-input::placeholder { color:var(--text3); }
+
+.send-btn {
+  width:40px; height:40px; border-radius:50%;
+  background:var(--accent); border:none;
+  display:flex; align-items:center;
+  justify-content:center; font-size:18px;
+  cursor:pointer; color:white; flex-shrink:0;
+  box-shadow:0 2px 8px rgba(37,211,102,0.4);
+  transition:all 0.15s;
+}
+.send-btn:hover  { background:var(--accent2); }
+.send-btn:active { transform:scale(0.93); }
+
+/* ── OVERLAYS ── */
 .overlay {
   position:fixed; top:0; left:0; right:0; bottom:0;
-  background:rgba(0,0,0,0.7); z-index:200;
-  display:none; align-items:flex-end; justify-content:center;
-  backdrop-filter:blur(4px);
+  background:rgba(0,0,0,0.4); z-index:200;
+  display:none; align-items:flex-end;
+  justify-content:center;
+  backdrop-filter:blur(2px);
 }
 .overlay.show { display:flex; }
 
 .popup-sheet {
-  background:var(--surface); border:1px solid var(--border2);
+  background:var(--surface);
   border-radius:20px 20px 0 0;
   width:100%; max-width:500px;
-  max-height:80vh; display:flex; flex-direction:column;
+  max-height:75vh; display:flex;
+  flex-direction:column;
+  box-shadow:0 -4px 24px rgba(0,0,0,0.12);
 }
 
 .popup-header {
-  padding:16px 20px 12px;
+  padding:14px 18px 10px;
   border-bottom:1px solid var(--border);
-  display:flex; justify-content:space-between; align-items:center;
-  flex-shrink:0;
+  display:flex; justify-content:space-between;
+  align-items:center; flex-shrink:0;
 }
-.popup-title { font-size:15px; font-weight:700; color:var(--text); }
+.popup-title { font-size:15px; font-weight:800; color:var(--text); }
 .popup-close { font-size:20px; color:var(--text3); cursor:pointer; padding:4px; }
 
-.popup-list { overflow-y:auto; -webkit-overflow-scrolling:touch; }
+.popup-list { overflow-y:auto; }
 .popup-list::-webkit-scrollbar { display:none; }
 
 .popup-item {
-  padding:12px 20px; border-bottom:1px solid var(--border);
+  padding:12px 18px; border-bottom:1px solid var(--border);
   cursor:pointer; transition:background 0.1s;
 }
 .popup-item:hover { background:var(--surface2); }
 .popup-item:last-child { border-bottom:none; }
 
 .pi-name {
-  font-size:13px; font-weight:600; color:var(--text);
-  margin-bottom:3px; display:flex; align-items:center; gap:8px;
+  font-size:13px; font-weight:700; color:var(--text);
+  margin-bottom:2px; display:flex; align-items:center; gap:6px;
 }
 .pi-cat {
-  font-size:10px; font-weight:600; padding:2px 7px; border-radius:6px;
+  font-size:10px; font-weight:700;
+  padding:2px 6px; border-radius:6px;
 }
-.pi-cat-marketing { background:rgba(245,158,11,0.15); color:#f59e0b; }
-.pi-cat-utility   { background:rgba(79,142,247,0.15);  color:#4f8ef7; }
+.pi-cat-marketing { background:#fef3c7; color:#92400e; }
+.pi-cat-utility   { background:#dbeafe; color:#1d4ed8; }
 .pi-body { font-size:12px; color:var(--text2); line-height:1.4; }
-.pi-vars { font-size:10px; color:var(--text3); margin-top:3px; font-family:var(--mono); }
+.pi-vars { font-size:10px; color:var(--text3); margin-top:2px; font-family:var(--mono); }
 
-/* Quick reply */
 .qr-item {
-  padding:12px 20px; border-bottom:1px solid var(--border);
+  padding:12px 18px; border-bottom:1px solid var(--border);
   cursor:pointer; transition:background 0.1s;
 }
 .qr-item:hover { background:var(--surface2); }
-.qr-name { font-size:13px; font-weight:600; color:var(--accent); margin-bottom:2px; }
+.qr-name { font-size:13px; font-weight:700; color:var(--primary); margin-bottom:2px; }
 .qr-text { font-size:12px; color:var(--text2); line-height:1.4; }
 
 /* ── VAR POPUP ── */
 .var-popup {
   position:fixed; top:0; left:0; right:0; bottom:0;
-  background:rgba(0,0,0,0.7); z-index:300;
-  display:none; align-items:center; justify-content:center;
-  padding:20px; backdrop-filter:blur(4px);
+  background:rgba(0,0,0,0.4); z-index:300;
+  display:none; align-items:center;
+  justify-content:center; padding:20px;
+  backdrop-filter:blur(2px);
 }
 .var-popup.show { display:flex; }
-
 .var-card {
-  background:var(--surface); border:1px solid var(--border2);
-  border-radius:20px; padding:24px;
-  width:100%; max-width:360px;
-  box-shadow:0 24px 64px rgba(0,0,0,0.5);
+  background:var(--surface); border-radius:20px;
+  padding:22px; width:100%; max-width:360px;
+  box-shadow:0 16px 48px rgba(0,0,0,0.15);
 }
-.var-title { font-size:15px; font-weight:700; color:var(--text); margin-bottom:16px; }
+.var-title { font-size:15px; font-weight:800; color:var(--text); margin-bottom:14px; }
+.var-label {
+  font-size:11px; font-weight:700; color:var(--text2);
+  text-transform:uppercase; letter-spacing:0.4px; margin-bottom:5px;
+}
 .var-input {
-  width:100%; background:var(--surface2); border:1.5px solid var(--border);
-  border-radius:10px; padding:10px 14px;
-  font-size:13px; font-family:'DM Sans',sans-serif;
-  color:var(--text); outline:none; margin-bottom:10px;
+  width:100%; background:var(--surface2);
+  border:1.5px solid var(--border); border-radius:10px;
+  padding:10px 13px; font-size:13px;
+  font-family:'Nunito',sans-serif; color:var(--text);
+  outline:none; margin-bottom:10px;
   transition:border-color 0.15s;
 }
-.var-input:focus { border-color:var(--accent); }
-.var-label {
-  font-size:11px; font-weight:600; color:var(--text3);
-  text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;
-}
-.var-btns { display:flex; gap:8px; margin-top:6px; }
+.var-input:focus { border-color:var(--primary); }
+.var-btns { display:flex; gap:8px; margin-top:4px; }
 .var-cancel {
-  flex:1; background:var(--surface2); border:1px solid var(--border);
-  border-radius:10px; padding:11px; font-size:13px; font-weight:600;
-  font-family:'DM Sans',sans-serif; cursor:pointer; color:var(--text2);
+  flex:1; background:var(--surface2);
+  border:1.5px solid var(--border); border-radius:10px;
+  padding:11px; font-size:13px; font-weight:700;
+  font-family:'Nunito',sans-serif; cursor:pointer; color:var(--text2);
 }
 .var-send {
-  flex:2; background:var(--accent); border:none;
-  border-radius:10px; padding:11px; font-size:13px; font-weight:700;
-  font-family:'DM Sans',sans-serif; cursor:pointer; color:white;
+  flex:2; background:var(--primary); border:none;
+  border-radius:10px; padding:11px; font-size:13px;
+  font-weight:800; font-family:'Nunito',sans-serif;
+  cursor:pointer; color:white;
 }
 
 /* ── TOAST ── */
 .toast {
-  position:fixed; bottom:80px;
-  left:50%; transform:translateX(-50%) translateY(60px);
-  background:var(--surface); border:1px solid var(--border2);
-  border-radius:12px; padding:10px 18px;
-  font-size:13px; font-weight:500; color:var(--text);
-  z-index:1000; opacity:0; transition:all 0.3s;
-  white-space:nowrap; pointer-events:none;
-  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+  position:fixed; bottom:70px; left:50%;
+  transform:translateX(-50%) translateY(30px);
+  background:#1f2937; color:white;
+  border-radius:10px; padding:9px 18px;
+  font-size:13px; font-weight:600;
+  z-index:1000; opacity:0; transition:all 0.25s;
+  pointer-events:none; white-space:nowrap;
+  box-shadow:0 4px 16px rgba(0,0,0,0.2);
 }
 .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
-.toast.ok  { border-color:rgba(37,211,102,0.4); color:var(--accent); }
-.toast.err { border-color:rgba(239,68,68,0.4);  color:var(--red); }
+.toast.ok  { background:var(--accent2); }
+.toast.err { background:var(--red); }
 
 /* ── MOBILE ── */
 @media (max-width:768px) {
-  #chatPanel { max-width:100%; }
-  #chatView  { display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:50; background:var(--bg); }
+  #chatPanel  { max-width:100%; }
+  #chatView   { display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:50; }
   #chatView.open { display:flex; }
-  .cv-back { display:block !important; }
+  .cv-back    { display:block !important; }
 }
 </style>
 </head>
 <body>
-
 <div id="app">
 
   <!-- ── LEFT: CHAT LIST ── -->
   <div id="chatPanel">
-
     <div class="panel-header">
       <div class="header-logo">💬</div>
       <div style="flex:1">
         <div class="header-title">WhatsApp Inbox</div>
         <div class="header-sub" id="headerSub">VastMyWealth</div>
       </div>
-      <button class="icon-btn" onclick="syncMessages()" title="Sync">🔄</button>
+      <button class="icon-btn" onclick="syncMessages()" title="Refresh">🔄</button>
+    </div>
+
+    <div class="search-wrap">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input id="searchInput" placeholder="Search name or number..." oninput="filterChats()">
+      </div>
     </div>
 
     <div class="filter-tabs">
       <div class="ftab active" onclick="setFilter('all',this)">All</div>
+      <div class="ftab" onclick="setFilter('no-form',this)">⚠️ No Form</div>
       <div class="ftab" onclick="setFilter('pending',this)">⏳ Pending</div>
       <div class="ftab" onclick="setFilter('sent',this)">✅ Sent</div>
-      <div class="ftab" onclick="setFilter('no-form',this)">⚠️ No Form</div>
       <div class="ftab" onclick="setFilter('pl',this)">PL</div>
       <div class="ftab" onclick="setFilter('bl',this)">BL</div>
       <div class="ftab" onclick="setFilter('hl',this)">HL</div>
       <div class="ftab" onclick="setFilter('lap',this)">LAP</div>
     </div>
 
-    <div class="search-wrap">
-      <div class="search-box">
-        <span>🔍</span>
-        <input id="searchInput" placeholder="Search name or mobile..." oninput="filterChats()" />
-      </div>
-    </div>
-
-    <div class="stats-bar" id="statsBar">
-      <div class="stat-pill active" onclick="setFilter('all',null)">
-        <span>Total</span><span class="num" id="stTotal">0</span>
-      </div>
-      <div class="stat-pill" onclick="setFilter('no-form',null)" style="color:var(--red)">
-        <span>No Form</span><span class="num" id="stNoForm">0</span>
-      </div>
-      <div class="stat-pill" onclick="setFilter('sent',null)" style="color:var(--accent)">
-        <span>Sent</span><span class="num" id="stSent">0</span>
-      </div>
-      <div class="stat-pill" onclick="setFilter('pending',null)" style="color:var(--amber)">
-        <span>Pending</span><span class="num" id="stPending">0</span>
-      </div>
+    <div class="stats-bar">
+      <div class="stat-pill active" id="stPillAll"     onclick="setFilter('all',null)">All <span class="num" id="stTotal">0</span></div>
+      <div class="stat-pill"        id="stPillNoForm"  onclick="setFilter('no-form',null)" style="color:var(--red)">⚠️ <span class="num" id="stNoForm">0</span></div>
+      <div class="stat-pill"        id="stPillSent"    onclick="setFilter('sent',null)"    style="color:var(--accent2)">✅ <span class="num" id="stSent">0</span></div>
+      <div class="stat-pill"        id="stPillPending" onclick="setFilter('pending',null)" style="color:var(--amber)">⏳ <span class="num" id="stPending">0</span></div>
     </div>
 
     <div class="chat-list" id="chatList">
       <div class="empty-state">
         <div class="spinner"></div>
-        <div class="empty-title">Loading messages...</div>
+        <div class="empty-title">Loading chats...</div>
       </div>
     </div>
-
   </div>
 
   <!-- ── RIGHT: CHAT VIEW ── -->
   <div id="chatView">
-
-    <div class="empty-state" id="emptyChat">
+    <div class="empty-state" id="emptyChat" style="background:#efeae2;background-image:url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23d4d0c8%22 fill-opacity=%220.3%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')">
       <div class="empty-icon">💬</div>
       <div class="empty-title">Select a conversation</div>
-      <div class="empty-sub">Choose a customer from the list<br>to view messages and send templates</div>
+      <div class="empty-sub">Choose from the list to view messages<br>and send templates</div>
     </div>
 
     <div id="activeChat" style="display:none;flex-direction:column;flex:1;overflow:hidden;height:100%">
-
       <div class="cv-header">
         <div class="cv-back" onclick="closeChat()">←</div>
         <div class="cv-avatar" id="cvAvatar">?</div>
@@ -642,22 +643,24 @@ html, body {
           <div class="cv-name" id="cvName">—</div>
           <div class="cv-sub"  id="cvSub">—</div>
         </div>
-        <div id="cvFormStatus" class="cv-form-status"></div>
+        <a class="cv-call-btn" id="cvCallBtn" href="#" title="Call">📞</a>
+        <div id="cvFormStatus" class="cv-form-badge"></div>
       </div>
 
       <div class="messages" id="messages"></div>
 
-      <div class="input-bar" style="position:relative">
-        <button class="attach-btn" onclick="toggleAttach()" title="Attach">📎</button>
-
-        <div class="attach-popup" id="attachPopup">
-          <div class="attach-option" onclick="openTemplates()">
-            <div class="attach-icon" style="background:rgba(37,211,102,0.15)">📋</div>
-            <span>Send Template</span>
-          </div>
-          <div class="attach-option" onclick="openQuickReplies()">
-            <div class="attach-icon" style="background:rgba(79,142,247,0.15)">⚡</div>
-            <span>Quick Reply</span>
+      <div class="input-bar">
+        <div class="attach-wrap">
+          <button class="attach-btn" onclick="toggleAttach()" title="Attach">📎</button>
+          <div class="attach-popup" id="attachPopup">
+            <div class="attach-option" onclick="openTemplates()">
+              <div class="attach-icon" style="background:#e0f2fe">📋</div>
+              <span>Send Template</span>
+            </div>
+            <div class="attach-option" onclick="openQuickReplies()">
+              <div class="attach-icon" style="background:#dcfce7">⚡</div>
+              <span>Quick Reply</span>
+            </div>
           </div>
         </div>
 
@@ -667,37 +670,33 @@ html, body {
         </div>
 
         <button class="send-btn" onclick="sendMessage()">➤</button>
-
-        <input type="file" id="galleryInput" accept="image/,video/" style="display:none" onchange="handleFile(this)"/>
-        <input type="file" id="fileInput" style="display:none" onchange="handleFile(this)"/>
       </div>
-
     </div>
   </div>
 </div>
 
 <!-- TEMPLATE OVERLAY -->
-<div class="overlay" id="templateOverlay" onclick="closeOverlays(event)">
+<div class="overlay" id="templateOverlay" onclick="closeOverlay(event,'templateOverlay')">
   <div class="popup-sheet">
     <div class="popup-header">
       <div class="popup-title">📋 Send Template</div>
-      <div class="popup-close" onclick="closeOverlays()">✕</div>
+      <div class="popup-close" onclick="closeAllOverlays()">✕</div>
     </div>
     <div class="popup-list" id="templateList">
-      <div style="padding:24px;display:flex;align-items:center;justify-content:center;gap:10px">
+      <div style="padding:20px;display:flex;align-items:center;justify-content:center;gap:10px">
         <div class="spinner"></div>
-        <span style="font-size:13px;color:var(--text3)">Loading templates...</span>
+        <span style="font-size:13px;color:var(--text3)">Loading...</span>
       </div>
     </div>
   </div>
 </div>
 
 <!-- QUICK REPLY OVERLAY -->
-<div class="overlay" id="qrOverlay" onclick="closeOverlays(event)">
+<div class="overlay" id="qrOverlay" onclick="closeOverlay(event,'qrOverlay')">
   <div class="popup-sheet">
     <div class="popup-header">
       <div class="popup-title">⚡ Quick Replies</div>
-      <div class="popup-close" onclick="closeOverlays()">✕</div>
+      <div class="popup-close" onclick="closeAllOverlays()">✕</div>
     </div>
     <div class="popup-list" id="qrList"></div>
   </div>
@@ -706,11 +705,11 @@ html, body {
 <!-- VAR POPUP -->
 <div class="var-popup" id="varPopup">
   <div class="var-card">
-    <div class="var-title" id="varTitle">Enter template variables</div>
+    <div class="var-title" id="varTitle">Enter variables</div>
     <div id="varInputs"></div>
     <div class="var-btns">
       <button class="var-cancel" onclick="closeVarPopup()">Cancel</button>
-      <button class="var-send" onclick="confirmSendTemplate()">Send ➤</button>
+      <button class="var-send"   onclick="confirmSendTemplate()">Send ➤</button>
     </div>
   </div>
 </div>
@@ -724,41 +723,29 @@ html, body {
 var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytDsEm2Z1_JD1Gpn-faYSdF1lVMIXxotMQ3qcB4P_7QIZC3juK8PZuhSTinkdlhASdEA/exec";
 
 // ============================================================
-// QUICK REPLIES
+// QUICK REPLIES — Only 2
 // ============================================================
 var QUICK_REPLIES = [
   {
-    name: "Fill Form First",
-    text: "Hi! 👋 Thank you for contacting VastMyWealth!\n\nTo help you better, please fill our quick form first:\n\nhttps://forms.gle/eYxNg8ZhTpeqizoS6\n\nOur team will review and call you shortly! ✅"
-  },
-  {
-    name: "Form Reminder",
-    text: "Hi! 😊 Just checking in!\n\nPlease fill our quick form so we can match you with the best lender:\n\nhttps://forms.gle/eYxNg8ZhTpeqizoS6\n\nTakes only 2 minutes! ⚡"
-  },
-  {
-    name: "Please Pick Up",
-    text: "Hi! 📞 I tried reaching you regarding your loan application!\n\nPlease pick up my call or call me back at your earliest convenience!\n\nThis will help us get you the best deal faster! 🏆"
+    name: "Please Pick Up Call",
+    text: "Hi! 📞 I tried reaching you regarding your loan application!\n\nPlease pick up my call or call me back at your earliest convenience!\n\nThis will help us get you the best loan deal faster! 🏆"
   },
   {
     name: "Need More Details",
     text: "Hi! 😊 Thank you for reaching out to VastMyWealth!\n\nCould you please share:\n→ Loan type required?\n→ Loan amount needed?\n→ City?\n\nThis helps us match you with the best lender! ✅"
-  },
-  {
-    name: "Not Eligible",
-    text: "Hi! 🙏 Thank you for contacting VastMyWealth!\n\nBased on your current profile we are unable to assist at this time.\n\nWe will reach out when suitable options become available!\n\nThank you for your interest! 😊"
   }
 ];
 
 // ============================================================
 // STATE
 // ============================================================
-var allChats      = [];
-var filteredChats = [];
-var activeFilter  = "all";
-var selectedChat  = null;
-var templates     = [];
+var allChats        = [];
+var filteredChats   = [];
+var activeFilter    = "all";
+var selectedChat    = null;
+var templates       = [];
 var pendingTemplate = null;
-var isMobile      = window.innerWidth < 769;
+var isMobile        = window.innerWidth < 769;
 
 window.addEventListener("resize", function(){ isMobile = window.innerWidth < 769; });
 
@@ -771,7 +758,7 @@ window.addEventListener("load", function() {
 });
 
 // ============================================================
-// SYNC MESSAGES
+// SYNC
 // ============================================================
 function syncMessages() {
   var btn = document.querySelector('.icon-btn');
@@ -785,22 +772,19 @@ function syncMessages() {
         allChats = d.messages || [];
         updateStats();
         filterChats();
-        toast(allChats.length > 0 ? "✅ " + allChats.length + " chats loaded!" : "📭 No messages yet!", "ok");
+        toast("✅ " + allChats.length + " chats loaded", "ok");
       } else {
-        loadDemoChats();
-        toast("⚠️ Demo mode — check Apps Script URL", "err");
+        loadDemo();
+        toast("⚠️ Demo mode", "err");
       }
     })
     .catch(function() {
       if (btn) btn.textContent = "🔄";
-      loadDemoChats();
-      toast("❌ Connection error — showing demo data", "err");
+      loadDemo();
+      toast("❌ Connection error", "err");
     });
 }
 
-// ============================================================
-// LOAD TEMPLATES
-// ============================================================
 function loadTemplates() {
   fetch(APPS_SCRIPT_URL + "?action=getTemplates")
     .then(function(r){ return r.json(); })
@@ -809,7 +793,7 @@ function loadTemplates() {
 }
 
 // ============================================================
-// UPDATE STATS
+// STATS
 // ============================================================
 function updateStats() {
   document.getElementById("stTotal").textContent   = allChats.length;
@@ -830,94 +814,80 @@ function setFilter(f, el) {
 }
 
 function filterChats() {
-  var s = (document.getElementById("searchInput")||{value:""}).value.toLowerCase();
-
+  var s = (document.getElementById("searchInput")||{value:""}).value.toLowerCase().trim();
   filteredChats = allChats.filter(function(c) {
     var nameMatch   = c.name && c.name.toLowerCase().indexOf(s) !== -1;
     var mobileMatch = c.mobile.indexOf(s) !== -1;
-    var match = !s || nameMatch || mobileMatch;
-    if (!match) return false;
-
+    if (s && !nameMatch && !mobileMatch) return false;
     var lt = (c.loanType || "").toLowerCase();
+    if (activeFilter === "no-form")  return !c.formFilled;
     if (activeFilter === "pending")  return c.templateSent !== "Yes";
     if (activeFilter === "sent")     return c.templateSent === "Yes";
-    if (activeFilter === "no-form")  return !c.formFilled;
     if (activeFilter === "pl")       return lt.indexOf("personal") !== -1;
     if (activeFilter === "bl")       return lt.indexOf("business") !== -1;
     if (activeFilter === "hl")       return lt.indexOf("home") !== -1;
     if (activeFilter === "lap")      return lt.indexOf("property") !== -1 || lt.indexOf("against") !== -1;
     return true;
   });
-
   renderChatList();
 }
 
 // ============================================================
 // RENDER CHAT LIST
 // ============================================================
+var COLORS = ["#004a99","#0891b2","#7c3aed","#b45309","#dc2626","#047857"];
+
 function renderChatList() {
   var list = document.getElementById("chatList");
-
   if (filteredChats.length === 0) {
     list.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div>' +
       '<div class="empty-title">No chats found</div>' +
-      '<div class="empty-sub">Try a different filter or sync</div></div>';
+      '<div class="empty-sub">Try a different filter</div></div>';
     return;
   }
 
-  var COLORS = ["#25d366","#4f8ef7","#a78bfa","#f59e0b","#ef4444","#06b6d4"];
-  var html   = "";
-
+  var html = "";
   filteredChats.forEach(function(c, i) {
-    var color    = COLORS[c.mobile.charCodeAt(c.mobile.length - 1) % COLORS.length];
-    var lt       = (c.loanType || "").toLowerCase();
-    var loanCls  = "tag-unk"; var loanLbl = c.loanType || "Unknown";
+    var color    = COLORS[c.mobile.charCodeAt(c.mobile.length-1) % COLORS.length];
+    var lt       = (c.loanType||"").toLowerCase();
+    var tagCls   = "tag-unk"; var tagLbl = c.loanType || "?";
+    if      (lt.indexOf("personal") !== -1) { tagCls="tag-pl"; tagLbl="PL"; }
+    else if (lt.indexOf("business") !== -1) { tagCls="tag-bl"; tagLbl="BL"; }
+    else if (lt.indexOf("home")     !== -1) { tagCls="tag-hl"; tagLbl="HL"; }
+    else if (lt.indexOf("property") !== -1 || lt.indexOf("against") !== -1) { tagCls="tag-lap"; tagLbl="LAP"; }
 
-    if      (lt.indexOf("personal") !== -1) { loanCls = "tag-pl"; loanLbl = "PL"; }
-    else if (lt.indexOf("business") !== -1) { loanCls = "tag-bl"; loanLbl = "BL"; }
-    else if (lt.indexOf("home")     !== -1) { loanCls = "tag-hl"; loanLbl = "HL"; }
-    else if (lt.indexOf("property") !== -1 || lt.indexOf("against") !== -1) { loanCls = "tag-lap"; loanLbl = "LAP"; }
-
-    var sentCls = c.templateSent === "Yes" ? "sent-yes" : "sent-no";
-    var sentLbl = c.templateSent === "Yes" ? "✅ " + (c.templateName || "Sent") : "⏳ Pending";
-
-    // Status dot
-    var dotCls  = c.formFilled ? "dot-green" : (c.templateSent === "Yes" ? "dot-gray" : "dot-red");
-
-    // Display name
-    var displayName = c.name || ("📱 " + c.mobile);
+    var dotCls      = c.formFilled ? "dot-green" : (c.templateSent==="Yes" ? "dot-gray" : "dot-red");
+    var displayName = c.name || c.mobile;
     var nameClass   = c.name ? "" : "unknown";
-
-    // Latest message preview
-    var preview = c.message1 || "No messages";
-
-    // Time
+    var preview     = c.message1 || "No messages yet";
+    var initials    = c.name ? c.name.charAt(0).toUpperCase() : "?";
+    var activeClass = selectedChat && selectedChat.mobile===c.mobile ? " active" : "";
     var dt = "";
-    try { var d = new Date(c.timestamp); if (!isNaN(d)) dt = d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}); } catch(e){}
+    try { var d=new Date(c.timestamp); if(!isNaN(d)) dt=d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}); } catch(e){}
 
-    var activeClass = selectedChat && selectedChat.mobile === c.mobile ? " active" : "";
-    var initials    = c.name ? c.name.charAt(0).toUpperCase() : c.mobile.slice(-2);
-
-    html += '<div class="chat-item' + activeClass + '" onclick="openChat(' + i + ')">' +
-      '<div class="ci-avatar" style="background:' + color + '">' + initials +
-        '<div class="ci-status-dot ' + dotCls + '"></div>' +
-      '</div>' +
-      '<div class="ci-body">' +
-        '<div class="ci-row1">' +
-          '<div class="ci-name ' + nameClass + '">' + esc(displayName) + '</div>' +
-          '<div class="ci-time">' + dt + '</div>' +
-        '</div>' +
-        '<div class="ci-mobile">📱 ' + esc(c.mobile) + '</div>' +
-        '<div class="ci-preview">' + esc(preview) + '</div>' +
-        '<div class="ci-tags">' +
-          '<span class="tag ' + loanCls + '">' + loanLbl + '</span>' +
-          '<span class="sent-tag ' + sentCls + '">' + sentLbl + '</span>' +
-          (!c.formFilled ? '<span class="sent-tag sent-no">⚠️ Form Not Filled</span>' : '') +
-        '</div>' +
-      '</div>' +
+    html += '<div class="chat-item'+activeClass+'" onclick="openChat('+i+')">' +
+      '<div class="ci-avatar" style="background:'+color+'">'+initials+
+        '<div class="ci-dot '+dotCls+'"></div>'+
+      '</div>'+
+      '<div class="ci-body">'+
+        '<div class="ci-row1">'+
+          '<div class="ci-name '+nameClass+'">'+esc(displayName)+'</div>'+
+          '<div class="ci-time">'+dt+'</div>'+
+        '</div>'+
+        '<div class="ci-mobile">📱 '+esc(c.mobile)+'</div>'+
+        '<div class="ci-preview">'+esc(preview)+'</div>'+
+        '<div class="ci-tags">'+
+          '<span class="tag '+tagCls+'">'+tagLbl+'</span>'+
+          (c.templateSent==="Yes"
+            ? '<span class="sent-tag sent-yes">✅ '+(c.templateName||"Sent")+'</span>'
+            : '<span class="sent-tag sent-no">⏳ Pending</span>')+
+          (c.formFilled
+            ? '<span class="form-tag">📋 Form Filled</span>'
+            : '<span class="no-form-tag">⚠️ No Form</span>')+
+        '</div>'+
+      '</div>'+
     '</div>';
   });
-
   list.innerHTML = html;
 }
 
@@ -928,104 +898,96 @@ function openChat(idx) {
   selectedChat = filteredChats[idx];
   if (!selectedChat) return;
 
-  var COLORS  = ["#25d366","#4f8ef7","#a78bfa","#f59e0b","#ef4444","#06b6d4"];
-  var color   = COLORS[selectedChat.mobile.charCodeAt(selectedChat.mobile.length - 1) % COLORS.length];
-  var initials= selectedChat.name ? selectedChat.name.charAt(0).toUpperCase() : selectedChat.mobile.slice(-2);
+  var color    = COLORS[selectedChat.mobile.charCodeAt(selectedChat.mobile.length-1) % COLORS.length];
+  var initials = selectedChat.name ? selectedChat.name.charAt(0).toUpperCase() : "?";
 
-  document.getElementById("cvAvatar").textContent         = initials;
-  document.getElementById("cvAvatar").style.background    = color;
-  document.getElementById("cvName").textContent           = selectedChat.name || ("📱 " + selectedChat.mobile);
-  document.getElementById("cvSub").textContent            = (selectedChat.loanType || "Unknown loan type") + " · " + selectedChat.mobile;
+  document.getElementById("cvAvatar").textContent        = initials;
+  document.getElementById("cvAvatar").style.background   = color;
+  document.getElementById("cvName").textContent          = selectedChat.name || selectedChat.mobile;
+  document.getElementById("cvSub").textContent           = (selectedChat.loanType || "Unknown") + " · " + selectedChat.mobile;
+
+  // Clickable call button
+  var callBtn = document.getElementById("cvCallBtn");
+  var cleanMob = selectedChat.mobile.replace(/\D/g,"");
+  callBtn.href = "tel:+" + cleanMob;
 
   var statusEl = document.getElementById("cvFormStatus");
   if (selectedChat.formFilled) {
-    statusEl.textContent  = "✅ Form Filled";
-    statusEl.className    = "cv-form-status form-filled";
+    statusEl.textContent = "✅ Form";
+    statusEl.className   = "cv-form-badge form-filled";
   } else {
-    statusEl.textContent  = "⚠️ Form Not Filled";
-    statusEl.className    = "cv-form-status form-not-filled";
+    statusEl.textContent = "⚠️ No Form";
+    statusEl.className   = "cv-form-badge form-not-filled";
   }
 
   buildMessages(selectedChat);
-
   document.getElementById("emptyChat").style.display  = "none";
   document.getElementById("activeChat").style.display = "flex";
-
   if (isMobile) document.getElementById("chatView").classList.add("open");
   renderChatList();
 }
 
 // ============================================================
-// BUILD MESSAGES — Shows all 3 messages + template info
+// BUILD MESSAGES
 // ============================================================
 function buildMessages(c) {
   var msgs = document.getElementById("messages");
   var html = "";
 
-  // Date separator
   var dt = "";
-  try { var d = new Date(c.timestamp); if(!isNaN(d)) dt = d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}); } catch(e){}
-  if (dt) html += '<div class="msg-date">' + dt + '</div>';
+  try { var d=new Date(c.timestamp); if(!isNaN(d)) dt=d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}); } catch(e){}
+  if (dt) html += '<div class="msg-date">'+dt+'</div>';
 
   var time = "";
-  try { var d2 = new Date(c.timestamp); if(!isNaN(d2)) time = d2.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}); } catch(e){}
+  try { var d2=new Date(c.timestamp); if(!isNaN(d2)) time=d2.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}); } catch(e){}
 
-  // Show messages in order — oldest first (msg3 → msg2 → msg1)
+  // Show messages oldest → newest
   if (c.message3 && c.message3.trim()) {
-    html += '<div class="msg-bubble msg-in">' +
-      '<div class="msg-label">Earlier message</div>' +
-      esc(c.message3).replace(/\n/g,"<br>") +
+    html += '<div class="msg-bubble msg-in">'+
+      '<div class="msg-label">Earlier</div>'+
+      esc(c.message3).replace(/\n/g,"<br>")+
     '</div>';
   }
-
   if (c.message2 && c.message2.trim()) {
-    html += '<div class="msg-bubble msg-in">' +
-      '<div class="msg-label">Previous message</div>' +
-      esc(c.message2).replace(/\n/g,"<br>") +
+    html += '<div class="msg-bubble msg-in">'+
+      '<div class="msg-label">Previous</div>'+
+      esc(c.message2).replace(/\n/g,"<br>")+
     '</div>';
   }
-
   if (c.message1 && c.message1.trim()) {
-    html += '<div class="msg-bubble msg-in">' +
-      '<div class="msg-sender">📱 ' + esc(c.mobile) + '</div>' +
-      esc(c.message1).replace(/\n/g,"<br>") +
-      '<div class="msg-time">' + time + '</div>' +
+    html += '<div class="msg-bubble msg-in">'+
+      '<div class="msg-sender">📱 '+esc(c.mobile)+'</div>'+
+      esc(c.message1).replace(/\n/g,"<br>")+
+      '<div class="msg-time">'+time+'</div>'+
     '</div>';
   }
-
   if (!c.message1 && !c.message2 && !c.message3) {
-    html += '<div class="msg-bubble msg-in">' +
-      '<div class="msg-sender">📱 ' + esc(c.mobile) + '</div>' +
-      'No message content' +
-      '<div class="msg-time">' + time + '</div>' +
+    html += '<div class="msg-bubble msg-in">'+
+      '<div class="msg-sender">📱 '+esc(c.mobile)+'</div>'+
+      'No messages yet'+
+      '<div class="msg-time">'+time+'</div>'+
     '</div>';
   }
 
-  // Auto-sent template card
+  // Auto-sent template
   if (c.templateSent === "Yes" && c.templateName) {
-    html += '<div class="auto-sent-card">' +
-      '<div class="auto-sent-title">📤 Template Auto-Sent' +
-        (c.autoSentAt ? ' <span style="font-weight:400;color:var(--text3)">· ' + esc(c.autoSentAt) + '</span>' : '') +
-      '</div>' +
-      '<div class="auto-sent-detail">Template: <strong>' + esc(c.templateName) + '</strong></div>' +
+    html += '<div class="auto-sent-card">'+
+      '<div class="auto-sent-title">📤 Template Auto-Sent'+
+        (c.autoSentAt ? ' · <span style="font-weight:500;color:var(--text3)">'+esc(c.autoSentAt)+'</span>' : '')+
+      '</div>'+
+      '<div class="auto-sent-detail">'+esc(c.templateName)+'</div>'+
     '</div>';
   }
 
-  // Form not filled warning
+  // No form warning
   if (!c.formFilled) {
-    html += '<div style="align-self:center;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.2);' +
-      'border-radius:10px;padding:8px 14px;font-size:12px;color:var(--red);text-align:center;margin:4px 0">' +
-      '⚠️ Customer has not filled the profiling form yet' +
-    '</div>';
+    html += '<div class="no-form-warning">⚠️ Customer has not filled the profiling form yet</div>';
   }
 
   msgs.innerHTML = html;
   msgs.scrollTop = msgs.scrollHeight;
 }
 
-// ============================================================
-// CLOSE CHAT (mobile)
-// ============================================================
 function closeChat() {
   document.getElementById("chatView").classList.remove("open");
   selectedChat = null;
@@ -1033,89 +995,70 @@ function closeChat() {
 }
 
 // ============================================================
-// TOGGLE ATTACH
+// ATTACH POPUP
 // ============================================================
 function toggleAttach() {
   document.getElementById("attachPopup").classList.toggle("show");
 }
-
 document.addEventListener("click", function(e) {
-  if (!e.target.closest(".attach-btn") && !e.target.closest(".attach-popup")) {
+  if (!e.target.closest(".attach-wrap")) {
     document.getElementById("attachPopup").classList.remove("show");
   }
 });
 
 // ============================================================
-// OPEN TEMPLATES
+// TEMPLATES
 // ============================================================
 function openTemplates() {
   document.getElementById("attachPopup").classList.remove("show");
   document.getElementById("templateOverlay").classList.add("show");
-
   if (templates.length === 0) {
-    var list = document.getElementById("templateList");
-    list.innerHTML = '<div style="padding:24px;display:flex;align-items:center;justify-content:center;gap:10px">' +
-      '<div class="spinner"></div><span style="font-size:13px;color:var(--text3)">Loading...</span></div>';
-
     fetch(APPS_SCRIPT_URL + "?action=getTemplates")
       .then(function(r){ return r.json(); })
       .then(function(d) {
         if (d.success && d.templates && d.templates.length > 0) {
-          templates = d.templates;
-          renderTemplateList();
+          templates = d.templates; renderTemplateList();
         } else {
-          list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text3)">No approved templates found in Meta WABA.</div>';
+          document.getElementById("templateList").innerHTML =
+            '<div style="padding:20px;text-align:center;color:var(--text3)">No approved templates found.</div>';
         }
-      })
-      .catch(function() {
-        document.getElementById("templateList").innerHTML =
-          '<div style="padding:20px;text-align:center;color:var(--red)">Connection error — check Apps Script.</div>';
       });
-  } else {
-    renderTemplateList();
-  }
+  } else { renderTemplateList(); }
 }
 
 function renderTemplateList() {
-  var list = document.getElementById("templateList");
   var html = "";
   templates.forEach(function(t, i) {
     var catCls = t.category === "MARKETING" ? "pi-cat-marketing" : "pi-cat-utility";
-    html += '<div class="popup-item" onclick="selectTemplate(' + i + ')">' +
-      '<div class="pi-name">' + esc(t.name) +
-        '<span class="pi-cat ' + catCls + '">' + esc(t.category) + '</span>' +
-      '</div>' +
-      '<div class="pi-body">' + esc(t.body || "—") + '</div>' +
-      (t.varCount > 0 ? '<div class="pi-vars">Requires ' + t.varCount + ' variable(s)</div>' : '') +
+    html += '<div class="popup-item" onclick="selectTemplate('+i+')">'+
+      '<div class="pi-name">'+esc(t.name)+
+        '<span class="pi-cat '+catCls+'">'+esc(t.category)+'</span>'+
+      '</div>'+
+      '<div class="pi-body">'+esc(t.body||"—")+'</div>'+
+      (t.varCount>0 ? '<div class="pi-vars">'+t.varCount+' variable(s) required</div>' : '')+
     '</div>';
   });
-  list.innerHTML = html || '<div style="padding:20px;text-align:center;color:var(--text3)">No templates found.</div>';
+  document.getElementById("templateList").innerHTML = html ||
+    '<div style="padding:20px;text-align:center;color:var(--text3)">No templates.</div>';
 }
 
-// ============================================================
-// SELECT TEMPLATE
-// ============================================================
 function selectTemplate(idx) {
   if (!selectedChat) { toast("Select a chat first!", "err"); return; }
   var t = templates[idx];
   if (!t) return;
-  closeOverlays();
-  if (t.varCount > 0) {
-    pendingTemplate = t;
-    showVarPopup(t);
-  } else {
-    doSendTemplate(selectedChat.mobile, t.name, []);
-  }
+  closeAllOverlays();
+  if (t.varCount > 0) { pendingTemplate = t; showVarPopup(t); }
+  else doSendTemplate(selectedChat.mobile, t.name, []);
 }
 
 function showVarPopup(t) {
   document.getElementById("varTitle").textContent = "📋 " + t.name;
-  var inputs = "";
+  var html = "";
   for (var i = 1; i <= t.varCount; i++) {
-    inputs += '<div class="var-label">Variable ' + i + ' — {{' + i + '}}</div>' +
-      '<input class="var-input" id="var' + i + '" placeholder="Enter value for {{' + i + '}}" />';
+    html += '<div class="var-label">Variable '+i+' — {{'+i+'}}</div>'+
+      '<input class="var-input" id="var'+i+'" placeholder="Enter value for {{'+i+'}}" />';
   }
-  document.getElementById("varInputs").innerHTML = inputs;
+  document.getElementById("varInputs").innerHTML = html;
   document.getElementById("varPopup").classList.add("show");
 }
 
@@ -1128,81 +1071,67 @@ function confirmSendTemplate() {
   if (!pendingTemplate || !selectedChat) return;
   var params = [];
   for (var i = 1; i <= pendingTemplate.varCount; i++) {
-    params.push((document.getElementById("var" + i)||{}).value || "");
+    params.push((document.getElementById("var"+i)||{value:""}).value || "");
   }
   doSendTemplate(selectedChat.mobile, pendingTemplate.name, params);
   closeVarPopup();
 }
 
-// ============================================================
-// DO SEND TEMPLATE
-// ============================================================
 function doSendTemplate(mobile, templateName, params) {
   if (!mobile) { toast("No customer selected!", "err"); return; }
-  toast("📤 Sending " + templateName + "...", "ok");
-
+  toast("📤 Sending...", "ok");
   var url = APPS_SCRIPT_URL +
-    "?action=sendTemplate" +
-    "&mobile=" + encodeURIComponent(mobile) +
+    "?action=sendTemplate&mobile=" + encodeURIComponent(mobile) +
     "&templateName=" + encodeURIComponent(templateName) +
     "&params=" + encodeURIComponent(JSON.stringify(params));
-
   fetch(url)
     .then(function(r){ return r.json(); })
     .then(function(d) {
       if (d.success) {
         toast("✅ Template sent!", "ok");
+        var now = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
         var msgs = document.getElementById("messages");
-        var now  = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
-        msgs.innerHTML += '<div class="msg-template">' +
-          '<div class="template-header">📋 ' + esc(templateName) + '</div>' +
-          '<div class="template-body">Template sent successfully ✅</div>' +
-          '<div class="template-meta">' + now + '</div>' +
+        msgs.innerHTML += '<div class="template-card">'+
+          '<div class="template-card-header">📋 '+esc(templateName)+'</div>'+
+          '<div class="template-card-body">Sent successfully ✅</div>'+
+          '<div class="template-card-meta">'+now+'</div>'+
         '</div>';
         msgs.scrollTop = msgs.scrollHeight;
-        if (selectedChat) {
-          selectedChat.templateSent = "Yes";
-          selectedChat.templateName = templateName;
-          selectedChat.autoSentAt   = now;
-        }
-        updateStats();
-        renderChatList();
-      } else {
-        toast("❌ Send failed — check token!", "err");
-      }
+        if (selectedChat) { selectedChat.templateSent="Yes"; selectedChat.templateName=templateName; }
+        updateStats(); renderChatList();
+      } else { toast("❌ Failed — check Meta token", "err"); }
     })
-    .catch(function(){ toast("❌ Connection error!", "err"); });
+    .catch(function(){ toast("❌ Connection error", "err"); });
 }
 
 // ============================================================
-// OPEN QUICK REPLIES
+// QUICK REPLIES
 // ============================================================
 function openQuickReplies() {
   document.getElementById("attachPopup").classList.remove("show");
-  var list = document.getElementById("qrList");
   var html = "";
   QUICK_REPLIES.forEach(function(qr, i) {
-    html += '<div class="qr-item" onclick="sendQuickReply(' + i + ')">' +
-      '<div class="qr-name">/' + esc(qr.name) + '</div>' +
-      '<div class="qr-text">' + esc(qr.text.substring(0, 80)) + (qr.text.length > 80 ? "..." : "") + '</div>' +
+    html += '<div class="qr-item" onclick="useQuickReply('+i+')">'+
+      '<div class="qr-name">'+esc(qr.name)+'</div>'+
+      '<div class="qr-text">'+esc(qr.text.substring(0,100))+(qr.text.length>100?"...":"")+'</div>'+
     '</div>';
   });
-  list.innerHTML = html;
+  document.getElementById("qrList").innerHTML = html;
   document.getElementById("qrOverlay").classList.add("show");
 }
 
-function sendQuickReply(idx) {
+function useQuickReply(idx) {
   var qr = QUICK_REPLIES[idx];
   if (!qr) return;
-  closeOverlays();
+  closeAllOverlays();
   document.getElementById("msgInput").value = qr.text;
   autoResize(document.getElementById("msgInput"));
   document.getElementById("msgInput").focus();
-  toast("✅ Quick reply loaded — edit if needed then send!", "ok");
+  toast("✅ Quick reply loaded — send when ready!", "ok");
 }
 
 // ============================================================
-// SEND FREE TEXT MESSAGE
+// SEND FREE TEXT
 // ============================================================
 function sendMessage() {
   var input = document.getElementById("msgInput");
@@ -1210,45 +1139,32 @@ function sendMessage() {
   if (!text) return;
   if (!selectedChat) { toast("Select a chat first!", "err"); return; }
 
-  var mobile = selectedChat.mobile;
-  var msgs   = document.getElementById("messages");
-  var now    = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
-
-  msgs.innerHTML += '<div class="msg-bubble msg-out">' +
-    esc(text).replace(/\n/g,"<br>") +
-    '<div class="msg-time">' + now + ' ⏳</div>' +
+  var msgs = document.getElementById("messages");
+  var now  = new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"});
+  msgs.innerHTML += '<div class="msg-bubble msg-out">'+
+    esc(text).replace(/\n/g,"<br>")+
+    '<div class="msg-time">'+now+' ⏳</div>'+
   '</div>';
   msgs.scrollTop = msgs.scrollHeight;
-  input.value = "";
-  input.style.height = "auto";
+  input.value = ""; input.style.height = "auto";
 
-  var url = APPS_SCRIPT_URL +
-    "?action=sendText" +
-    "&mobile=" + encodeURIComponent(mobile) +
-    "&message=" + encodeURIComponent(text);
-
-  fetch(url)
+  fetch(APPS_SCRIPT_URL + "?action=sendText&mobile=" +
+    encodeURIComponent(selectedChat.mobile) + "&message=" + encodeURIComponent(text))
     .then(function(r){ return r.json(); })
     .then(function(d) {
+      var last = msgs.lastElementChild;
       if (d.success) {
-        toast("✅ Message sent!", "ok");
-        var lastMsg = msgs.lastElementChild;
-        if (lastMsg) {
-          var timeDiv = lastMsg.querySelector(".msg-time");
-          if (timeDiv) timeDiv.textContent = now + " ✓✓";
-        }
+        toast("✅ Sent!", "ok");
+        if (last) { var t=last.querySelector(".msg-time"); if(t) t.textContent=now+" ✓✓"; }
       } else {
-        toast("❌ Failed — use template instead (24hr window expired)", "err");
+        toast("❌ Failed — 24hr window may have expired", "err");
       }
     })
-    .catch(function(){ toast("❌ Connection error!", "err"); });
+    .catch(function(){ toast("❌ Connection error", "err"); });
 }
 
 function handleKey(e) {
-  if (e.key === "Enter" && !e.shiftKey) {
-    e.preventDefault();
-    sendMessage();
-  }
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
 }
 
 function autoResize(el) {
@@ -1256,18 +1172,13 @@ function autoResize(el) {
   el.style.height = Math.min(el.scrollHeight, 80) + "px";
 }
 
-function handleFile(input) {
-  if (!input.files || !input.files[0]) return;
-  toast("📎 " + input.files[0].name + " — Media sending coming soon!", "ok");
-  input.value = "";
+// ============================================================
+// OVERLAYS
+// ============================================================
+function closeOverlay(e, id) {
+  if (e.target === document.getElementById(id)) closeAllOverlays();
 }
-
-// ============================================================
-// CLOSE OVERLAYS
-// ============================================================
-function closeOverlays(e) {
-  if (e && e.target !== document.getElementById("templateOverlay") &&
-           e.target !== document.getElementById("qrOverlay")) return;
+function closeAllOverlays() {
   document.getElementById("templateOverlay").classList.remove("show");
   document.getElementById("qrOverlay").classList.remove("show");
 }
@@ -1276,7 +1187,7 @@ function closeOverlays(e) {
 // UTILS
 // ============================================================
 function esc(s) {
-  return String(s)
+  return String(s||"")
     .replace(/&/g,"&amp;").replace(/</g,"&lt;")
     .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
@@ -1286,52 +1197,26 @@ function toast(msg, type) {
   t.textContent = msg;
   t.className = "toast " + (type||"");
   t.classList.add("show");
-  setTimeout(function(){ t.classList.remove("show"); }, 3000);
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.classList.remove("show"); }, 3000);
 }
 
 // ============================================================
-// DEMO DATA — Matches new 10-column WA Leads structure
+// DEMO DATA
 // ============================================================
-function loadDemoChats() {
+function loadDemo() {
   allChats = [
-    {
-      timestamp:"2026-03-28T10:32:00", mobile:"919876543210",
-      name:"Rajesh Kumar", formFilled:true,
-      message1:"Personal Loan chahiye", message2:"5 lakh chahiye", message3:"Mumbai se hu",
-      loanType:"Personal Loan", templateSent:"Yes",
-      templateName:"digital_journey", autoSentAt:"28/03/2026 10:33"
-    },
-    {
-      timestamp:"2026-03-28T09:15:00", mobile:"918765432109",
-      name:null, formFilled:false,
-      message1:"Home loan", message2:"", message3:"",
-      loanType:"Home Loan", templateSent:"No",
-      templateName:"", autoSentAt:""
-    },
-    {
-      timestamp:"2026-03-28T08:50:00", mobile:"917654321098",
-      name:"Priya Desai", formFilled:true,
-      message1:"Business loan needed", message2:"Trading business", message3:"",
-      loanType:"Business Loan", templateSent:"Yes",
-      templateName:"digital_journey", autoSentAt:"28/03/2026 08:51"
-    },
-    {
-      timestamp:"2026-03-27T15:20:00", mobile:"916543210987",
-      name:null, formFilled:false,
-      message1:"LAP", message2:"", message3:"",
-      loanType:"Loan Against Property", templateSent:"No",
-      templateName:"", autoSentAt:""
-    },
-    {
-      timestamp:"2026-03-27T11:10:00", mobile:"915432109876",
-      name:"Amit Joshi", formFilled:true,
-      message1:"PL", message2:"Need 3 lakh", message3:"Salary 40k",
-      loanType:"Personal Loan", templateSent:"Yes",
-      templateName:"digital_journey", autoSentAt:"27/03/2026 11:11"
-    }
+    {timestamp:"2026-03-30T10:32:00",mobile:"919876543210",name:"Rajesh Kumar",formFilled:true,
+     message1:"Personal Loan chahiye",message2:"5 lakh chahiye",message3:"Mumbai se hu",
+     loanType:"Personal Loan",templateSent:"Yes",templateName:"welcome_unsecured",autoSentAt:"30/03/2026 10:33"},
+    {timestamp:"2026-03-30T09:15:00",mobile:"918765432109",name:null,formFilled:false,
+     message1:"Home loan",message2:"",message3:"",
+     loanType:"Home Loan",templateSent:"No",templateName:"",autoSentAt:""},
+    {timestamp:"2026-03-30T08:50:00",mobile:"917654321098",name:"Priya Desai",formFilled:true,
+     message1:"Business loan needed",message2:"Trading business",message3:"",
+     loanType:"Business Loan",templateSent:"Yes",templateName:"welcome_unsecured",autoSentAt:"30/03/2026 08:51"}
   ];
-  updateStats();
-  filterChats();
+  updateStats(); filterChats();
 }
 
 // Auto refresh every 2 mins
@@ -1339,3 +1224,4 @@ setInterval(function(){ syncMessages(); }, 120000);
 </script>
 </body>
 </html>
+
