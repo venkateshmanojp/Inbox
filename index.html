@@ -709,8 +709,8 @@ var ADMIN_PASSWORD  = "Venky@1234";
 var RM_CONFIG = {
   "Aditya Birla" : {name: "Khushboo", mobile: "8459008116"},
   "Andromeda"    : {name: "Priyanshu", mobile: "8459008116"},
-  "VastMyWealth" : {name: "Manoj",    mobile: "8459008116"},
-  "Inhouse"      : {name: "Yogesh",   mobile: "8459008116"}
+  "VastMyWealth" : {name: "Manoj",    mobile: "9594592020"},
+  "Inhouse"      : {name: "Yogesh",   mobile: "9594592020"}
 };
 
 // WhatsApp messages per status
@@ -1310,7 +1310,7 @@ function showWAPopup() {
 
   var status   = selectedLead.vendorStatus || "default";
   var vendor   = selectedLead.vendorAllocation || "Inhouse";
-  var rm       = RM_CONFIG[vendor] || {name:"Yogesh", mobile:"8459008116"};
+  var rm       = RM_CONFIG[vendor] || {name:"Manoj", mobile:"9594592020"};
   var msgTpl   = WA_MESSAGES[status] || WA_MESSAGES["default"];
   var msg      = msgTpl.replace(/{{RM}}/g, rm.name).replace(/{{MOBILE}}/g, rm.mobile);
   var waUrl    = "https://wa.me/91" + selectedLead.mobile.replace(/\D/g,"") +
