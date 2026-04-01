@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VMW CRM Inbox</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+html, body {
+  height:100%; width:100%; overflow:hidden;
+  font-family:'Plus Jakarta Sans', sans-serif;
+  background:#f1f5f9; color:#0f172a;
+}
+
+:root {
+  --primary   : #004a99;
+  --primary2  : #0062cc;
+  --primary3  : #e8f0fb;
+  --accent    : #25d366;
+  --accent2   : #128c7e;
+  --red       : #ef4444;
+  --amber     : #f59e0b;
+  --green     : #16a34a;
+  --purple    : #7c3aed;
+  --bg        : #f1f5f9;
+  --surface   : #ffffff;
+  --surface2  : #f8fafc;
+  --border    : #e2e8f0;
+  --border2   : #cbd5e1;
+  --text      : #0f172a;
+  --text2     : #64748b;
+  --text3     : #94a3b8;
+  --mono      : 'JetBrains Mono', monospace;
+  --shadow    : 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow2   : 0 4px 16px rgba(0,0,0,0.08);
+  --shadow3   : 0 8px 32px rgba(0,0,0,0.1);
+}
+
+/* ── LAYOUT ── */
+#app { display:flex; height:100vh; width:100%; }
+
+/* ── LEFT PANEL ── */
+#leftPanel {
+  width:100%; max-width:360px; flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  box-shadow:var(--shadow2);
+  z-index:10;
+}
+
+/* ── RIGHT PANEL ── */
+#rightPanel {
+  flex:1; display:flex; flex-direction:column;
+  background:var(--bg); overflow:hidden;
+}
+
+/* ── HEADER ── */
+.crm-header {
+  background:linear-gradient(135deg,#004a99,#0062cc);
+  padding:12px 16px;
+  display:flex; align-items:center; gap:10px;
+  flex-shrink:0;
+}
+.crm-logo {
+  width:36px; height:36px; border-radius:10px;
+  background:rgba(255,255,255,0.2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; flex-shrink:0;
+}
+.crm-title { font-size:15px; font-weight:800; color:white; }
+.crm-sub   { font-size:11px; color:rgba(255,255,255,0.7); margin-top:1px; }
+.crm-refresh {
+  width:32px; height:32px; border-radius:50%;
+  background:rgba(255,255,255,0.15); border:none;
+  display:flex; align-items:center; justify-content:center;
+  font-size:15px; cursor:pointer; color:white;
+  margin-left:auto; transition:background 0.15s;
+}
+.crm-refresh:hover { background:rgba(255,255,255,0.25); }
+
+/* ── PIPELINE STATS ── */
+.pipeline {
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:10px 12px; flex-shrink:0;
+}
+.pipeline-title {
+  font-size:10px; font-weight:700; color:var(--text3);
+  text-transform:uppercase; letter-spacing:0.5px;
+  margin-bottom:8px;
+}
+.pipeline-stats {
+  display:flex; gap:4px; overflow-x:auto;
+}
+.pipeline-stats::-webkit-scrollbar { display:none; }
+.pstat {
+  flex-shrink:0; padding:6px 10px;
+  border-radius:8px; cursor:pointer;
+  border:1.5px solid var(--border);
+  background:var(--surface2);
+  transition:all 0.15s; text-align:center;
+  min-width:60px;
+}
+.pstat:hover { border-color:var(--primary); }
+.pstat.active { background:var(--primary3); border-color:var(--primary); }
+.pstat-icon  { font-size:14px; margin-bottom:2px; }
+.pstat-num   { font-size:14px; font-weight:800; color:var(--text); font-family:var(--mono); line-height:1; }
+.pstat-label { font-size:9px; color:var(--text3); font-weight:600; margin-top:2px; white-space:nowrap; }
+
+/* ── SEARCH + FILTER ── */
+.search-wrap {
+  padding:8px 12px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.search-box {
+  display:flex; align-items:center; gap:7px;
+  background:var(--surface2); border:1.5px solid var(--border);
+  border-radius:10px; padding:7px 12px;
+  transition:border-color 0.15s;
+}
+.search-box:focus-within { border-color:var(--primary); }
+.search-box input {
+  flex:1; background:none; border:none;
+  font-size:13px; color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif; outline:none;
+}
+.search-box input::placeholder { color:var(--text3); }
+
+.filter-tabs {
+  display:flex; gap:4px; padding:8px 12px;
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0; overflow-x:auto;
+}
+.filter-tabs::-webkit-scrollbar { display:none; }
+.ftab {
+  flex-shrink:0; padding:5px 12px;
+  border-radius:20px; font-size:12px; font-weight:700;
+  cursor:pointer; border:1.5px solid var(--border);
+  color:var(--text2); background:var(--surface2);
+  transition:all 0.15s; white-space:nowrap;
+}
+.ftab.active { background:var(--primary); border-color:var(--primary); color:white; }
+
+/* ── LEAD LIST ── */
+.lead-list {
+  flex:1; overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.lead-list::-webkit-scrollbar { width:3px; }
+.lead-list::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+.lead-item {
+  padding:10px 14px; border-bottom:1px solid var(--border);
+  cursor:pointer; transition:background 0.1s;
+  display:flex; gap:10px; align-items:flex-start;
+}
+.lead-item:hover  { background:var(--surface2); }
+.lead-item.active { background:#e8f0fb; border-left:3px solid var(--primary); }
+
+.li-avatar {
+  width:40px; height:40px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; font-weight:800; color:white;
+  flex-shrink:0;
+}
+
+.li-body { flex:1; min-width:0; }
+.li-row1 { display:flex; justify-content:space-between; align-items:center; margin-bottom:2px; }
+.li-name {
+  font-size:13px; font-weight:700; color:var(--text);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  max-width:170px;
+}
+.li-time { font-size:10px; color:var(--text3); font-family:var(--mono); }
+.li-mobile { font-size:11px; color:var(--text3); font-family:var(--mono); margin-bottom:3px; }
+.li-tags { display:flex; gap:4px; flex-wrap:wrap; }
+
+.tag {
+  font-size:10px; font-weight:700;
+  padding:2px 6px; border-radius:6px;
+}
+.tag-pl  { background:#dbeafe; color:#1d4ed8; }
+.tag-bl  { background:#fef3c7; color:#92400e; }
+.tag-hl  { background:#d1fae5; color:#065f46; }
+.tag-lap { background:#ede9fe; color:#5b21b6; }
+.tag-direct  { background:#f1f5f9; color:#64748b; }
+.tag-partner { background:#fef9c3; color:#854d0e; }
+
+.status-badge {
+  font-size:10px; font-weight:700;
+  padding:2px 6px; border-radius:6px;
+}
+.s-captured   { background:#f1f5f9; color:#64748b; }
+.s-pending    { background:#fef3c7; color:#92400e; }
+.s-process    { background:#dbeafe; color:#1d4ed8; }
+.s-allocated  { background:#ede9fe; color:#5b21b6; }
+.s-approved   { background:#d1fae5; color:#065f46; }
+.s-disbursed  { background:#d1fae5; color:#065f46; }
+.s-rejected   { background:#fee2e2; color:#991b1b; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  flex:1; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:10px; padding:40px; text-align:center;
+}
+.empty-icon  { font-size:48px; opacity:0.15; }
+.empty-title { font-size:14px; font-weight:700; color:var(--text2); }
+.empty-sub   { font-size:12px; color:var(--text3); line-height:1.6; }
+
+.spinner {
+  width:20px; height:20px;
+  border:2px solid var(--border2);
+  border-top-color:var(--primary);
+  border-radius:50%;
+  animation:spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* ── RIGHT PANEL HEADER ── */
+.rp-header {
+  background:var(--surface);
+  border-bottom:1px solid var(--border);
+  padding:12px 16px; flex-shrink:0;
+  box-shadow:var(--shadow);
+}
+
+.rp-top {
+  display:flex; align-items:center; gap:10px; margin-bottom:10px;
+}
+
+.rp-back {
+  font-size:20px; color:var(--text2); cursor:pointer;
+  display:none; padding:2px 8px 2px 0;
+}
+
+.rp-avatar {
+  width:42px; height:42px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; font-weight:800; color:white; flex-shrink:0;
+}
+
+.rp-info { flex:1; min-width:0; }
+.rp-name { font-size:15px; font-weight:800; color:var(--text); }
+.rp-sub  { font-size:11px; color:var(--text2); margin-top:1px; }
+
+.rp-actions { display:flex; gap:6px; }
+
+.action-btn {
+  height:34px; border-radius:8px;
+  display:flex; align-items:center; gap:5px;
+  padding:0 10px; border:1.5px solid var(--border);
+  background:var(--surface2); cursor:pointer;
+  font-size:12px; font-weight:700; color:var(--text2);
+  text-decoration:none; transition:all 0.15s;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  white-space:nowrap;
+}
+.action-btn:hover { background:var(--border); }
+.action-btn.call { background:#d1fae5; border-color:#a7f3d0; color:#065f46; }
+.action-btn.wa   { background:#dcfce7; border-color:#86efac; color:#166534; }
+.action-btn.docs { background:#dbeafe; border-color:#93c5fd; color:#1d4ed8; }
+
+/* ── TABS ── */
+.rp-tabs {
+  display:flex; gap:0; border-bottom:none;
+}
+.rptab {
+  flex:1; padding:7px; text-align:center;
+  font-size:12px; font-weight:700; cursor:pointer;
+  border-bottom:2px solid transparent;
+  color:var(--text3); transition:all 0.15s;
+}
+.rptab.active { color:var(--primary); border-bottom-color:var(--primary); }
+
+/* ── TAB CONTENT ── */
+.tab-content { flex:1; overflow:hidden; display:flex; flex-direction:column; }
+.tab-pane    { display:none; flex:1; overflow-y:auto; padding:14px 16px; }
+.tab-pane.active { display:block; }
+.tab-pane::-webkit-scrollbar { width:4px; }
+.tab-pane::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
+
+/* ── DETAIL CARDS ── */
+.detail-section {
+  background:var(--surface); border-radius:12px;
+  padding:12px 14px; margin-bottom:10px;
+  box-shadow:var(--shadow);
+}
+.detail-section-title {
+  font-size:11px; font-weight:700; color:var(--text3);
+  text-transform:uppercase; letter-spacing:0.5px;
+  margin-bottom:10px; display:flex; align-items:center; gap:6px;
+}
+.detail-row {
+  display:flex; justify-content:space-between;
+  align-items:flex-start; padding:5px 0;
+  border-bottom:1px solid var(--border);
+}
+.detail-row:last-child { border-bottom:none; }
+.detail-label { font-size:12px; color:var(--text2); font-weight:500; flex-shrink:0; }
+.detail-value { font-size:12px; color:var(--text); font-weight:700; text-align:right; max-width:60%; }
+.detail-value.mono { font-family:var(--mono); font-size:11px; }
+
+/* ── WHATSAPP TAB ── */
+.wa-messages {
+  display:flex; flex-direction:column; gap:6px;
+  margin-bottom:12px;
+}
+.wa-bubble {
+  max-width:80%; padding:8px 12px;
+  font-size:13px; line-height:1.6; color:var(--text);
+  border-radius:0 10px 10px 10px;
+  background:var(--surface); box-shadow:var(--shadow);
+  align-self:flex-start;
+}
+.wa-bubble-label {
+  font-size:9px; font-weight:700; color:var(--text3);
+  text-transform:uppercase; margin-bottom:3px;
+}
+.wa-bubble-time {
+  font-size:10px; color:var(--text3);
+  text-align:right; margin-top:3px; font-family:var(--mono);
+}
+.wa-no-msgs {
+  background:var(--surface2); border-radius:10px;
+  padding:16px; text-align:center;
+  font-size:13px; color:var(--text3); margin-bottom:12px;
+}
+.wa-template-sent {
+  background:#d1fae5; border:1px solid #a7f3d0;
+  border-radius:10px; padding:10px 12px; margin-bottom:12px;
+  font-size:12px; color:#065f46;
+}
+
+/* WA INPUT */
+.wa-input-wrap {
+  background:var(--surface); border-radius:12px;
+  padding:10px 12px; box-shadow:var(--shadow);
+  margin-bottom:10px;
+}
+.wa-input-row {
+  display:flex; gap:8px; align-items:flex-end;
+}
+.wa-textarea {
+  flex:1; background:var(--surface2);
+  border:1.5px solid var(--border); border-radius:10px;
+  padding:9px 12px; font-size:13px; color:var(--text);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  outline:none; resize:none; max-height:80px;
+  transition:border-color 0.15s;
+}
+.wa-textarea:focus { border-color:var(--primary); }
+.wa-textarea::placeholder { color:var(--text3); }
+.wa-send {
+  width:38px; height:38px; border-radius:10px;
+  background:var(--accent); border:none;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; cursor:pointer; color:white; flex-shrink:0;
+  transition:background 0.15s;
+}
+.wa-send:hover { background:var(--accent2); }
+
+.wa-actions { display:flex; gap:6px; margin-bottom:8px; }
+.wa-action-btn {
+  flex:1; padding:8px; border-radius:8px;
+  border:1.5px solid var(--border); background:var(--surface2);
+  font-size:12px; font-weight:700; cursor:pointer;
+  color:var(--text2); font-family:'Plus Jakarta Sans',sans-serif;
+  transition:all 0.15s;
+}
+.wa-action-btn:hover { background:var(--primary3); border-color:var(--primary); color:var(--primary); }
+
+/* QR options */
+.qr-option {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:10px; padding:10px 12px; margin-bottom:6px;
+  cursor:pointer; transition:all 0.15s;
+}
+.qr-option:hover { border-color:var(--primary); background:var(--primary3); }
+.qr-name { font-size:12px; font-weight:700; color:var(--primary); margin-bottom:2px; }
+.qr-text { font-size:11px; color:var(--text2); line-height:1.4; }
+
+/* Template list */
+.template-item {
+  background:var(--surface); border:1.5px solid var(--border);
+  border-radius:10px; padding:10px 12px; margin-bottom:6px;
+  cursor:pointer; transition:all 0.15s;
+}
+.template-item:hover { border-color:var(--primary); background:var(--primary3); }
+.template-name { font-size:12px; font-weight:700; color:var(--text); margin-bottom:2px; display:flex; align-items:center; gap:6px; }
+.template-body { font-size:11px; color:var(--text2); line-height:1.4; }
+.tcat { font-size:10px; font-weight:700; padding:1px 5px; border-radius:4px; }
+.tcat-m { background:#fef3c7; color:#92400e; }
+.tcat-u { background:#dbeafe; color:#1d4ed8; }
+
+/* ── STATUS TAB ── */
+.status-form { background:var(--surface); border-radius:12px; padding:14px; box-shadow:var(--shadow); }
+.status-label { font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; display:block; }
+.status-select {
+  width:100%; border:1.5px solid var(--border); border-radius:10px;
+  padding:10px 12px; font-size:14px; color:var(--text);
+  background:var(--surface2); font-family:'Plus Jakarta Sans',sans-serif;
+  outline:none; margin-bottom:12px; -webkit-appearance:none;
+  transition:border-color 0.15s;
+}
+.status-select:focus { border-color:var(--primary); }
+.status-input {
+  width:100%; border:1.5px solid var(--border); border-radius:10px;
+  padding:10px 12px; font-size:13px; color:var(--text);
+  background:var(--surface2); font-family:'Plus Jakarta Sans',sans-serif;
+  outline:none; margin-bottom:12px;
+  transition:border-color 0.15s;
+}
+.status-input:focus { border-color:var(--primary); }
+.btn-save {
+  width:100%; padding:12px; background:var(--primary);
+  border:none; border-radius:10px; font-size:14px;
+  font-weight:800; color:white; cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;
+  box-shadow:0 4px 12px rgba(0,74,153,0.3);
+  transition:opacity 0.15s;
+}
+.btn-save:hover { opacity:0.9; }
+.btn-save:disabled { opacity:0.6; pointer-events:none; }
+
+/* ── OVERLAY ── */
+.overlay {
+  position:fixed; top:0; left:0; right:0; bottom:0;
+  background:rgba(0,0,0,0.4); z-index:200;
+  display:none; align-items:flex-end; justify-content:center;
+  backdrop-filter:blur(2px);
+}
+.overlay.show { display:flex; }
+.popup-sheet {
+  background:var(--surface); border-radius:20px 20px 0 0;
+  width:100%; max-width:500px; max-height:75vh;
+  display:flex; flex-direction:column;
+  box-shadow:0 -4px 24px rgba(0,0,0,0.12);
+}
+.popup-header {
+  padding:14px 18px 10px; border-bottom:1px solid var(--border);
+  display:flex; justify-content:space-between; align-items:center;
+  flex-shrink:0;
+}
+.popup-title { font-size:15px; font-weight:800; color:var(--text); }
+.popup-close { font-size:20px; color:var(--text3); cursor:pointer; padding:4px; }
+.popup-list  { overflow-y:auto; padding:8px; }
+.popup-list::-webkit-scrollbar { display:none; }
+
+/* ── TOAST ── */
+.toast {
+  position:fixed; bottom:20px; left:50%;
+  transform:translateX(-50%) translateY(30px);
+  background:#1e293b; color:white;
+  border-radius:10px; padding:9px 18px;
+  font-size:13px; font-weight:600; z-index:1000;
+  opacity:0; transition:all 0.25s; pointer-events:none;
+  white-space:nowrap; box-shadow:var(--shadow3);
+}
+.toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+.toast.ok  { background:var(--green); }
+.toast.err { background:var(--red); }
+
+/* ── MOBILE ── */
+@media (max-width:768px) {
+  #leftPanel  { max-width:100%; }
+  #rightPanel { display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:50; background:var(--bg); }
+  #rightPanel.open { display:flex; }
+  .rp-back { display:block !important; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ── LEFT PANEL ── -->
+<div id="leftPanel">
+
+  <div class="crm-header">
+    <div class="crm-logo">📊</div>
+    <div>
+      <div class="crm-title">VMW CRM</div>
+      <div class="crm-sub" id="crmSub">VastMyWealth</div>
+    </div>
+    <button class="crm-refresh" onclick="loadLeads()" title="Refresh">🔄</button>
+  </div>
+
+  <!-- Pipeline Stats -->
+  <div class="pipeline">
+    <div class="pipeline-title">Pipeline Overview</div>
+    <div class="pipeline-stats" id="pipelineStats">
+      <div class="pstat active" onclick="filterByStatus('')" id="ps-all">
+        <div class="pstat-icon">📋</div>
+        <div class="pstat-num" id="cnt-all">0</div>
+        <div class="pstat-label">All</div>
+      </div>
+      <div class="pstat" onclick="filterByStatus('Lead Captured')" id="ps-captured">
+        <div class="pstat-icon">📱</div>
+        <div class="pstat-num" id="cnt-captured">0</div>
+        <div class="pstat-label">Captured</div>
+      </div>
+      <div class="pstat" onclick="filterByStatus('Documents Pending')" id="ps-pending">
+        <div class="pstat-icon">📄</div>
+        <div class="pstat-num" id="cnt-pending">0</div>
+        <div class="pstat-label">Docs Pending</div>
+      </div>
+      <div class="pstat" onclick="filterByStatus('In Process')" id="ps-process">
+        <div class="pstat-icon">⚙️</div>
+        <div class="pstat-num" id="cnt-process">0</div>
+        <div class="pstat-label">In Process</div>
+      </div>
+      <div class="pstat" onclick="filterByStatus('Allocated')" id="ps-allocated">
+        <div class="pstat-icon">🏦</div>
+        <div class="pstat-num" id="cnt-allocated">0</div>
+        <div class="pstat-label">Allocated</div>
+      </div>
+      <div class="pstat" onclick="filterByStatus('Approved')" id="ps-approved">
+        <div class="pstat-icon">✅</div>
+        <div class="pstat-num" id="cnt-approved">0</div>
+        <div class="pstat-label">Approved</div>
+      </div>
+      <div class="pstat" onclick="filterByStatus('Disbursed')" id="ps-disbursed">
+        <div class="pstat-icon">💰</div>
+        <div class="pstat-num" id="cnt-disbursed">0</div>
+        <div class="pstat-label">Disbursed</div>
+      </div>
+      <div class="pstat" onclick="filterByStatus('Rejected')" id="ps-rejected">
+        <div class="pstat-icon">❌</div>
+        <div class="pstat-num" id="cnt-rejected">0</div>
+        <div class="pstat-label">Rejected</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="search-wrap">
+    <div class="search-box">
+      <span style="font-size:14px;color:var(--text3)">🔍</span>
+      <input id="searchInput" placeholder="Search name or mobile..." oninput="applyFilters()">
+    </div>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div class="filter-tabs">
+    <div class="ftab active" onclick="setSourceFilter('all',this)">All</div>
+    <div class="ftab" onclick="setSourceFilter('direct',this)">📢 Direct</div>
+    <div class="ftab" onclick="setSourceFilter('partner',this)">🤝 Partner</div>
+  </div>
+
+  <!-- Lead List -->
+  <div class="lead-list" id="leadList">
+    <div class="empty-state">
+      <div class="spinner"></div>
+      <div class="empty-title">Loading leads...</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── RIGHT PANEL ── -->
+<div id="rightPanel">
+
+  <!-- Empty state -->
+  <div class="empty-state" id="rpEmpty">
+    <div class="empty-icon">📊</div>
+    <div class="empty-title">Select a lead</div>
+    <div class="empty-sub">Choose from the list to view details,<br>update status and send messages</div>
+  </div>
+
+  <!-- Active lead view -->
+  <div id="rpActive" style="display:none;flex-direction:column;flex:1;overflow:hidden;height:100%">
+
+    <!-- Header -->
+    <div class="rp-header">
+      <div class="rp-top">
+        <div class="rp-back" onclick="closeDetail()">←</div>
+        <div class="rp-avatar" id="rpAvatar">?</div>
+        <div class="rp-info">
+          <div class="rp-name" id="rpName">—</div>
+          <div class="rp-sub" id="rpSub">—</div>
+        </div>
+        <div class="rp-actions">
+          <a class="action-btn call" id="rpCallBtn" href="#">📞 Call</a>
+          <a class="action-btn wa"   id="rpWABtn"   href="#" target="_blank">💬 WA</a>
+          <a class="action-btn docs" id="rpDocsBtn" href="#" target="_blank">📁 Docs</a>
+        </div>
+      </div>
+      <div class="rp-tabs">
+        <div class="rptab active" onclick="showTab('details',this)">📋 Details</div>
+        <div class="rptab"        onclick="showTab('whatsapp',this)">💬 WhatsApp API</div>
+        <div class="rptab"        onclick="showTab('status',this)">🔄 Status</div>
+      </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+
+      <!-- DETAILS TAB -->
+      <div class="tab-pane active" id="tab-details">
+        <div class="detail-section" id="detailPersonal"></div>
+        <div class="detail-section" id="detailLoan"></div>
+        <div class="detail-section" id="detailAllocation"></div>
+      </div>
+
+      <!-- WHATSAPP TAB -->
+      <div class="tab-pane" id="tab-whatsapp">
+        <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:10px;padding:8px 12px;font-size:11px;color:#856404;margin-bottom:12px">
+          ℹ️ Messages shown are from Meta API number only
+        </div>
+        <div class="wa-messages" id="waMessages"></div>
+        <div class="wa-actions">
+          <button class="wa-action-btn" onclick="showTemplateList()">📋 Send Template</button>
+          <button class="wa-action-btn" onclick="showQuickReplies()">⚡ Quick Reply</button>
+        </div>
+        <div id="waSubPanel"></div>
+        <div class="wa-input-wrap">
+          <div class="wa-input-row">
+            <textarea class="wa-textarea" id="waInput" placeholder="Type a message (24hr window only)..."
+              rows="1" oninput="autoResize(this)" onkeydown="handleWAKey(event)"></textarea>
+            <button class="wa-send" onclick="sendWAMessage()">➤</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATUS TAB -->
+      <div class="tab-pane" id="tab-status">
+        <div class="status-form">
+          <label class="status-label">Update Lead Status</label>
+          <select class="status-select" id="statusSelect">
+            <option value="">Select status...</option>
+            <option value="Lead Captured">📱 Lead Captured</option>
+            <option value="Documents Pending">📄 Documents Pending</option>
+            <option value="In Process">⚙️ In Process</option>
+            <option value="Allocated">🏦 Allocated</option>
+            <option value="Approved">✅ Approved</option>
+            <option value="Rejected">❌ Rejected</option>
+            <option value="Disbursed">💰 Disbursed</option>
+          </select>
+
+          <div id="rejectionWrap" style="display:none">
+            <label class="status-label">Rejection Reason</label>
+            <input type="text" class="status-input" id="rejectionReason" placeholder="Enter rejection reason...">
+          </div>
+
+          <div id="disbursedWrap" style="display:none">
+            <label class="status-label">Disbursed Amount (₹)</label>
+            <input type="number" class="status-input" id="disbursedAmount" placeholder="Enter disbursed amount...">
+          </div>
+
+          <button class="btn-save" id="saveStatusBtn" onclick="saveStatus()">💾 Save Status</button>
+
+          <div style="margin-top:10px;padding:10px;background:var(--surface2);border-radius:8px;font-size:11px;color:var(--text2)">
+            <strong>Current Status:</strong> <span id="currentStatusDisplay">—</span><br>
+            <strong>DSA:</strong> <span id="currentDSADisplay">—</span><br>
+            <strong>Allocated On:</strong> <span id="currentAllocDisplay">—</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- TEMPLATE OVERLAY -->
+<div class="overlay" id="templateOverlay" onclick="closeOverlay(event,'templateOverlay')">
+  <div class="popup-sheet">
+    <div class="popup-header">
+      <div class="popup-title">📋 Send Template</div>
+      <div class="popup-close" onclick="closeAllOverlays()">✕</div>
+    </div>
+    <div class="popup-list" id="templateListPopup"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytDsEm2Z1_JD1Gpn-faYSdF1lVMIXxotMQ3qcB4P_7QIZC3juK8PZuhSTinkdlhASdEA/exec";
+var RM_MOBILE       = "9594592020";
+var RM_NAME         = "Manoj";
+
+// Quick replies
+var QUICK_REPLIES = [
+  {
+    name: "Please Pick Up Call",
+    text: "Hi! 📞 I tried reaching you regarding your loan application!\n\nPlease pick up my call or call me back:\n📱 " + RM_MOBILE + " (" + RM_NAME + ")\n\nThis will help us get you the best loan deal faster! 🏆"
+  },
+  {
+    name: "Need More Details",
+    text: "Hi! 😊 Thank you for reaching out to VastMyWealth!\n\nCould you please share:\n→ Loan type required?\n→ Loan amount needed?\n→ City?\n\nThis helps us match you with the best lender! ✅"
+  }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+var allLeads      = [];
+var filteredLeads = [];
+var selectedLead  = null;
+var templates     = [];
+var statusFilter  = "";
+var sourceFilter  = "all";
+var waMessages    = [];
+var isMobile      = window.innerWidth < 769;
+
+// 30 day cutoff for inactive leads
+var INACTIVE_DAYS = 30;
+var INACTIVE_STATUSES = ["Lead Captured", "Documents Pending"];
+
+window.addEventListener("resize", function(){ isMobile = window.innerWidth < 769; });
+
+var COLORS = ["#004a99","#0891b2","#7c3aed","#b45309","#dc2626","#047857","#9333ea"];
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener("load", function() {
+  loadLeads();
+  loadTemplates();
+});
+
+// ============================================================
+// LOAD LEADS
+// ============================================================
+function loadLeads() {
+  document.querySelector('.crm-refresh').textContent = "⏳";
+  fetch(APPS_SCRIPT_URL + "?action=getLeads&role=admin")
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      document.querySelector('.crm-refresh').textContent = "🔄";
+      if (d.success) {
+        allLeads = d.leads || [];
+        updatePipeline();
+        applyFilters();
+        toast("✅ " + allLeads.length + " leads loaded", "ok");
+      } else {
+        loadDemoLeads();
+      }
+    })
+    .catch(function() {
+      document.querySelector('.crm-refresh').textContent = "🔄";
+      loadDemoLeads();
+      toast("❌ Connection error — demo mode", "err");
+    });
+}
+
+function loadTemplates() {
+  fetch(APPS_SCRIPT_URL + "?action=getTemplates")
+    .then(function(r){ return r.json(); })
+    .then(function(d){ if(d.success && d.templates) templates = d.templates; })
+    .catch(function(){});
+}
+
+// ============================================================
+// PIPELINE STATS
+// ============================================================
+function updatePipeline() {
+  var counts = {
+    all:0, captured:0, pending:0, process:0,
+    allocated:0, approved:0, disbursed:0, rejected:0
+  };
+
+  allLeads.forEach(function(l) {
+    if (isInactive(l)) return; // skip inactive
+    counts.all++;
+    var s = (l.status||"").toLowerCase();
+    if (s.indexOf("captured")   !== -1) counts.captured++;
+    if (s.indexOf("pending")    !== -1) counts.pending++;
+    if (s.indexOf("process")    !== -1) counts.process++;
+    if (s.indexOf("allocat")    !== -1) counts.allocated++;
+    if (s.indexOf("approv")     !== -1) counts.approved++;
+    if (s.indexOf("disburse")   !== -1) counts.disbursed++;
+    if (s.indexOf("reject")     !== -1) counts.rejected++;
+  });
+
+  document.getElementById("cnt-all").textContent      = counts.all;
+  document.getElementById("cnt-captured").textContent  = counts.captured;
+  document.getElementById("cnt-pending").textContent   = counts.pending;
+  document.getElementById("cnt-process").textContent   = counts.process;
+  document.getElementById("cnt-allocated").textContent = counts.allocated;
+  document.getElementById("cnt-approved").textContent  = counts.approved;
+  document.getElementById("cnt-disbursed").textContent = counts.disbursed;
+  document.getElementById("cnt-rejected").textContent  = counts.rejected;
+
+  document.getElementById("crmSub").textContent = counts.all + " active leads";
+}
+
+// ============================================================
+// INACTIVE CHECK — Hide if > 30 days and docs not submitted
+// ============================================================
+function isInactive(lead) {
+  if (!lead.timestamp) return false;
+  var status = (lead.status || "").toLowerCase();
+  var isStuck = INACTIVE_STATUSES.some(function(s) {
+    return status.indexOf(s.toLowerCase()) !== -1;
+  });
+  if (!isStuck) return false;
+  try {
+    var created = new Date(lead.timestamp);
+    var days    = (new Date() - created) / (1000 * 60 * 60 * 24);
+    return days > INACTIVE_DAYS;
+  } catch(e) { return false; }
+}
+
+// ============================================================
+// FILTERS
+// ============================================================
+function filterByStatus(status) {
+  statusFilter = status;
+  // Update active pipeline stat
+  document.querySelectorAll(".pstat").forEach(function(p){ p.classList.remove("active"); });
+  var key = status === "" ? "all" :
+    status.toLowerCase().indexOf("captured")  !== -1 ? "captured" :
+    status.toLowerCase().indexOf("pending")   !== -1 ? "pending"  :
+    status.toLowerCase().indexOf("process")   !== -1 ? "process"  :
+    status.toLowerCase().indexOf("allocat")   !== -1 ? "allocated":
+    status.toLowerCase().indexOf("approv")    !== -1 ? "approved" :
+    status.toLowerCase().indexOf("disburse")  !== -1 ? "disbursed":
+    status.toLowerCase().indexOf("reject")    !== -1 ? "rejected" : "all";
+  var el = document.getElementById("ps-" + key);
+  if (el) el.classList.add("active");
+  applyFilters();
+}
+
+function setSourceFilter(f, el) {
+  sourceFilter = f;
+  document.querySelectorAll(".ftab").forEach(function(t){ t.classList.remove("active"); });
+  if (el) el.classList.add("active");
+  applyFilters();
+}
+
+function applyFilters() {
+  var s = (document.getElementById("searchInput")||{value:""}).value.toLowerCase().trim();
+
+  filteredLeads = allLeads.filter(function(l) {
+    // Hide inactive leads
+    if (isInactive(l)) return false;
+
+    // Search
+    if (s) {
+      var nameMatch   = l.fullName && l.fullName.toLowerCase().indexOf(s) !== -1;
+      var mobileMatch = l.mobile && l.mobile.indexOf(s) !== -1;
+      var refMatch    = l.refId && l.refId.toLowerCase().indexOf(s) !== -1;
+      if (!nameMatch && !mobileMatch && !refMatch) return false;
+    }
+
+    // Status filter
+    if (statusFilter) {
+      var st = (l.status||"").toLowerCase();
+      if (st.indexOf(statusFilter.toLowerCase()) === -1) return false;
+    }
+
+    // Source filter
+    if (sourceFilter === "direct") {
+      var src = String(l.source||"").replace(/\D/g,"");
+      if (src.length >= 10) return false;
+    }
+    if (sourceFilter === "partner") {
+      var src2 = String(l.source||"").replace(/\D/g,"");
+      if (src2.length < 10) return false;
+    }
+
+    return true;
+  });
+
+  renderLeadList();
+}
+
+// ============================================================
+// RENDER LEAD LIST
+// ============================================================
+function renderLeadList() {
+  var list = document.getElementById("leadList");
+
+  if (filteredLeads.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div>' +
+      '<div class="empty-title">No leads found</div>' +
+      '<div class="empty-sub">Try a different filter</div></div>';
+    return;
+  }
+
+  var html = "";
+  filteredLeads.forEach(function(l, i) {
+    var color    = COLORS[l.mobile.charCodeAt(l.mobile.length-1) % COLORS.length];
+    var lt       = (l.loanType||"").toUpperCase();
+    var tagCls   = "tag-pl"; var tagLbl = "PL";
+    if      (lt.indexOf("PERSONAL")  !== -1) { tagCls="tag-pl";  tagLbl="PL"; }
+    else if (lt.indexOf("BUSINESS")  !== -1) { tagCls="tag-bl";  tagLbl="BL"; }
+    else if (lt.indexOf("HOME")      !== -1) { tagCls="tag-hl";  tagLbl="HL"; }
+    else if (lt.indexOf("PROPERTY")  !== -1 || lt.indexOf("AGAINST") !== -1) { tagCls="tag-lap"; tagLbl="LAP"; }
+
+    var sCls = getStatusClass(l.status||"");
+    var src  = String(l.source||"").replace(/\D/g,"");
+    var srcTag = src.length >= 10 ? "tag-partner" : "tag-direct";
+    var srcLbl = src.length >= 10 ? "🤝 Partner" : "📢 Direct";
+
+    var initials    = l.fullName && l.fullName !== "—" ? l.fullName.charAt(0).toUpperCase() : "?";
+    var activeClass = selectedLead && selectedLead.row === l.row ? " active" : "";
+    var dt = "";
+    try { var d=new Date(l.timestamp); if(!isNaN(d)) dt=d.toLocaleDateString("en-IN",{day:"2-digit",month:"short"}); } catch(e){}
+
+    html += '<div class="lead-item'+activeClass+'" onclick="openLead('+i+')">' +
+      '<div class="li-avatar" style="background:'+color+'">'+initials+'</div>' +
+      '<div class="li-body">' +
+        '<div class="li-row1">' +
+          '<div class="li-name">'+esc(l.fullName||"Unknown")+'</div>' +
+          '<div class="li-time">'+dt+'</div>' +
+        '</div>' +
+        '<div class="li-mobile">'+esc(l.refId)+'  •  '+esc(l.mobile)+'</div>' +
+        '<div class="li-tags">' +
+          '<span class="tag '+tagCls+'">'+tagLbl+'</span>' +
+          '<span class="tag '+srcTag+'">'+srcLbl+'</span>' +
+          '<span class="status-badge '+sCls+'">'+esc(l.status||"Pending")+'</span>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  });
+  list.innerHTML = html;
+}
+
+// ============================================================
+// OPEN LEAD
+// ============================================================
+function openLead(idx) {
+  selectedLead = filteredLeads[idx];
+  if (!selectedLead) return;
+
+  var l     = selectedLead;
+  var color = COLORS[l.mobile.charCodeAt(l.mobile.length-1) % COLORS.length];
+  var initials = l.fullName && l.fullName !== "—" ? l.fullName.charAt(0).toUpperCase() : "?";
+
+  document.getElementById("rpAvatar").textContent       = initials;
+  document.getElementById("rpAvatar").style.background  = color;
+  document.getElementById("rpName").textContent         = l.fullName || "Unknown";
+  document.getElementById("rpSub").textContent          = (l.loanType||"—") + " • " + l.refId;
+
+  // Action buttons
+  var cleanMob = l.mobile.replace(/\D/g,"");
+  document.getElementById("rpCallBtn").href = "tel:+" + cleanMob;
+  document.getElementById("rpWABtn").href   = "https://wa.me/" + cleanMob;
+  document.getElementById("rpDocsBtn").href = l.driveFolderUrl || "#";
+  if (!l.driveFolderUrl) document.getElementById("rpDocsBtn").style.opacity = "0.4";
+  else document.getElementById("rpDocsBtn").style.opacity = "1";
+
+  // Build details
+  buildDetails(l);
+
+  // Build WA messages
+  loadWAMessages(l.mobile);
+
+  // Status tab
+  document.getElementById("statusSelect").value         = l.vendorStatus || l.status || "";
+  document.getElementById("currentStatusDisplay").textContent = l.vendorStatus || l.status || "—";
+  document.getElementById("currentDSADisplay").textContent    = l.vendorAllocation || "—";
+  document.getElementById("currentAllocDisplay").textContent  = l.allocationStamp || "—";
+  toggleStatusFields(l.vendorStatus || l.status || "");
+
+  // Show active
+  document.getElementById("rpEmpty").style.display  = "none";
+  document.getElementById("rpActive").style.display = "flex";
+  if (isMobile) document.getElementById("rightPanel").classList.add("open");
+
+  // Reset to details tab
+  showTab("details", document.querySelector(".rptab"));
+  renderLeadList();
+}
+
+function buildDetails(l) {
+  var lt = (l.loanType||"").toUpperCase();
+
+  var amount = l.plAmount !== "—" ? l.plAmount :
+               l.blAmount !== "—" ? l.blAmount :
+               l.hlAmount !== "—" ? l.hlAmount :
+               l.lapAmount !== "—" ? l.lapAmount : "—";
+
+  var src    = String(l.source||"").replace(/\D/g,"");
+  var srcLbl = src.length >= 10 ? "🤝 Partner +" + src : "📢 Direct";
+
+  document.getElementById("detailPersonal").innerHTML =
+    '<div class="detail-section-title">👤 Applicant</div>' +
+    row("Name",        l.fullName) +
+    row("Mobile",      l.mobile) +
+    row("City",        l.city) +
+    row("Type",        l.applicantType) +
+    row("CIBIL",       l.appCibil) +
+    row("Source",      srcLbl) +
+    row("Ref ID",      l.refId);
+
+  var loanRows = row("Loan Type", l.loanType) + row("Amount", amount) + row("CIBIL", l.appCibil);
+  if (lt.indexOf("PERSONAL") !== -1) loanRows += row("Salary", l.plSalary||"—");
+  if (lt.indexOf("BUSINESS") !== -1) loanRows += row("Vintage", l.blVintage||"—");
+
+  document.getElementById("detailLoan").innerHTML =
+    '<div class="detail-section-title">💼 Loan Details</div>' + loanRows;
+
+  document.getElementById("detailAllocation").innerHTML =
+    '<div class="detail-section-title">🏦 Allocation</div>' +
+    row("DSA",          l.vendorAllocation||"Not Allocated") +
+    row("Suggested",    l.vendorSuggestion||"—") +
+    row("Allocated On", l.allocationStamp||"—") +
+    row("WA Sent",      l.whatsappSent||"—") +
+    row("Status",       l.vendorStatus||l.status||"—") +
+    (l.disbursedAmount && l.disbursedAmount !== "—" ? row("Disbursed", "₹"+l.disbursedAmount) : "") +
+    (l.rejectionReason && l.rejectionReason !== "—" ? row("Rejection", l.rejectionReason) : "");
+}
+
+function row(label, value) {
+  return '<div class="detail-row">' +
+    '<div class="detail-label">'+esc(label)+'</div>' +
+    '<div class="detail-value">'+esc(value||"—")+'</div>' +
+  '</div>';
+}
+
+// ============================================================
+// LOAD WA MESSAGES
+// ============================================================
+function loadWAMessages(mobile) {
+  var container = document.getElementById("waMessages");
+  container.innerHTML = '<div style="text-align:center;padding:16px"><div class="spinner" style="margin:0 auto"></div></div>';
+
+  fetch(APPS_SCRIPT_URL + "?action=getMessages")
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.success && d.messages) {
+        var cleanMob = mobile.replace(/\D/g,"");
+        var found = null;
+        d.messages.forEach(function(m) {
+          var cm = m.mobile.replace(/\D/g,"");
+          if (cm === cleanMob || cm === "91"+cleanMob || "91"+cm === cleanMob) found = m;
+        });
+        renderWAMessages(found);
+      } else {
+        container.innerHTML = '<div class="wa-no-msgs">No messages found</div>';
+      }
+    })
+    .catch(function() {
+      container.innerHTML = '<div class="wa-no-msgs">Could not load messages</div>';
+    });
+}
+
+function renderWAMessages(m) {
+  var container = document.getElementById("waMessages");
+  if (!m) {
+    container.innerHTML = '<div class="wa-no-msgs">📭 No WhatsApp messages yet for this customer</div>';
+    return;
+  }
+
+  var html = "";
+
+  if (m.message3 && m.message3.trim()) {
+    html += '<div class="wa-bubble"><div class="wa-bubble-label">Earlier</div>' +
+      esc(m.message3).replace(/\n/g,"<br>") + '</div>';
+  }
+  if (m.message2 && m.message2.trim()) {
+    html += '<div class="wa-bubble"><div class="wa-bubble-label">Previous</div>' +
+      esc(m.message2).replace(/\n/g,"<br>") + '</div>';
+  }
+  if (m.message1 && m.message1.trim()) {
+    html += '<div class="wa-bubble">' +
+      '<div class="wa-bubble-label">Latest — 📱 '+esc(m.mobile)+'</div>' +
+      esc(m.message1).replace(/\n/g,"<br>") +
+      '<div class="wa-bubble-time">'+(m.timestamp ? new Date(m.timestamp).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}) : "")+'</div>' +
+    '</div>';
+  }
+  if (!m.message1 && !m.message2 && !m.message3) {
+    html = '<div class="wa-no-msgs">📭 No message content yet</div>';
+  }
+
+  if (m.templateSent === "Yes" && m.templateName) {
+    html += '<div class="wa-template-sent">✅ Template sent: <strong>'+esc(m.templateName)+'</strong>' +
+      (m.autoSentAt ? ' · '+esc(m.autoSentAt) : '') + '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+// ============================================================
+// WHATSAPP ACTIONS
+// ============================================================
+function showTemplateList() {
+  document.getElementById("waSubPanel").innerHTML = "";
+  if (templates.length === 0) {
+    fetch(APPS_SCRIPT_URL + "?action=getTemplates")
+      .then(function(r){ return r.json(); })
+      .then(function(d) {
+        if (d.success) { templates = d.templates || []; renderTemplateInline(); }
+      });
+  } else { renderTemplateInline(); }
+}
+
+function renderTemplateInline() {
+  var html = '<div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase">Select Template:</div>';
+  templates.forEach(function(t, i) {
+    var catCls = t.category === "MARKETING" ? "tcat-m" : "tcat-u";
+    html += '<div class="template-item" onclick="sendTemplate('+i+')">' +
+      '<div class="template-name">'+esc(t.name)+'<span class="tcat '+catCls+'">'+esc(t.category)+'</span></div>' +
+      '<div class="template-body">'+esc(t.body||"—")+'</div>' +
+    '</div>';
+  });
+  document.getElementById("waSubPanel").innerHTML = html;
+}
+
+function sendTemplate(idx) {
+  if (!selectedLead) return;
+  var t = templates[idx];
+  if (!t) return;
+  document.getElementById("waSubPanel").innerHTML = "";
+  toast("📤 Sending " + t.name + "...", "ok");
+  fetch(APPS_SCRIPT_URL + "?action=sendTemplate&mobile=" +
+    encodeURIComponent(selectedLead.mobile) +
+    "&templateName=" + encodeURIComponent(t.name) + "&params=[]")
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.success) { toast("✅ Template sent!", "ok"); loadWAMessages(selectedLead.mobile); }
+      else toast("❌ Failed — check Meta token", "err");
+    })
+    .catch(function(){ toast("❌ Connection error", "err"); });
+}
+
+function showQuickReplies() {
+  var html = '<div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase">Quick Replies:</div>';
+  QUICK_REPLIES.forEach(function(qr, i) {
+    html += '<div class="qr-option" onclick="useQuickReply('+i+')">' +
+      '<div class="qr-name">'+esc(qr.name)+'</div>' +
+      '<div class="qr-text">'+esc(qr.text.substring(0,100))+(qr.text.length>100?"...":"")+'</div>' +
+    '</div>';
+  });
+  document.getElementById("waSubPanel").innerHTML = html;
+}
+
+function useQuickReply(idx) {
+  var qr = QUICK_REPLIES[idx];
+  if (!qr) return;
+  document.getElementById("waSubPanel").innerHTML = "";
+  document.getElementById("waInput").value = qr.text;
+  autoResize(document.getElementById("waInput"));
+  toast("✅ Quick reply loaded!", "ok");
+}
+
+function sendWAMessage() {
+  var input = document.getElementById("waInput");
+  var text  = input.value.trim();
+  if (!text || !selectedLead) return;
+  input.value = ""; input.style.height = "auto";
+  toast("📤 Sending...", "ok");
+  fetch(APPS_SCRIPT_URL + "?action=sendText&mobile=" +
+    encodeURIComponent(selectedLead.mobile) + "&message=" + encodeURIComponent(text))
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.success) { toast("✅ Message sent!", "ok"); }
+      else toast("❌ Failed — 24hr window may have expired", "err");
+    })
+    .catch(function(){ toast("❌ Connection error", "err"); });
+}
+
+function handleWAKey(e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendWAMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 80) + "px";
+}
+
+// ============================================================
+// STATUS UPDATE
+// ============================================================
+document.getElementById("statusSelect").addEventListener("change", function() {
+  toggleStatusFields(this.value);
+});
+
+function toggleStatusFields(status) {
+  var s = (status||"").toLowerCase();
+  document.getElementById("rejectionWrap").style.display = s.indexOf("reject")   !== -1 ? "block" : "none";
+  document.getElementById("disbursedWrap").style.display = s.indexOf("disburse") !== -1 ? "block" : "none";
+}
+
+function saveStatus() {
+  if (!selectedLead) return;
+  var status    = document.getElementById("statusSelect").value;
+  var reason    = document.getElementById("rejectionReason").value || "";
+  var disbursed = document.getElementById("disbursedAmount").value || "";
+  var vendor    = selectedLead.vendorAllocation || "";
+
+  if (!status) { toast("Please select a status!", "err"); return; }
+
+  var btn = document.getElementById("saveStatusBtn");
+  btn.textContent = "⏳ Saving...";
+  btn.disabled    = true;
+
+  fetch(APPS_SCRIPT_URL + "?action=updateStatus" +
+    "&row="       + selectedLead.row +
+    "&status="    + encodeURIComponent(status) +
+    "&reason="    + encodeURIComponent(reason) +
+    "&vendor="    + encodeURIComponent(vendor) +
+    "&disbursed=" + encodeURIComponent(disbursed))
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      btn.textContent = "💾 Save Status";
+      btn.disabled    = false;
+      if (d.success) {
+        toast("✅ Status updated!", "ok");
+        selectedLead.vendorStatus = status;
+        selectedLead.status       = status;
+        document.getElementById("currentStatusDisplay").textContent = status;
+        updatePipeline();
+        renderLeadList();
+      } else { toast("❌ Update failed!", "err"); }
+    })
+    .catch(function() {
+      btn.textContent = "💾 Save Status";
+      btn.disabled    = false;
+      toast("❌ Connection error", "err");
+    });
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function showTab(name, el) {
+  document.querySelectorAll(".rptab").forEach(function(t){ t.classList.remove("active"); });
+  document.querySelectorAll(".tab-pane").forEach(function(p){ p.classList.remove("active"); });
+  if (el) el.classList.add("active");
+  else document.querySelectorAll(".rptab")[name === "details" ? 0 : name === "whatsapp" ? 1 : 2].classList.add("active");
+  document.getElementById("tab-" + name).classList.add("active");
+  if (name === "whatsapp" && selectedLead) loadWAMessages(selectedLead.mobile);
+}
+
+function closeDetail() {
+  document.getElementById("rightPanel").classList.remove("open");
+  selectedLead = null;
+  renderLeadList();
+}
+
+// ============================================================
+// OVERLAYS
+// ============================================================
+function closeOverlay(e, id) {
+  if (e.target === document.getElementById(id)) closeAllOverlays();
+}
+function closeAllOverlays() {
+  document.getElementById("templateOverlay").classList.remove("show");
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function getStatusClass(status) {
+  var s = (status||"").toLowerCase();
+  if (s.indexOf("captured")  !== -1) return "s-captured";
+  if (s.indexOf("pending")   !== -1) return "s-pending";
+  if (s.indexOf("process")   !== -1) return "s-process";
+  if (s.indexOf("allocat")   !== -1) return "s-allocated";
+  if (s.indexOf("approv")    !== -1) return "s-approved";
+  if (s.indexOf("disburse")  !== -1) return "s-disbursed";
+  if (s.indexOf("reject")    !== -1) return "s-rejected";
+  return "s-captured";
+}
+
+function esc(s) {
+  return String(s||"")
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function toast(msg, type) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className   = "toast " + (type||"");
+  t.classList.add("show");
+  clearTimeout(t._t);
+  t._t = setTimeout(function(){ t.classList.remove("show"); }, 3000);
+}
+
+// ============================================================
+// DEMO DATA
+// ============================================================
+function loadDemoLeads() {
+  allLeads = [
+    {row:2,refId:"VMW-0002",timestamp:"2026-03-30T10:00:00",source:"",
+     fullName:"Rajesh Kumar",mobile:"919876543210",city:"Mumbai",applicantType:"Salaried",
+     loanType:"Personal Loan",appCibil:"Above 700",plAmount:"2-5 Lacs",plSalary:"50K-1L",
+     vendorSuggestion:"My Mudra",vendorAllocation:"My Mudra",status:"Allocated",
+     allocationStamp:"30/03/2026 11:00",whatsappSent:"Auto-Sent",
+     vendorStatus:"In Process",rejectionReason:"",disbursedAmount:"",driveFolderUrl:""},
+    {row:3,refId:"VMW-0003",timestamp:"2026-03-30T09:00:00",source:"9594594567",
+     fullName:"Priya Desai",mobile:"918765432109",city:"Pune",applicantType:"Self-Employed",
+     loanType:"Home Loan",appCibil:"700-750",hlAmount:"25-50 Lacs",
+     vendorSuggestion:"Turtlemint",vendorAllocation:"",status:"Documents Pending",
+     allocationStamp:"",whatsappSent:"Auto-Sent",
+     vendorStatus:"",rejectionReason:"",disbursedAmount:"",driveFolderUrl:""},
+    {row:4,refId:"VMW-0004",timestamp:"2026-03-28T08:00:00",source:"",
+     fullName:"Amit Shah",mobile:"917654321098",city:"Delhi",applicantType:"Salaried",
+     loanType:"Business Loan",appCibil:"Above 750",blAmount:"10-15 Lacs",blVintage:"2-5 years",
+     vendorSuggestion:"My Mudra",vendorAllocation:"My Mudra",status:"Approved",
+     allocationStamp:"28/03/2026 10:00",whatsappSent:"Auto-Sent",
+     vendorStatus:"Approved",rejectionReason:"",disbursedAmount:"1200000",driveFolderUrl:""}
+  ];
+  updatePipeline();
+  applyFilters();
+}
+
+// Auto refresh every 3 mins
+setInterval(function(){ loadLeads(); }, 180000);
+</script>
+</body>
+</html>
