@@ -413,7 +413,7 @@ html, body {
           </div>
 
           <div class="field-wrap">
-            <label class="field-label field-required">Customer Full Name</label>
+            <label class="field-label field-required">Customer Full </label>
             <input class="form-control" id="custName" type="text"
               placeholder="Enter customer's full name" />
           </div>
@@ -732,9 +732,7 @@ function renderLeads() {
           (amount !== "—" ? '<span class="tag" style="background:#f0f4f8;color:#6c757d">₹ ' + esc(amount) + '</span>' : '') +
           '<span class="status-badge ' + statusCls + '">' + esc(status) + '</span>' +
         '</div>' +
-        (l.vendorAllocation && l.vendorAllocation !== "—" && l.vendorAllocation !== "" ?
-          '<div class="lead-detail">🏦 ' + esc(l.vendorAllocation) + '</div>' : '') +
-        (l.disbursedAmount && l.disbursedAmount !== "—" ?
+                (l.disbursedAmount && l.disbursedAmount !== "—" ?
           '<div class="lead-detail">💰 Disbursed: ₹' + esc(l.disbursedAmount) + '</div>' : '') +
       '</div>' +
     '</div>';
