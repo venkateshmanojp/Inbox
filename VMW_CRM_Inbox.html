@@ -1188,6 +1188,10 @@ function toggleStatusFields(status) {
 
 function saveStatus() {
   if (!selectedLead) return;
+  if (selectedLead.row === 0) {
+    toast("⚠️ Status updates only after customer fills Google Form!", "err");
+    return;
+  }
   var status    = document.getElementById("statusSelect").value;
   var reason    = document.getElementById("rejectionReason").value || "";
   var disbursed = document.getElementById("disbursedAmount").value || "";
