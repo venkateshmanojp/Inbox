@@ -1188,8 +1188,26 @@ function toggleStatusFields(status) {
 
 function saveStatus() {
   if (selectedLead.row === 0) {
-  // For WA Leads — update WA Leads tab directly
+  var loanTypeChange = document.getElementById("loanTypeEdit").value;
+  
+  // Update loan type if changed
+  if (loanTypeChange) {
+    fetch(APPS_SCRIPT_URL + "?action=updateWALeadLoanType&mobile=" +
+      encodeURIComponent(selectedLead.mobile) +
+      "&loanType=" + encodeURIComponent(loanTypeChange))
+      .then(function(r){ return r.json(); })
+      .then(function(d) {
+        if (d.success) {
+          toast("✅ Loan type updated!", "ok");
+          selectedLead.loanType = loanTypeChange;
+          renderLeadList();
+        }
+      });
+  }
+
+  // Reject if selected
   if (status === "Rejected") {
+
     fetch(APPS_SCRIPT_URL + "?action=rejectWALead&mobile=" + 
       encodeURIComponent(selectedLead.mobile) + 
       "&reason=" + encodeURIComponent(document.getElementById("rejectionReason").value || "Not responding"))
