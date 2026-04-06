@@ -1197,53 +1197,52 @@ function toggleStatusFields(status) {
 }
 
 function saveStatus() {
-  if (selectedLead.row === 0) {
-  var loanTypeChange = document.getElementById("loanTypeEdit").value;
-  
-  // Update loan type if changed
-  if (loanTypeChange) {
-    fetch(APPS_SCRIPT_URL + "?action=updateWALeadLoanType&mobile=" +
-      encodeURIComponent(selectedLead.mobile) +
-      "&loanType=" + encodeURIComponent(loanTypeChange))
-      .then(function(r){ return r.json(); })
-      .then(function(d) {
-        if (d.success) {
-          toast("✅ Loan type updated!", "ok");
-          selectedLead.loanType = loanTypeChange;
-          renderLeadList();
-        }
-      });
-  }
-
-  // Reject if selected
-  if (status === "Rejected") {
-
-    fetch(APPS_SCRIPT_URL + "?action=rejectWALead&mobile=" + 
-      encodeURIComponent(selectedLead.mobile) + 
-      "&reason=" + encodeURIComponent(document.getElementById("rejectionReason").value || "Not responding"))
-      .then(function(r){ return r.json(); })
-      .then(function(d) {
-        if (d.success) {
-          toast("✅ Lead rejected!", "ok");
-          selectedLead.status = "Rejected";
-          updatePipeline();
-          renderLeadList();
-        }
-      });
-  } else {
-    toast("⚠️ Only Rejection allowed for WhatsApp leads!", "err");
-  }
-  return;
-}
+  if (!selectedLead) return;
 
   var status    = document.getElementById("statusSelect").value;
   var reason    = document.getElementById("rejectionReason").value || "";
   var disbursed = document.getElementById("disbursedAmount").value || "";
-  var vendor    = selectedLead.vendorAllocation || "";
+  var loanTypeChange = document.getElementById("loanTypeEdit").value;
 
+  if (selectedLead.row === 0) {
+    // Update loan type if changed
+    if (loanTypeChange) {
+      fetch(APPS_SCRIPT_URL + "?action=updateWALeadLoanType&mobile=" +
+        encodeURIComponent(selectedLead.mobile) +
+        "&loanType=" + encodeURIComponent(loanTypeChange))
+        .then(function(r){ return r.json(); })
+        .then(function(d) {
+          if (d.success) {
+            toast("✅ Loan type updated!", "ok");
+            selectedLead.loanType = loanTypeChange;
+            renderLeadList();
+          }
+        });
+    }
+    // Reject WA Lead
+    if (status === "Rejected") {
+      fetch(APPS_SCRIPT_URL + "?action=rejectWALead&mobile=" +
+        encodeURIComponent(selectedLead.mobile) +
+        "&reason=" + encodeURIComponent(reason || "Not responding"))
+        .then(function(r){ return r.json(); })
+        .then(function(d) {
+          if (d.success) {
+            toast("✅ Lead rejected!", "ok");
+            selectedLead.status = "Rejected";
+            updatePipeline();
+            renderLeadList();
+          }
+        });
+    } else if (!loanTypeChange) {
+      toast("⚠️ Only Rejection allowed for WhatsApp leads!", "err");
+    }
+    return;
+  }
+
+  // Master Sheet lead — normal status update
   if (!status) { toast("Please select a status!", "err"); return; }
-
-  var btn = document.getElementById("saveStatusBtn");
+  var vendor = selectedLead.vendorAllocation || "";
+  var btn    = document.getElementById("saveStatusBtn");
   btn.textContent = "⏳ Saving...";
   btn.disabled    = true;
 
@@ -1272,6 +1271,7 @@ function saveStatus() {
       toast("❌ Connection error", "err");
     });
 }
+
 
 // ============================================================
 // TABS
