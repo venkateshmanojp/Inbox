@@ -94,7 +94,18 @@ html, body {
 }
 .pipeline-stats {
   display:flex; gap:4px; overflow-x:auto;
+  padding-bottom:4px;
 }
+
+.pstat {
+  flex-shrink:0; padding:6px 8px;
+  border-radius:8px; cursor:pointer;
+  border:1.5px solid var(--border);
+  background:var(--surface2);
+  transition:all 0.15s; text-align:center;
+  min-width:55px;
+}
+
 .pipeline-stats::-webkit-scrollbar { display:none; }
 .pstat {
   flex-shrink:0; padding:6px 10px;
@@ -108,7 +119,7 @@ html, body {
 .pstat.active { background:var(--primary3); border-color:var(--primary); }
 .pstat-icon  { font-size:14px; margin-bottom:2px; }
 .pstat-num   { font-size:14px; font-weight:800; color:var(--text); font-family:var(--mono); line-height:1; }
-.pstat-label { font-size:9px; color:var(--text3); font-weight:600; margin-top:2px; white-space:nowrap; }
+.pstat-label { font-size:8px; color:var(--text3); font-weight:600; margin-top:2px; white-space:nowrap; }
 
 /* ── SEARCH + FILTER ── */
 .search-wrap {
