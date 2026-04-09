@@ -597,10 +597,12 @@ html, body {
           <div class="rp-sub" id="rpSub">—</div>
         </div>
         <div class="rp-actions">
-          <a class="action-btn call" id="rpCallBtn" href="#">📞 Call</a>
-          <a class="action-btn wa"   id="rpWABtn"   href="#" target="_blank">💬 WA</a>
-          <a class="action-btn docs" id="rpDocsBtn" href="#" target="_blank">📁 Docs</a>
-        </div>
+  <a class="action-btn call" id="rpCallBtn" href="#">📞 Call</a>
+  <a class="action-btn wa"   id="rpWABtn"   href="#" target="_blank">💬 WA</a>
+  <a class="action-btn docs" id="rpDocsBtn" href="#" target="_blank">📁 Docs</a>
+  <button class="action-btn" id="rpDSABtn" onclick="allocateDSA()" style="background:#ede9fe;border-color:#a78bfa;color:#5b21b6">🏦 DSA</button>
+</div>
+
       </div>
       <div class="rp-tabs">
         <div class="rptab active" onclick="showTab('details',this)">📋 Details</div>
@@ -1368,6 +1370,20 @@ function loadDemoLeads() {
   ];
   updatePipeline();
   applyFilters();
+}
+function allocateDSA() {
+  if (!selectedLead) { toast("Select a lead first!", "err"); return; }
+  if (selectedLead.row === 0) { toast("⚠️ WA lead — no Master Sheet row!", "err"); return; }
+  
+  if (!confirm("Send DSA Allocation Telegram for " + selectedLead.fullName + "?")) return;
+  
+  fetch(APPS_SCRIPT_URL + "?action=triggerDSATelegram&row=" + selectedLead.row)
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.success) toast("✅ DSA Telegram sent!", "ok");
+      else toast("❌ Failed: " + (d.error||""), "err");
+    })
+    .catch(function(){ toast("❌ Connection error", "err"); });
 }
 
 // Auto refresh every 3 mins
