@@ -596,12 +596,17 @@ html, body {
           <div class="rp-name" id="rpName">—</div>
           <div class="rp-sub" id="rpSub">—</div>
         </div>
-        <div class="rp-actions">
-  <a class="action-btn call" id="rpCallBtn" href="#">📞 Call</a>
-  <a class="action-btn wa"   id="rpWABtn"   href="#" target="_blank">💬 WA</a>
-  <a class="action-btn docs" id="rpDocsBtn" href="#" target="_blank">📁 Docs</a>
-  <button class="action-btn" id="rpDSABtn" onclick="allocateDSA()" style="background:#ede9fe;border-color:#a78bfa;color:#5b21b6">🏦 DSA</button>
+        <div style="display:flex;flex-direction:column;gap:6px;width:100%">
+  <div class="rp-actions">
+    <a class="action-btn call" id="rpCallBtn" href="#">📞 Call</a>
+    <a class="action-btn wa"   id="rpWABtn"   href="#" target="_blank">💬 WA</a>
+    <a class="action-btn docs" id="rpDocsBtn" href="#" target="_blank">📁 Docs</a>
+  </div>
+  <button onclick="allocateDSA()" style="width:100%;padding:8px;background:#ede9fe;
+    border:1.5px solid #a78bfa;border-radius:8px;font-size:12px;font-weight:700;
+    color:#5b21b6;cursor:pointer">🏦 Allocate DSA via Telegram</button>
 </div>
+
 
       </div>
       <div class="rp-tabs">
