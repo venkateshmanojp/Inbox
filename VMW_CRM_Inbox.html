@@ -94,18 +94,7 @@ html, body {
 }
 .pipeline-stats {
   display:flex; gap:4px; overflow-x:auto;
-  padding-bottom:4px;
 }
-
-.pstat {
-  flex-shrink:0; padding:6px 8px;
-  border-radius:8px; cursor:pointer;
-  border:1.5px solid var(--border);
-  background:var(--surface2);
-  transition:all 0.15s; text-align:center;
-  min-width:55px;
-}
-
 .pipeline-stats::-webkit-scrollbar { display:none; }
 .pstat {
   flex-shrink:0; padding:6px 10px;
@@ -119,7 +108,7 @@ html, body {
 .pstat.active { background:var(--primary3); border-color:var(--primary); }
 .pstat-icon  { font-size:14px; margin-bottom:2px; }
 .pstat-num   { font-size:14px; font-weight:800; color:var(--text); font-family:var(--mono); line-height:1; }
-.pstat-label { font-size:8px; color:var(--text3); font-weight:600; margin-top:2px; white-space:nowrap; }
+.pstat-label { font-size:9px; color:var(--text3); font-weight:600; margin-top:2px; white-space:nowrap; }
 
 /* ── SEARCH + FILTER ── */
 .search-wrap {
@@ -596,18 +585,11 @@ html, body {
           <div class="rp-name" id="rpName">—</div>
           <div class="rp-sub" id="rpSub">—</div>
         </div>
-        <div style="display:flex;flex-direction:column;gap:6px;width:100%">
-  <div class="rp-actions">
-    <a class="action-btn call" id="rpCallBtn" href="#">📞 Call</a>
-    <a class="action-btn wa"   id="rpWABtn"   href="#" target="_blank">💬 WA</a>
-    <a class="action-btn docs" id="rpDocsBtn" href="#" target="_blank">📁 Docs</a>
-  </div>
-  <button onclick="allocateDSA()" style="width:100%;padding:8px;background:#ede9fe;
-    border:1.5px solid #a78bfa;border-radius:8px;font-size:12px;font-weight:700;
-    color:#5b21b6;cursor:pointer">🏦 Allocate DSA via Telegram</button>
-</div>
-
-
+        <div class="rp-actions">
+          <a class="action-btn call" id="rpCallBtn" href="#">📞 Call</a>
+          <a class="action-btn wa"   id="rpWABtn"   href="#" target="_blank">💬 WA</a>
+          <a class="action-btn docs" id="rpDocsBtn" href="#" target="_blank">📁 Docs</a>
+        </div>
       </div>
       <div class="rp-tabs">
         <div class="rptab active" onclick="showTab('details',this)">📋 Details</div>
@@ -649,16 +631,6 @@ html, body {
       <!-- STATUS TAB -->
       <div class="tab-pane" id="tab-status">
         <div class="status-form">
-          <label class="status-label">Change Loan Type</label>
-<select class="status-select" id="loanTypeEdit">
-  <option value="">No change</option>
-  <option value="Personal Loan">Personal Loan</option>
-  <option value="Business Loan">Business Loan</option>
-  <option value="Home Loan">Home Loan</option>
-  <option value="Loan Against Property">Loan Against Property (LAP)</option>
-  <option value="Partner Inquiry">Partner Inquiry</option>
-</select>
-
           <label class="status-label">Update Lead Status</label>
           <select class="status-select" id="statusSelect">
             <option value="">Select status...</option>
@@ -1057,57 +1029,76 @@ function loadWAMessages(mobile) {
   var container = document.getElementById("waMessages");
   container.innerHTML = '<div style="text-align:center;padding:16px"><div class="spinner" style="margin:0 auto"></div></div>';
 
-  fetch(APPS_SCRIPT_URL + "?action=getMessages")
+  var p1 = fetch(APPS_SCRIPT_URL + "?action=getMessages")
     .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if (d.success && d.messages) {
-        var cleanMob = mobile.replace(/\D/g,"");
-        var found = null;
-        d.messages.forEach(function(m) {
-          var cm = m.mobile.replace(/\D/g,"");
-          if (cm === cleanMob || cm === "91"+cleanMob || "91"+cm === cleanMob) found = m;
-        });
-        renderWAMessages(found);
-      } else {
-        container.innerHTML = '<div class="wa-no-msgs">No messages found</div>';
-      }
-    })
-    .catch(function() {
-      container.innerHTML = '<div class="wa-no-msgs">Could not load messages</div>';
-    });
+    .catch(function(){ return {success:false}; });
+
+  var p2 = fetch(APPS_SCRIPT_URL + "?action=getConversation&mobile=" + encodeURIComponent(mobile))
+    .then(function(r){ return r.json(); })
+    .catch(function(){ return {success:false, conversation:[]}; });
+
+  Promise.all([p1, p2]).then(function(results) {
+    var d    = results[0];
+    var conv = results[1];
+    var found = null;
+    if (d.success && d.messages) {
+      var cleanMob = mobile.replace(/\D/g,"");
+      d.messages.forEach(function(m) {
+        var cm = m.mobile.replace(/\D/g,"");
+        if (cm === cleanMob || cm === "91"+cleanMob || "91"+cm === cleanMob) found = m;
+      });
+    }
+    var conversation = (conv.conversation || []).slice(-6);
+    renderWAMessages(found, conversation);
+  }).catch(function() {
+    container.innerHTML = '<div class="wa-no-msgs">Could not load messages</div>';
+  });
 }
 
-function renderWAMessages(m) {
+function renderWAMessages(m, conversation) {
   var container = document.getElementById("waMessages");
-  if (!m) {
-    container.innerHTML = '<div class="wa-no-msgs">📭 No WhatsApp messages yet for this customer</div>';
-    return;
-  }
-
   var html = "";
 
-  if (m.message3 && m.message3.trim()) {
-    html += '<div class="wa-bubble"><div class="wa-bubble-label">Earlier</div>' +
-      esc(m.message3).replace(/\n/g,"<br>") + '</div>';
-  }
-  if (m.message2 && m.message2.trim()) {
-    html += '<div class="wa-bubble"><div class="wa-bubble-label">Previous</div>' +
-      esc(m.message2).replace(/\n/g,"<br>") + '</div>';
-  }
-  if (m.message1 && m.message1.trim()) {
-    html += '<div class="wa-bubble">' +
-      '<div class="wa-bubble-label">Latest — 📱 '+esc(m.mobile)+'</div>' +
-      esc(m.message1).replace(/\n/g,"<br>") +
-      '<div class="wa-bubble-time">'+(m.timestamp ? new Date(m.timestamp).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}) : "")+'</div>' +
-    '</div>';
-  }
-  if (!m.message1 && !m.message2 && !m.message3) {
-    html = '<div class="wa-no-msgs">📭 No message content yet</div>';
+  // Show bot conversation if available
+  if (conversation && conversation.length > 0) {
+    html += '<div style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;margin-bottom:8px;padding:0 4px">💬 Bot Conversation</div>';
+    conversation.forEach(function(msg) {
+      var isBot      = msg.role === "bot";
+      var label      = isBot ? "🤖 Bot" : "👤 Customer";
+      var labelColor = isBot ? "color:#004a99" : "color:#16a34a";
+      html += '<div class="wa-bubble">' +
+        '<div class="wa-bubble-label" style="' + labelColor + '">' + label + '</div>' +
+        esc(msg.message || "").replace(/\n/g,"<br>") +
+        '</div>';
+    });
+    html += '<hr style="border:none;border-top:1px dashed #e2e8f0;margin:10px 0">';
   }
 
-  if (m.templateSent === "Yes" && m.templateName) {
-    html += '<div class="wa-template-sent">✅ Template sent: <strong>'+esc(m.templateName)+'</strong>' +
-      (m.autoSentAt ? ' · '+esc(m.autoSentAt) : '') + '</div>';
+  // Show WA Lead messages
+  if (m) {
+    if (m.message3 && m.message3.trim()) {
+      html += '<div class="wa-bubble"><div class="wa-bubble-label" style="color:#16a34a">👤 Earlier</div>' +
+        esc(m.message3).replace(/\n/g,"<br>") + '</div>';
+    }
+    if (m.message2 && m.message2.trim()) {
+      html += '<div class="wa-bubble"><div class="wa-bubble-label" style="color:#16a34a">👤 Previous</div>' +
+        esc(m.message2).replace(/\n/g,"<br>") + '</div>';
+    }
+    if (m.message1 && m.message1.trim()) {
+      html += '<div class="wa-bubble">' +
+        '<div class="wa-bubble-label" style="color:#16a34a">👤 Latest — 📱 '+esc(m.mobile)+'</div>' +
+        esc(m.message1).replace(/\n/g,"<br>") +
+        '<div class="wa-bubble-time">'+(m.timestamp ? new Date(m.timestamp).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}) : "")+'</div>' +
+      '</div>';
+    }
+    if (m.templateSent === "Yes" && m.templateName) {
+      html += '<div class="wa-template-sent">✅ Template sent: <strong>'+esc(m.templateName)+'</strong>' +
+        (m.autoSentAt ? ' · '+esc(m.autoSentAt) : '') + '</div>';
+    }
+  }
+
+  if (!html) {
+    html = '<div class="wa-no-msgs">📭 No WhatsApp messages yet for this customer</div>';
   }
 
   container.innerHTML = html;
@@ -1143,24 +1134,11 @@ function sendTemplate(idx) {
   if (!selectedLead) return;
   var t = templates[idx];
   if (!t) return;
-
-  // Determine banner URL based on template name
-  var bannerUrl = "";
-  if (t.name === "welcome_hl" || t.name === "hl_promotion") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=151p69azxUf_tcJH9uwueGtigbyqMscFk";
-  } else if (t.name === "welcome_lap") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=1WUkhuqRbtAm5hHk3dnZ8JLzYHz4E2AHq";
-  } else if (t.name === "welcome_unsecured") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=1llb-yxEyzSR1JVEqdM4TmI7_ICDOFSrD";
-  }
-
   document.getElementById("waSubPanel").innerHTML = "";
   toast("📤 Sending " + t.name + "...", "ok");
   fetch(APPS_SCRIPT_URL + "?action=sendTemplate&mobile=" +
     encodeURIComponent(selectedLead.mobile) +
-    "&templateName=" + encodeURIComponent(t.name) +
-    "&params=[]" +
-    "&imageUrl=" + encodeURIComponent(bannerUrl))
+    "&templateName=" + encodeURIComponent(t.name) + "&params=[]")
     .then(function(r){ return r.json(); })
     .then(function(d) {
       if (d.success) { toast("✅ Template sent!", "ok"); loadWAMessages(selectedLead.mobile); }
@@ -1229,51 +1207,14 @@ function toggleStatusFields(status) {
 
 function saveStatus() {
   if (!selectedLead) return;
-
   var status    = document.getElementById("statusSelect").value;
   var reason    = document.getElementById("rejectionReason").value || "";
   var disbursed = document.getElementById("disbursedAmount").value || "";
-  var loanTypeChange = document.getElementById("loanTypeEdit").value;
+  var vendor    = selectedLead.vendorAllocation || "";
 
-  if (selectedLead.row === 0) {
-    // Update loan type if changed
-    if (loanTypeChange) {
-      fetch(APPS_SCRIPT_URL + "?action=updateWALeadLoanType&mobile=" +
-        encodeURIComponent(selectedLead.mobile) +
-        "&loanType=" + encodeURIComponent(loanTypeChange))
-        .then(function(r){ return r.json(); })
-        .then(function(d) {
-          if (d.success) {
-            toast("✅ Loan type updated!", "ok");
-            selectedLead.loanType = loanTypeChange;
-            renderLeadList();
-          }
-        });
-    }
-    // Reject WA Lead
-    if (status === "Rejected") {
-      fetch(APPS_SCRIPT_URL + "?action=rejectWALead&mobile=" +
-        encodeURIComponent(selectedLead.mobile) +
-        "&reason=" + encodeURIComponent(reason || "Not responding"))
-        .then(function(r){ return r.json(); })
-        .then(function(d) {
-          if (d.success) {
-            toast("✅ Lead rejected!", "ok");
-            selectedLead.status = "Rejected";
-            updatePipeline();
-            renderLeadList();
-          }
-        });
-    } else if (!loanTypeChange) {
-      toast("⚠️ Only Rejection allowed for WhatsApp leads!", "err");
-    }
-    return;
-  }
-
-  // Master Sheet lead — normal status update
   if (!status) { toast("Please select a status!", "err"); return; }
-  var vendor = selectedLead.vendorAllocation || "";
-  var btn    = document.getElementById("saveStatusBtn");
+
+  var btn = document.getElementById("saveStatusBtn");
   btn.textContent = "⏳ Saving...";
   btn.disabled    = true;
 
@@ -1302,7 +1243,6 @@ function saveStatus() {
       toast("❌ Connection error", "err");
     });
 }
-
 
 // ============================================================
 // TABS
@@ -1389,23 +1329,10 @@ function loadDemoLeads() {
   updatePipeline();
   applyFilters();
 }
-function allocateDSA() {
-  if (!selectedLead) { toast("Select a lead first!", "err"); return; }
-  if (selectedLead.row === 0) { toast("⚠️ WA lead — no Master Sheet row!", "err"); return; }
-  
-  if (!confirm("Send DSA Allocation Telegram for " + selectedLead.fullName + "?")) return;
-  
-  fetch(APPS_SCRIPT_URL + "?action=triggerDSATelegram&row=" + selectedLead.row)
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if (d.success) toast("✅ DSA Telegram sent!", "ok");
-      else toast("❌ Failed: " + (d.error||""), "err");
-    })
-    .catch(function(){ toast("❌ Connection error", "err"); });
-}
 
 // Auto refresh every 3 mins
 setInterval(function(){ loadLeads(); }, 180000);
 </script>
 </body>
 </html>
+
