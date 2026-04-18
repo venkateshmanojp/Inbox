@@ -1199,11 +1199,27 @@ function sendTemplate(idx) {
   if (!selectedLead) return;
   var t = templates[idx];
   if (!t) return;
+
+  var bannerUrl = "";
+  if (t.name === "welcome_hl") {
+    bannerUrl = "https://drive.google.com/uc?export=download&id=151p69azxUf_tcJH9uwueGtigbyqMscFk";
+  } else if (t.name === "welcome_lap") {
+    bannerUrl = "https://drive.google.com/uc?export=download&id=1WUkhuqRbtAm5hHk3dnZ8JLzYHz4E2AHq";
+  } else if (t.name === "welcome_unsecured") {
+    bannerUrl = "https://drive.google.com/uc?export=download&id=1llb-yxEyzSR1JVEqdM4TmI7_ICDOFSrD";
+  } else if (t.name === "partner_recruitment") {
+    bannerUrl = "https://drive.google.com/uc?export=download&id=18WCgSkS9sLmeI8YNgaLPKbBw-QJ90xPv";
+  } else if (t.name === "construction_finance") {
+    bannerUrl = "https://drive.google.com/uc?export=download&id=1la4AWXmwlpwqXWC9cZsvUnwxgyq92Bxz";
+  }
+
   document.getElementById("waSubPanel").innerHTML = "";
   toast("📤 Sending " + t.name + "...", "ok");
   fetch(APPS_SCRIPT_URL + "?action=sendTemplate&mobile=" +
     encodeURIComponent(selectedLead.mobile) +
-    "&templateName=" + encodeURIComponent(t.name) + "&params=[]")
+    "&templateName=" + encodeURIComponent(t.name) +
+    "&params=[]" +
+    "&imageUrl=" + encodeURIComponent(bannerUrl))
     .then(function(r){ return r.json(); })
     .then(function(d) {
       if (d.success) { toast("✅ Template sent!", "ok"); loadWAMessages(selectedLead.mobile); }
