@@ -436,6 +436,15 @@ html, body {
 .tcat-m { background:#fef3c7; color:#92400e; }
 .tcat-u { background:#dbeafe; color:#1d4ed8; }
 
+/* ── PROFILE TAB ── */
+.profile-wrap { padding:4px 0; }
+.dsa-btn {
+  padding:8px 14px; border:1.5px solid #004a99;
+  border-radius:8px; background:white; color:#004a99;
+  font-size:13px; font-weight:700; cursor:pointer;
+}
+.dsa-btn:hover { background:#004a99; color:white; }
+
 /* ── STATUS TAB ── */
 .status-form { background:var(--surface); border-radius:12px; padding:14px; box-shadow:var(--shadow); }
 .status-label { font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; display:block; }
@@ -631,6 +640,7 @@ html, body {
       <div class="rp-tabs">
         <div class="rptab active" onclick="showTab('details',this)">📋 Details</div>
         <div class="rptab"        onclick="showTab('whatsapp',this)">💬 WhatsApp API</div>
+        <div class="rptab"        onclick="showTab('profile',this)">📄 Profile</div>
         <div class="rptab"        onclick="showTab('status',this)">🔄 Status</div>
       </div>
     </div>
@@ -674,6 +684,46 @@ html, body {
               rows="1" oninput="autoResize(this)" onkeydown="handleWAKey(event)"></textarea>
             <button class="wa-send" onclick="sendWAMessage()">➤</button>
           </div>
+        </div>
+      </div>
+
+      <!-- PROFILE TAB -->
+      <div class="tab-pane" id="tab-profile">
+        <div class="profile-wrap">
+
+          <!-- Profile display -->
+          <div id="profileContent" style="white-space:pre-wrap;font-size:12px;font-family:'JetBrains Mono',monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;margin-bottom:12px;min-height:100px;">
+            <span style="color:#94a3b8;">No profile generated yet.\nSubmit documents via Banking Portal to generate AI profile.</span>
+          </div>
+
+          <!-- Corrections -->
+          <div class="feedback-wrap" style="background:#f0fdf4;border-color:#86efac;">
+            <label class="feedback-label" style="color:#166534;">✏️ Corrections / Additional Info</label>
+            <textarea id="profileCorrections" class="feedback-textarea" rows="3"
+              placeholder="e.g. Income is 95000 not 85000&#10;Additional strength: Government employee, pension after retirement"></textarea>
+            <div class="feedback-actions">
+              <button class="btn-save-feedback" onclick="regenerateProfile()" style="background:#16a34a;">🔄 Regenerate Profile</button>
+            </div>
+          </div>
+
+          <!-- DSA Allocation -->
+          <div style="margin-top:12px;">
+            <label class="feedback-label">🏦 Allocate DSA</label>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+              <button class="dsa-btn" onclick="allocateDSA('My Mudra')">My Mudra</button>
+              <button class="dsa-btn" onclick="allocateDSA('RU Loans')">RU Loans</button>
+              <button class="dsa-btn" onclick="allocateDSA('Turtlemint')">Turtlemint</button>
+              <button class="dsa-btn" onclick="allocateDSA('Manual Decision')">⚙️ Manual</button>
+            </div>
+          </div>
+
+          <!-- Gmail Button -->
+          <div style="margin-top:12px;">
+            <button class="btn-save-feedback" onclick="openGmailDSA()" style="width:100%;background:#004a99;">
+              📧 Open Gmail with Profile
+            </button>
+          </div>
+
         </div>
       </div>
 
@@ -1199,27 +1249,11 @@ function sendTemplate(idx) {
   if (!selectedLead) return;
   var t = templates[idx];
   if (!t) return;
-
-  var bannerUrl = "";
-  if (t.name === "welcome_hl") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=151p69azxUf_tcJH9uwueGtigbyqMscFk";
-  } else if (t.name === "welcome_lap") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=1WUkhuqRbtAm5hHk3dnZ8JLzYHz4E2AHq";
-  } else if (t.name === "welcome_unsecured") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=1llb-yxEyzSR1JVEqdM4TmI7_ICDOFSrD";
-  } else if (t.name === "partner_recruitment") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=18WCgSkS9sLmeI8YNgaLPKbBw-QJ90xPv";
-  } else if (t.name === "construction_finance") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=1la4AWXmwlpwqXWC9cZsvUnwxgyq92Bxz";
-  }
-
   document.getElementById("waSubPanel").innerHTML = "";
   toast("📤 Sending " + t.name + "...", "ok");
   fetch(APPS_SCRIPT_URL + "?action=sendTemplate&mobile=" +
     encodeURIComponent(selectedLead.mobile) +
-    "&templateName=" + encodeURIComponent(t.name) +
-    "&params=[]" +
-    "&imageUrl=" + encodeURIComponent(bannerUrl))
+    "&templateName=" + encodeURIComponent(t.name) + "&params=[]")
     .then(function(r){ return r.json(); })
     .then(function(d) {
       if (d.success) { toast("✅ Template sent!", "ok"); loadWAMessages(selectedLead.mobile); }
@@ -1266,6 +1300,77 @@ function sendWAMessage() {
 
 function handleWAKey(e) {
   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendWAMessage(); }
+}
+
+// ============================================================
+// PROFILE TAB
+// ============================================================
+function loadProfile(lead) {
+  var profileEl = document.getElementById("profileContent");
+  if (!profileEl) return;
+  if (lead && lead.aiProfile && lead.aiProfile.length > 10) {
+    profileEl.textContent = lead.aiProfile;
+  } else {
+    profileEl.innerHTML = '<span style="color:#94a3b8;">No profile generated yet.\nSubmit documents via Banking Portal to generate AI profile.</span>';
+  }
+}
+
+function regenerateProfile() {
+  if (!selectedLead) return;
+  var corrections = document.getElementById("profileCorrections").value.trim();
+  if (!corrections) { toast("Please enter corrections first!", "err"); return; }
+
+  toast("🔄 Regenerating profile...", "ok");
+  fetch(APPS_SCRIPT_URL + "?action=regenerateProfile" +
+    "&mobile=" + encodeURIComponent(selectedLead.mobile) +
+    "&corrections=" + encodeURIComponent(corrections))
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        toast("✅ Regeneration triggered! Check Telegram.", "ok");
+        document.getElementById("profileCorrections").value = "";
+      } else {
+        toast("❌ Failed!", "err");
+      }
+    })
+    .catch(function(){ toast("❌ Connection error", "err"); });
+}
+
+function allocateDSA(dsa) {
+  if (!selectedLead || !selectedLead.row) {
+    toast("❌ Cannot allocate — lead not in Master Sheet yet!", "err");
+    return;
+  }
+  if (!confirm("Allocate to " + dsa + "?")) return;
+  toast("⏳ Allocating to " + dsa + "...", "ok");
+  fetch(APPS_SCRIPT_URL + "?action=updateStatus" +
+    "&row="    + encodeURIComponent(selectedLead.row) +
+    "&status=" + encodeURIComponent("Allocated") +
+    "&vendor=" + encodeURIComponent(dsa))
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        toast("✅ Allocated to " + dsa + "!", "ok");
+        selectedLead.vendorAllocation = dsa;
+      } else {
+        toast("❌ Allocation failed!", "err");
+      }
+    })
+    .catch(function(){ toast("❌ Connection error", "err"); });
+}
+
+function openGmailDSA() {
+  if (!selectedLead) return;
+  var profile  = document.getElementById("profileContent").textContent || "";
+  var dsa      = selectedLead.vendorAllocation || "";
+  var name     = selectedLead.fullName || "";
+  var loanType = selectedLead.loanType || "";
+  var refId    = selectedLead.refId    || "";
+
+  var subject  = encodeURIComponent(name + " | " + loanType + " | " + dsa);
+  var body     = encodeURIComponent(profile + "\n\nDrive: " + (selectedLead.driveFolderUrl || "N/A"));
+
+  window.open("mailto:?subject=" + subject + "&body=" + body);
 }
 
 // ============================================================
@@ -1383,9 +1488,10 @@ function showTab(name, el) {
   document.querySelectorAll(".rptab").forEach(function(t){ t.classList.remove("active"); });
   document.querySelectorAll(".tab-pane").forEach(function(p){ p.classList.remove("active"); });
   if (el) el.classList.add("active");
-  else document.querySelectorAll(".rptab")[name === "details" ? 0 : name === "whatsapp" ? 1 : 2].classList.add("active");
+  else document.querySelectorAll(".rptab")[name === "details" ? 0 : name === "whatsapp" ? 1 : name === "profile" ? 2 : 3].classList.add("active");
   document.getElementById("tab-" + name).classList.add("active");
   if (name === "whatsapp" && selectedLead) loadWAMessages(selectedLead.mobile);
+  if (name === "profile"  && selectedLead) loadProfile(selectedLead);
 }
 
 function closeDetail() {
