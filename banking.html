@@ -1,0 +1,2495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>VastMyWealth - Banker Profiling Portal</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+
+html { height:100%; width:100%; overflow-x:hidden; }
+
+body {
+  min-height:100%; width:100%; max-width:100vw; overflow-x:hidden;
+  background:#f0f4f8; font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+  font-size:15px; color:#1a1a2e; margin:0; padding:0;
+}
+
+:root {
+  --primary:#004a99; --primary2:#0062cc; --accent:#f59e0b;
+  --green:#16a34a; --light:#f0f6ff; --border:#dee2e6;
+  --text:#1a1a2e; --text2:#6c757d;
+}
+
+/* HEADER */
+.portal-header {
+  background:linear-gradient(135deg,#004a99,#0062cc);
+  color:white; padding:16px 16px 12px; text-align:center; width:100%;
+}
+.portal-logo {
+  width:48px; height:48px; background:rgba(255,255,255,0.15);
+  border-radius:14px; display:inline-flex; align-items:center;
+  justify-content:center; font-size:24px; margin-bottom:8px;
+  border:2px solid rgba(255,255,255,0.3);
+}
+.portal-title { font-size:18px; font-weight:700; margin-bottom:2px; }
+.portal-sub   { font-size:12px; opacity:0.85; margin-bottom:12px; }
+.progress-wrap { background:rgba(255,255,255,0.2); border-radius:20px; height:5px; margin:0 0 6px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--accent); border-radius:20px; transition:width 0.4s; }
+.progress-steps { display:flex; justify-content:space-between; font-size:9px; opacity:0.8; }
+.progress-step  { flex:1; text-align:center; }
+.progress-step.active { color:var(--accent); font-weight:700; opacity:1; }
+
+/* MAIN */
+.main-wrap { width:100%; max-width:600px; margin:0 auto; padding:12px 12px 100px; }
+
+/* SECTIONS */
+.form-section {
+  background:white; border-radius:14px; margin-bottom:12px;
+  overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.07);
+  display:none; width:100%;
+}
+.form-section.active { display:block; }
+.section-head {
+  background:linear-gradient(135deg,#004a99,#0062cc); color:white;
+  padding:12px 16px; display:flex; align-items:center; gap:10px;
+}
+.section-icon {
+  width:34px; height:34px; background:rgba(255,255,255,0.2);
+  border-radius:9px; display:flex; align-items:center;
+  justify-content:center; font-size:18px; flex-shrink:0;
+}
+.section-title { font-size:15px; font-weight:700; }
+.section-sub   { font-size:11px; opacity:0.8; margin-top:2px; }
+.section-body  { padding:14px; }
+
+/* FIELDS */
+.field-label {
+  font-size:11px; font-weight:600; color:var(--text2);
+  text-transform:uppercase; letter-spacing:0.4px;
+  margin-bottom:5px; display:block;
+}
+.field-required::after { content:" *"; color:#dc2626; }
+.form-control, .form-select {
+  border:1.5px solid var(--border); border-radius:10px;
+  padding:11px 13px; font-size:15px; color:var(--text);
+  background:#fafafa; width:100%; -webkit-appearance:none;
+  transition:border-color 0.15s;
+}
+.form-control:focus, .form-select:focus {
+  border-color:var(--primary); background:white;
+  box-shadow:0 0 0 3px rgba(0,74,153,0.1); outline:none;
+}
+.form-control.is-invalid { border-color:#dc2626; background:#fef2f2; }
+textarea.form-control { resize:none; }
+
+/* PROFILE TYPE */
+.type-selector { display:flex; gap:10px; margin-bottom:16px; }
+.type-btn {
+  flex:1; padding:14px 10px; border:2px solid var(--border);
+  border-radius:12px; background:white; cursor:pointer;
+  text-align:center; transition:all 0.2s;
+}
+.type-btn.active { border-color:var(--primary); background:var(--light); }
+.type-btn-icon  { font-size:28px; margin-bottom:5px; }
+.type-btn-label { font-size:13px; font-weight:700; color:var(--text); }
+.type-btn-sub   { font-size:11px; color:var(--text2); }
+
+/* RADIO */
+.radio-group { display:flex; flex-direction:column; gap:8px; }
+.radio-option {
+  display:flex; align-items:flex-start; gap:10px; padding:12px 13px;
+  border:1.5px solid var(--border); border-radius:10px;
+  cursor:pointer; background:#fafafa;
+}
+.radio-option.selected { border-color:var(--primary); background:var(--light); }
+.radio-option input[type="radio"] { margin-top:3px; flex-shrink:0; width:16px; height:16px; }
+.radio-label { font-size:14px; font-weight:600; }
+.radio-sub   { font-size:12px; color:var(--text2); margin-top:2px; }
+
+/* INFO BOX */
+.info-box {
+  background:#fffbeb; border:1px solid #fde68a; border-radius:10px;
+  padding:10px 13px; font-size:12px; color:#92400e; margin-bottom:14px;
+  display:flex; align-items:flex-start; gap:8px; line-height:1.5;
+}
+
+.warning-box {
+  background:#fef2f2; border:1px solid #fecaca; border-radius:10px;
+  padding:10px 13px; font-size:12px; color:#dc2626; margin-bottom:8px;
+  display:flex; align-items:flex-start; gap:8px; line-height:1.5;
+  display:none;
+}
+
+/* CHECKLIST */
+.checklist-box {
+  background:#f0f9ff; border:1px solid #bae6fd;
+  border-radius:12px; padding:14px; margin-bottom:14px;
+}
+.checklist-title {
+  font-size:13px; font-weight:700; color:#0c4a6e;
+  margin-bottom:10px; display:flex; align-items:center; gap:6px;
+}
+.checklist-item {
+  display:flex; align-items:center; gap:8px;
+  padding:5px 0; font-size:13px; color:#0c4a6e;
+}
+.checklist-section {
+  font-size:11px; font-weight:700; color:#0369a1;
+  text-transform:uppercase; margin:8px 0 4px; letter-spacing:0.4px;
+}
+
+/* DOCUMENT UPLOAD */
+.doc-list { display:flex; flex-direction:column; gap:10px; }
+.doc-item {
+  display:flex; align-items:center; gap:12px; background:#fafafa;
+  border:1.5px solid var(--border); border-radius:12px;
+  padding:13px 14px; cursor:pointer; transition:all 0.2s;
+}
+.doc-item.uploaded { border-color:var(--green); background:#f0fdf4; }
+.doc-icon {
+  width:46px; height:46px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px; flex-shrink:0; background:white;
+  border:1px solid var(--border);
+}
+.doc-item.uploaded .doc-icon { background:#d1fae5; border-color:#a7f3d0; }
+.doc-info { flex:1; min-width:0; }
+.doc-name { font-size:14px; font-weight:700; color:var(--text); }
+.doc-sub  { font-size:12px; color:var(--text2); margin-top:2px; }
+.doc-item.uploaded .doc-name { color:var(--green); }
+.doc-action {
+  width:38px; height:38px; border-radius:9px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px; flex-shrink:0; background:var(--light);
+  border:1px solid #bfdbfe;
+}
+.doc-item.uploaded .doc-action { background:#d1fae5; border-color:#a7f3d0; }
+.doc-badge {
+  font-size:10px; font-weight:700; padding:2px 7px;
+  border-radius:10px; display:inline-block; margin-top:3px;
+}
+.doc-badge.req { background:#fef3c7; color:#92400e; }
+.doc-badge.opt { background:#f3f4f6; color:#6b7280; }
+.doc-group-title {
+  font-size:11px; font-weight:700; color:var(--text2);
+  text-transform:uppercase; letter-spacing:0.5px;
+  margin:14px 0 8px; padding-left:2px;
+}
+
+/* DOC PROGRESS */
+.doc-progress-wrap {
+  background:white; border-radius:12px; padding:12px 14px;
+  margin-bottom:14px; border:1px solid var(--border);
+}
+.doc-progress-title {
+  font-size:12px; font-weight:700; color:var(--text2);
+  margin-bottom:8px; display:flex; justify-content:space-between;
+}
+.doc-progress-bar { height:6px; background:#e5e7eb; border-radius:10px; overflow:hidden; }
+.doc-progress-fill { height:100%; background:var(--green); border-radius:10px; transition:width 0.3s; }
+
+/* SOURCE PICKER */
+.source-picker {
+  background:white; border:1px solid var(--border);
+  border-radius:12px; padding:4px; margin-bottom:12px;
+  display:flex; gap:4px;
+}
+.source-btn {
+  flex:1; padding:8px; border:none; border-radius:9px;
+  font-size:12px; font-weight:600; cursor:pointer;
+  text-align:center; background:transparent; color:var(--text2); transition:all 0.2s;
+}
+.source-btn.active { background:var(--primary); color:white; }
+
+/* CONSENT */
+.consent-box {
+  background:#f0f9ff; border:1px solid #bae6fd;
+  border-radius:12px; padding:14px; margin-bottom:16px;
+}
+.consent-box label {
+  display:flex; gap:10px; cursor:pointer;
+  align-items:flex-start; font-size:13px; color:#0c4a6e; line-height:1.5;
+}
+.consent-box input[type="checkbox"] { width:18px; height:18px; margin-top:1px; flex-shrink:0; }
+
+/* CO-APP */
+.coapp-toggle {
+  display:flex; align-items:center; gap:10px; padding:13px;
+  background:var(--light); border-radius:10px; margin-bottom:14px;
+  cursor:pointer; border:1.5px solid #bfdbfe;
+}
+.coapp-toggle input[type="checkbox"] { width:18px; height:18px; cursor:pointer; }
+.coapp-toggle label { font-size:14px; font-weight:600; cursor:pointer; margin:0; }
+.coapp-fields { display:none; }
+.coapp-fields.show { display:block; }
+.coapp-mandatory {
+  background:#fee2e2; border:1.5px solid #fca5a5; border-radius:10px;
+  padding:10px 13px; font-size:12px; color:#991b1b; margin-bottom:14px;
+  display:flex; align-items:center; gap:8px;
+}
+
+/* NAV FIXED */
+.nav-btns {
+  position:fixed; bottom:0; left:0; right:0; display:flex;
+  gap:10px; padding:12px 16px; background:white;
+  border-top:1px solid var(--border); z-index:200;
+  box-shadow:0 -4px 16px rgba(0,0,0,0.08);
+}
+.btn-prev {
+  flex:1; padding:13px; border:2px solid var(--border);
+  border-radius:12px; background:white; font-size:15px;
+  font-weight:600; color:var(--text2); cursor:pointer;
+}
+.btn-next {
+  flex:2; padding:13px; border:none; border-radius:12px;
+  background:linear-gradient(135deg,#004a99,#0062cc);
+  font-size:15px; font-weight:700; color:white; cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,74,153,0.3);
+}
+.btn-submit {
+  width:100%; padding:16px; border:none; border-radius:12px;
+  background:linear-gradient(135deg,#16a34a,#15803d);
+  font-size:16px; font-weight:700; color:white; cursor:pointer;
+  box-shadow:0 4px 16px rgba(22,163,74,0.4);
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.btn-submit:disabled { opacity:0.7; pointer-events:none; }
+
+/* CROP MODAL */
+.crop-modal {
+  position:fixed; top:0; left:0; right:0; bottom:0;
+  background:rgba(0,0,0,0.95); z-index:9999; display:none;
+  flex-direction:column; width:100vw; height:100vh;
+}
+.crop-modal.show { display:flex; }
+.crop-header {
+  background:#111827; padding:14px 16px; color:white;
+  display:flex; align-items:center; justify-content:space-between; flex-shrink:0;
+}
+.crop-title { font-size:15px; font-weight:700; }
+.crop-sub   { font-size:11px; color:#9ca3af; }
+.crop-close { font-size:24px; cursor:pointer; color:#9ca3af; padding:4px; }
+.crop-body  { flex:1; overflow:hidden; background:#111827; display:flex; align-items:center; justify-content:center; }
+.crop-body img { max-width:100%; max-height:100%; display:block; }
+.crop-footer { background:#111827; padding:14px 16px; flex-shrink:0; }
+.crop-hint   { font-size:12px; color:#9ca3af; text-align:center; margin-bottom:10px; }
+.btn-crop {
+  width:100%; padding:15px; background:var(--accent);
+  border:none; border-radius:12px; font-size:16px;
+  font-weight:700; color:white; cursor:pointer;
+}
+
+/* SUCCESS SCREEN */
+.success-screen {
+  display:none; text-align:center; padding:30px 20px 40px;
+  min-height:100vh; background:white;
+}
+.success-screen.show { display:block; }
+
+.success-icon  { font-size:60px; margin-bottom:12px; }
+.success-title { font-size:22px; font-weight:800; color:var(--green); margin-bottom:8px; }
+.success-sub   { font-size:14px; color:var(--text2); line-height:1.7; max-width:340px; margin:0 auto 24px; }
+
+/* REFERRAL SECTION */
+.referral-section {
+  background:linear-gradient(135deg,#004a99,#0062cc);
+  border-radius:20px; padding:24px 20px;
+  margin:0 auto 20px; max-width:400px; color:white;
+}
+
+.referral-hook {
+  font-size:20px; font-weight:800; margin-bottom:6px; line-height:1.3;
+}
+
+.referral-sub {
+  font-size:13px; opacity:0.85; margin-bottom:16px; line-height:1.5;
+}
+
+.referral-earn {
+  background:rgba(255,255,255,0.15); border-radius:12px;
+  padding:12px 16px; margin-bottom:16px;
+  display:flex; align-items:center; gap:12px;
+}
+
+.earn-icon  { font-size:28px; flex-shrink:0; }
+.earn-text  { font-size:13px; line-height:1.5; }
+.earn-amount{ font-size:16px; font-weight:800; color:#fbbf24; }
+
+.referral-link-wrap {
+  background:rgba(255,255,255,0.1); border-radius:10px;
+  padding:10px 14px; margin-bottom:14px;
+  display:flex; align-items:center; gap:8px;
+}
+
+.referral-link-text {
+  flex:1; font-size:12px; font-family:monospace;
+  color:white; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+
+.btn-copy {
+  background:rgba(255,255,255,0.2); border:none; border-radius:8px;
+  padding:6px 12px; font-size:12px; font-weight:600;
+  color:white; cursor:pointer; flex-shrink:0; white-space:nowrap;
+}
+.btn-copy.copied { background:rgba(22,163,74,0.4); }
+
+.btn-wa-share {
+  width:100%; padding:14px; background:#25d366;
+  border:none; border-radius:12px; font-size:15px;
+  font-weight:700; color:white; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  box-shadow:0 4px 16px rgba(37,211,102,0.4);
+}
+
+/* TOAST */
+.vmw-toast {
+  position:fixed; bottom:80px; left:50%;
+  transform:translateX(-50%) translateY(30px);
+  background:#1f2937; color:white; padding:11px 20px;
+  border-radius:10px; font-size:13px; font-weight:600;
+  z-index:99999; opacity:0; transition:all 0.3s; pointer-events:none;
+  max-width:88vw; text-align:center; box-shadow:0 4px 20px rgba(0,0,0,0.25);
+}
+.vmw-toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+.vmw-toast.ok  { background:#16a34a; }
+.vmw-toast.err { background:#dc2626; }
+
+hr.field-divider { border:none; border-top:1px solid var(--border); margin:14px 0; }
+.d-none { display:none !important; }
+
+/* ── MOBILE VERIFY SCREEN ── */
+#mobileVerifyScreen {
+  min-height:100vh; display:flex; flex-direction:column;
+  background:#f0f4f8;
+}
+.verify-hero {
+  background:linear-gradient(135deg,#004a99,#0062cc);
+  padding:32px 20px 28px; text-align:center; color:white;
+}
+.verify-logo  { font-size:48px; margin-bottom:10px; }
+.verify-title { font-size:20px; font-weight:800; margin-bottom:4px; }
+.verify-sub   { font-size:13px; opacity:0.85; line-height:1.5; }
+.verify-body  { padding:24px 16px; flex:1; }
+.verify-card  {
+  background:white; border-radius:16px; padding:20px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.08); margin-bottom:16px;
+}
+.verify-label {
+  font-size:12px; font-weight:700; color:#6c757d;
+  text-transform:uppercase; letter-spacing:0.4px; margin-bottom:8px; display:block;
+}
+.verify-input {
+  width:100%; border:2px solid #dee2e6; border-radius:12px;
+  padding:14px 16px; font-size:18px; color:#1a1a2e;
+  letter-spacing:2px; font-family:monospace; outline:none;
+  transition:border-color 0.2s; background:#fafafa;
+  -webkit-appearance:none;
+}
+.verify-input:focus { border-color:#004a99; background:white; }
+.verify-btn {
+  width:100%; padding:16px; border:none; border-radius:12px;
+  background:linear-gradient(135deg,#004a99,#0062cc);
+  font-size:16px; font-weight:700; color:white; cursor:pointer;
+  box-shadow:0 4px 12px rgba(0,74,153,0.3); margin-top:8px;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.verify-btn:disabled { opacity:0.6; pointer-events:none; }
+.verify-error {
+  background:#fee2e2; border:1px solid #fca5a5; border-radius:10px;
+  padding:10px 14px; font-size:13px; color:#dc2626;
+  margin-top:12px; display:none; text-align:center;
+}
+.verify-info {
+  background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px;
+  padding:10px 14px; font-size:12px; color:#0c4a6e;
+  display:flex; align-items:center; gap:8px; line-height:1.5;
+}
+
+/* ── SIMPLE UPLOAD SCREEN ── */
+#simpleUploadScreen { display:none; }
+#cfScreen { display:none; }
+#adminUploadScreen { display:none; }
+
+/* ── ADMIN MODE STYLES ── */
+.admin-badge {
+  background:#f59e0b; color:white; font-size:11px; font-weight:700;
+  padding:3px 10px; border-radius:20px; display:inline-block; margin-bottom:8px;
+}
+.admin-header {
+  background:linear-gradient(135deg,#1a1a2e,#004a99);
+  color:white; padding:16px; text-align:center;
+}
+
+/* ── KEYBOARD FIX ── */
+.form-control:focus, .form-select:focus, .verify-input:focus {
+  scroll-margin-top:80px;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ ADMIN QUICK UPLOAD SCREEN ══ -->
+<div id="adminUploadScreen" style="display:none;">
+  <div class="admin-header">
+    <div class="portal-logo">💰</div>
+    <div class="portal-title">VastMyWealth — Admin Upload</div>
+    <div class="admin-badge">🔐 Manoj — Internal Use Only</div>
+  </div>
+  <div class="main-wrap">
+
+    <!-- Customer Details -->
+    <div class="form-section">
+      <div class="section-title">👤 Customer Details</div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Customer Mobile <span class="text-danger">*</span></label>
+        <input type="tel" class="form-control" id="adminMobile" placeholder="10-digit mobile"
+          maxlength="10" oninput="adminMobileCheck()" />
+        <div id="adminMobileStatus" style="font-size:12px;margin-top:4px;color:#6c757d"></div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Customer Name <span class="text-danger">*</span></label>
+        <input type="text" class="form-control" id="adminName" placeholder="Full name" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Loan Type <span class="text-danger">*</span></label>
+        <select class="form-select" id="adminLoanType">
+          <option value="">Select loan type...</option>
+          <option value="Personal Loan">Personal Loan</option>
+          <option value="Business Loan">Business Loan</option>
+          <option value="Home Loan">Home Loan</option>
+          <option value="Loan Against Property">Loan Against Property</option>
+          <option value="Balance Transfer + Top Up">Balance Transfer + Top Up</option>
+          <option value="Construction Finance">Construction Finance</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Loan Amount</label>
+        <input type="text" class="form-control" id="adminLoanAmount" placeholder="e.g. 50 Lakhs" />
+      </div>
+    </div>
+
+    <!-- Document Upload -->
+    <div class="form-section">
+      <div class="section-title">📁 Upload Documents</div>
+      <div style="font-size:12px;color:#6c757d;margin-bottom:12px">
+        Max 2MB per file • JPG, PNG, PDF only • Max 15 files total
+      </div>
+
+      <!-- Doc count -->
+      <div id="adminDocCount" style="font-size:13px;font-weight:600;color:#004a99;margin-bottom:12px">
+        0 / 15 documents uploaded
+      </div>
+
+      <!-- PAN -->
+      <div class="doc-upload-area" id="admin_area_pan" onclick="document.getElementById('admin_input_pan').click()">
+        <div class="doc-icon">🪪</div>
+        <div class="doc-label" id="admin_lbl_pan">PAN Card</div>
+        <div class="doc-action" id="admin_act_pan">📎 Upload</div>
+        <input type="file" id="admin_input_pan" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+          onchange="handleAdminUpload(this,'pan','PAN Card')">
+        <input type="hidden" id="admin_val_pan">
+      </div>
+
+      <!-- Aadhar -->
+      <div class="doc-upload-area" id="admin_area_aadhar" onclick="document.getElementById('admin_input_aadhar').click()">
+        <div class="doc-icon">🪪</div>
+        <div class="doc-label" id="admin_lbl_aadhar">Aadhar Card</div>
+        <div class="doc-action" id="admin_act_aadhar">📎 Upload</div>
+        <input type="file" id="admin_input_aadhar" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+          onchange="handleAdminUpload(this,'aadhar','Aadhar Card')">
+        <input type="hidden" id="admin_val_aadhar">
+      </div>
+
+      <!-- Salary Slip -->
+      <div class="doc-upload-area" id="admin_area_salary" onclick="document.getElementById('admin_input_salary').click()">
+        <div class="doc-icon">💰</div>
+        <div class="doc-label" id="admin_lbl_salary">Salary Slip / ITR</div>
+        <div class="doc-action" id="admin_act_salary">📎 Upload</div>
+        <input type="file" id="admin_input_salary" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+          onchange="handleAdminUpload(this,'salary','Salary Slip')">
+        <input type="hidden" id="admin_val_salary">
+      </div>
+
+      <!-- Bank Statement -->
+      <div class="doc-upload-area" id="admin_area_bank" onclick="document.getElementById('admin_input_bank').click()">
+        <div class="doc-icon">🏦</div>
+        <div class="doc-label" id="admin_lbl_bank">Bank Statement</div>
+        <div class="doc-action" id="admin_act_bank">📎 Upload</div>
+        <input type="file" id="admin_input_bank" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+          onchange="handleAdminUpload(this,'bank','Bank Statement')">
+        <input type="hidden" id="admin_val_bank">
+      </div>
+
+      <!-- Additional docs 1 -->
+      <div class="doc-upload-area" id="admin_area_extra1" onclick="document.getElementById('admin_input_extra1').click()">
+        <div class="doc-icon">📄</div>
+        <div class="doc-label" id="admin_lbl_extra1">Additional Document 1</div>
+        <div class="doc-action" id="admin_act_extra1">📎 Upload</div>
+        <input type="file" id="admin_input_extra1" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+          onchange="handleAdminUpload(this,'extra1','Additional Doc 1')">
+        <input type="hidden" id="admin_val_extra1">
+      </div>
+
+      <!-- Additional docs 2 -->
+      <div class="doc-upload-area" id="admin_area_extra2" onclick="document.getElementById('admin_input_extra2').click()">
+        <div class="doc-icon">📄</div>
+        <div class="doc-label" id="admin_lbl_extra2">Additional Document 2</div>
+        <div class="doc-action" id="admin_act_extra2">📎 Upload</div>
+        <input type="file" id="admin_input_extra2" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+          onchange="handleAdminUpload(this,'extra2','Additional Doc 2')">
+        <input type="hidden" id="admin_val_extra2">
+      </div>
+
+      <!-- Additional docs 3 -->
+      <div class="doc-upload-area" id="admin_area_extra3" onclick="document.getElementById('admin_input_extra3').click()">
+        <div class="doc-icon">📄</div>
+        <div class="doc-label" id="admin_lbl_extra3">Additional Document 3</div>
+        <div class="doc-action" id="admin_act_extra3">📎 Upload</div>
+        <input type="file" id="admin_input_extra3" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+          onchange="handleAdminUpload(this,'extra3','Additional Doc 3')">
+        <input type="hidden" id="admin_val_extra3">
+      </div>
+
+    </div>
+
+    <!-- Submit -->
+    <button class="btn-submit" id="adminSubmitBtn" onclick="submitAdminForm()">
+      <span id="adminSubmitText">📤 Submit & Analyze</span>
+      <span id="adminSubmitSpinner" style="display:none">⏳ Processing...</span>
+    </button>
+
+  </div>
+</div>
+
+<div class="portal-header" id="portalHeader">
+  <div class="portal-logo">💰</div>
+  <div class="portal-title">VastMyWealth Advisory</div>
+  <div class="portal-sub">Complete Banker Profiling Form</div>
+  <div class="progress-wrap"><div class="progress-fill" id="progressFill" style="width:14%"></div></div>
+  <div class="progress-steps">
+    <div class="progress-step active" id="ps1">Profile</div>
+    <div class="progress-step" id="ps2">Personal</div>
+    <div class="progress-step" id="ps3">Address</div>
+    <div class="progress-step" id="ps4">Work</div>
+    <div class="progress-step" id="ps5">Financial</div>
+    <div class="progress-step" id="ps6">Co-App</div>
+    <div class="progress-step" id="ps7">Docs</div>
+  </div>
+</div>
+
+<!-- ══ MOBILE VERIFICATION SCREEN ══ -->
+<div id="mobileVerifyScreen">
+  <div class="verify-hero">
+    <div class="verify-logo">💰</div>
+    <div class="verify-title">VastMyWealth Advisory</div>
+    <div class="verify-sub">Enter your WhatsApp number to continue<br>with your loan application</div>
+  </div>
+  <div class="verify-body">
+    <div class="verify-card">
+      <label class="verify-label">Your WhatsApp Mobile Number</label>
+      <input type="tel" class="verify-input" id="verifyMobile"
+        placeholder="10-digit mobile number" maxlength="10"
+        oninput="this.value=this.value.replace(/\D/g,'')"
+        onkeydown="if(event.key==='Enter'){verifyMobile()}"
+        inputmode="numeric">
+      <button class="verify-btn" id="verifyBtn" onclick="verifyMobile()">
+        <span id="verifyBtnText">Continue →</span>
+      </button>
+      <div class="verify-error" id="verifyError"></div>
+    </div>
+    <div class="verify-info">
+      <span>🔒</span>
+      <span>Your details are securely fetched from our system. This ensures the correct application form is shown to you.</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SIMPLE UPLOAD SCREEN (HL / LAP / BT+TU) ══ -->
+<div id="simpleUploadScreen">
+  <div class="portal-header" style="display:block;padding:14px 16px">
+    <div class="portal-logo">💰</div>
+    <div class="portal-title">VastMyWealth Advisory</div>
+    <div class="portal-sub" id="simplePortalSub">Document Submission</div>
+  </div>
+  <div class="main-wrap">
+    <form id="simpleForm" onsubmit="return false;">
+      <input type="hidden" name="loanType" id="simpleLoanType">
+      <input type="hidden" name="mobile"   id="simpleMobile">
+      <input type="hidden" name="empType"  value="Salaried">
+
+      <div class="form-section active" style="display:block">
+        <div class="section-head">
+          <div class="section-icon">👤</div>
+          <div><div class="section-title">Your Details</div>
+            <div class="section-sub">Please confirm your details</div></div>
+        </div>
+        <div class="section-body">
+          <div class="info-box mb-3">
+            <span>📸</span>
+            <span>Upload <strong>PAN Card, Aadhar Card and Bank Statement</strong> — these are mandatory. Other documents improve your loan approval chances!</span>
+          </div>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="field-label field-required">Full Name (as per PAN)</label>
+              <input type="text" class="form-control" name="applicantName" id="simpleApplicantName"
+                placeholder="Enter full name" required
+                onfocus="scrollToField(this)">
+            </div>
+            <div class="col-12">
+              <label class="field-label field-required">Mobile Number</label>
+              <input type="tel" class="form-control" name="mobileDisplay" id="simpleMobileDisplay"
+                placeholder="Mobile number" readonly style="background:#f0f0f0">
+            </div>
+          </div>
+
+          <hr class="field-divider">
+          <div class="doc-progress-wrap mb-3">
+            <div class="doc-progress-title">
+              <span>Documents Uploaded</span>
+              <span id="simpleDocProgressText">0 / 3</span>
+            </div>
+            <div class="doc-progress-bar">
+              <div class="doc-progress-fill" id="simpleDocProgressFill" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div class="doc-group-title">🪪 Identity Documents</div>
+          <div class="doc-list mb-2">
+            <div class="doc-item" id="s_area_pan" onclick="showSourcePickerSimple('pan','PAN Card')">
+              <div class="doc-icon">🪪</div>
+              <div class="doc-info">
+                <div class="doc-name" id="s_label_pan">PAN Card</div>
+                <div class="doc-sub">Front side clearly visible</div>
+                <span class="doc-badge req">Required</span>
+              </div>
+              <div class="doc-action" id="s_action_pan">📷</div>
+            </div>
+            <div class="doc-item" id="s_area_aadhar" onclick="showSourcePickerSimple('aadhar','Aadhar Card')">
+              <div class="doc-icon">🪪</div>
+              <div class="doc-info">
+                <div class="doc-name" id="s_label_aadhar">Aadhar Card</div>
+                <div class="doc-sub">Both front and back</div>
+                <span class="doc-badge req">Required</span>
+              </div>
+              <div class="doc-action" id="s_action_aadhar">📷</div>
+            </div>
+          </div>
+
+          <div class="doc-group-title">🏦 Financial Documents</div>
+          <div class="doc-list mb-2">
+            <div class="doc-item" id="s_area_bank" onclick="openSimplePDFUpload('bank')">
+              <div class="doc-icon">🏦</div>
+              <div class="doc-info">
+                <div class="doc-name" id="s_label_bank">Bank Statement</div>
+                <div class="doc-sub">Last 6 months — PDF only</div>
+                <span class="doc-badge req">Required</span>
+              </div>
+              <div class="doc-action" id="s_action_bank">📄</div>
+            </div>
+            <div class="doc-item" id="s_area_income" onclick="showSourcePickerSimple('income','Income Proof')">
+              <div class="doc-icon">📄</div>
+              <div class="doc-info">
+                <div class="doc-name" id="s_label_income">Salary Slip / ITR</div>
+                <div class="doc-sub">Latest income proof</div>
+                <span class="doc-badge opt">Optional</span>
+              </div>
+              <div class="doc-action" id="s_action_income">📷</div>
+            </div>
+            <div class="doc-item" id="s_area_extra" onclick="showSourcePickerSimple('extra','Other Document')">
+              <div class="doc-icon">📋</div>
+              <div class="doc-info">
+                <div class="doc-name" id="s_label_extra">Any Other Document</div>
+                <div class="doc-sub">Property docs, NOC, etc.</div>
+                <span class="doc-badge opt">Optional</span>
+              </div>
+              <div class="doc-action" id="s_action_extra">📷</div>
+            </div>
+          </div>
+
+          <!-- Hidden file inputs -->
+          <input type="file" id="s_input_pan_cam"    accept="image/*" class="d-none"
+            onchange="handleSimpleUpload(this,'s_pan','s_area_pan','s_label_pan','s_action_pan','PAN Card',false)">
+          <input type="file" id="s_input_pan_gal"    accept="image/*,application/pdf" class="d-none"
+            onchange="handleSimpleUpload(this,'s_pan','s_area_pan','s_label_pan','s_action_pan','PAN Card',false)">
+          <input type="file" id="s_input_aadhar_cam" accept="image/*" class="d-none"
+            onchange="handleSimpleUpload(this,'s_aadhar','s_area_aadhar','s_label_aadhar','s_action_aadhar','Aadhar Card',false)">
+          <input type="file" id="s_input_aadhar_gal" accept="image/*,application/pdf" class="d-none"
+            onchange="handleSimpleUpload(this,'s_aadhar','s_area_aadhar','s_label_aadhar','s_action_aadhar','Aadhar Card',false)">
+          <input type="file" id="s_input_bank_pdf"   accept="application/pdf" class="d-none"
+            onchange="handleSimpleUpload(this,'s_bank','s_area_bank','s_label_bank','s_action_bank','Bank Statement',true)">
+          <input type="file" id="s_input_income_cam" accept="image/*" class="d-none"
+            onchange="handleSimpleUpload(this,'s_income','s_area_income','s_label_income','s_action_income','Income Proof',false)">
+          <input type="file" id="s_input_income_gal" accept="image/*,application/pdf" class="d-none"
+            onchange="handleSimpleUpload(this,'s_income','s_area_income','s_label_income','s_action_income','Income Proof',false)">
+          <input type="file" id="s_input_extra_cam"  accept="image/*" class="d-none"
+            onchange="handleSimpleUpload(this,'s_extra','s_area_extra','s_label_extra','s_action_extra','Other Doc',false)">
+          <input type="file" id="s_input_extra_gal"  accept="image/*,application/pdf" class="d-none"
+            onchange="handleSimpleUpload(this,'s_extra','s_area_extra','s_label_extra','s_action_extra','Other Doc',false)">
+
+          <input type="hidden" id="val_s_pan">
+          <input type="hidden" id="val_s_aadhar">
+          <input type="hidden" id="val_s_bank">
+          <input type="hidden" id="val_s_income">
+          <input type="hidden" id="val_s_extra">
+
+          <hr class="field-divider">
+          <div class="consent-box mb-3">
+            <label>
+              <input type="checkbox" id="simpleConsentCheck">
+              <span>I confirm all details are accurate and consent to VastMyWealth sharing this information with lending institutions for loan processing.</span>
+            </label>
+          </div>
+          <button type="button" class="btn-submit" id="simpleSubmitBtn" onclick="submitSimpleForm()">
+            <span id="simpleSubmitText">📤 Submit Documents</span>
+            <span id="simpleSubmitSpinner" style="display:none">⏳ Processing... Please wait</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ══ CONSTRUCTION FINANCE SCREEN ══ -->
+<div id="cfScreen">
+  <div class="portal-header" style="display:block;padding:14px 16px">
+    <div class="portal-logo">🏗️</div>
+    <div class="portal-title">VastMyWealth Advisory</div>
+    <div class="portal-sub">Construction Finance Enquiry</div>
+  </div>
+  <div class="main-wrap">
+    <form id="cfForm" onsubmit="return false;">
+      <input type="hidden" name="loanType" value="Construction Finance">
+      <input type="hidden" name="mobile"   id="cfMobile">
+
+      <div class="form-section active" style="display:block">
+        <div class="section-head">
+          <div class="section-icon">🏗️</div>
+          <div><div class="section-title">Project Details</div>
+            <div class="section-sub">Tell us about your project</div></div>
+        </div>
+        <div class="section-body">
+          <div class="info-box mb-3">
+            <span>ℹ️</span>
+            <span>Our team will contact you within 24 hours to discuss your Construction Finance requirements in detail.</span>
+          </div>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="field-label field-required">Full Name / Company Name</label>
+              <input type="text" class="form-control" name="applicantName" id="cfName"
+                placeholder="Enter name" required onfocus="scrollToField(this)">
+            </div>
+            <div class="col-12">
+              <label class="field-label field-required">Mobile Number</label>
+              <input type="tel" class="form-control" id="cfMobileDisplay"
+                placeholder="Mobile number" readonly style="background:#f0f0f0">
+            </div>
+            <div class="col-12">
+              <label class="field-label field-required">Project Address</label>
+              <textarea class="form-control" name="projectAddress" rows="3"
+                placeholder="Complete project address with pincode" required
+                onfocus="scrollToField(this)"></textarea>
+            </div>
+            <div class="col-12">
+              <label class="field-label field-required">Loan Amount Required (₹)</label>
+              <input type="number" class="form-control" name="loanAmount"
+                placeholder="e.g. 5000000" required onfocus="scrollToField(this)">
+            </div>
+            <div class="col-12">
+              <label class="field-label">Stage of Construction</label>
+              <select class="form-select" name="constructionStage" onfocus="scrollToField(this)">
+                <option value="">Select stage...</option>
+                <option>Not Started</option>
+                <option>Foundation Stage</option>
+                <option>Ongoing Construction</option>
+                <option>Near Completion</option>
+              </select>
+            </div>
+          </div>
+
+          <hr class="field-divider">
+          <div class="consent-box mb-3">
+            <label>
+              <input type="checkbox" id="cfConsentCheck">
+              <span>I confirm all details are accurate and consent to VastMyWealth contacting me regarding Construction Finance.</span>
+            </label>
+          </div>
+          <button type="button" class="btn-submit" id="cfSubmitBtn" onclick="submitCFForm()">
+            <span id="cfSubmitText">📤 Submit Enquiry</span>
+            <span id="cfSubmitSpinner" style="display:none">⏳ Processing... Please wait</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- STEP 1 — PROFILE -->
+<div id="mainFormWrap" style="display:none">
+<div class="main-wrap">
+<form id="mainForm" onsubmit="return false;">
+<div class="form-section active" id="step1">
+  <div class="section-head">
+    <div class="section-icon">📋</div>
+    <div><div class="section-title">Let's Get Started</div><div class="section-sub">Select profile and loan type</div></div>
+  </div>
+  <div class="section-body">
+    <div class="checklist-box">
+      <div class="checklist-title">📋 Documents to Keep Ready</div>
+      <div id="checklistContent">
+        <div class="checklist-section">Always Required</div>
+        <div class="checklist-item"><span>🪪</span><span>PAN Card</span></div>
+        <div class="checklist-item"><span>🪪</span><span>Aadhar Card</span></div>
+        <div id="salChecklist">
+          <div class="checklist-section">For Salaried</div>
+          <div class="checklist-item"><span>📄</span><span>Salary Slips — Last 3 months</span></div>
+          <div class="checklist-item"><span>🏦</span><span>Bank Statement — Last 6 months</span></div>
+          <div class="checklist-item"><span>📄</span><span>Offer Letter (optional)</span></div>
+          <div class="checklist-item"><span>📋</span><span>Form 16 (optional)</span></div>
+        </div>
+        <div id="selfChecklist" style="display:none">
+          <div class="checklist-section">For Self-Employed</div>
+          <div class="checklist-item"><span>📄</span><span>GST / Udyam Certificate</span></div>
+          <div class="checklist-item"><span>📋</span><span>ITR — Last 3 years</span></div>
+          <div class="checklist-item"><span>🏦</span><span>Bank Statement — Last 1 year</span></div>
+        </div>
+      </div>
+    </div>
+
+    <label class="field-label field-required">Employment Type</label>
+    <div class="type-selector mb-4">
+      <div class="type-btn active" id="btnSal" onclick="setEmpType('Salaried')">
+        <div class="type-btn-icon">💼</div>
+        <div class="type-btn-label">Salaried</div>
+        <div class="type-btn-sub">Job / Service</div>
+      </div>
+      <div class="type-btn" id="btnSelf" onclick="setEmpType('SelfEmployed')">
+        <div class="type-btn-icon">🏢</div>
+        <div class="type-btn-label">Self-Employed</div>
+        <div class="type-btn-sub">Business / Professional</div>
+      </div>
+    </div>
+    <input type="hidden" name="empType" id="empType" value="Salaried">
+
+    <label class="field-label field-required">Loan Type Required</label>
+    <select class="form-select mb-3" name="loanType" id="loanTypeSelect" required onchange="onLoanTypeChange()">
+      <option value="">Select loan type...</option>
+      <option value="Personal Loan">Personal Loan</option>
+      <option value="Business Loan">Business Loan</option>
+      <option value="Home Loan">Home Loan</option>
+      <option value="Loan Against Property">Loan Against Property (LAP)</option>
+      <option value="Balance Transfer + Top Up">Balance Transfer + Top Up</option>
+      <option value="Construction Finance">Construction Finance</option>
+    </select>
+
+    <div class="info-box">
+      <span>ℹ️</span>
+      <span>This form takes about 5-7 minutes. Please keep all listed documents ready before starting!</span>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 2 — PERSONAL -->
+<div class="form-section" id="step2">
+  <div class="section-head">
+    <div class="section-icon">👤</div>
+    <div><div class="section-title">Personal Details</div><div class="section-sub">Basic applicant information</div></div>
+  </div>
+  <div class="section-body">
+    <div class="row g-3">
+      <div class="col-12"><label class="field-label field-required">Full Name (as per PAN)</label>
+        <input type="text" class="form-control" name="applicantName" placeholder="Enter full name" required></div>
+      <div class="col-6"><label class="field-label field-required">Mobile No</label>
+        <input type="tel" class="form-control" name="mobile" placeholder="10-digit mobile" maxlength="10" required></div>
+      <div class="col-6"><label class="field-label">WhatsApp No</label>
+        <input type="tel" class="form-control" name="whatsappNo" placeholder="If different"></div>
+      <div class="col-6"><label class="field-label field-required">Date of Birth</label>
+        <input type="date" class="form-control" name="dob" required></div>
+      <div class="col-6"><label class="field-label field-required">PAN Card No</label>
+        <input type="text" class="form-control" name="panNo" placeholder="ABCDE1234F" maxlength="10" style="text-transform:uppercase" required></div>
+      <div class="col-12"><label class="field-label">Aadhar Card No</label>
+        <input type="text" class="form-control" name="aadharNo" placeholder="12-digit Aadhar number" maxlength="12"></div>
+      <div class="col-6"><label class="field-label">Mother's Name</label>
+        <input type="text" class="form-control" name="motherName" placeholder="Mother's full name"></div>
+      <div class="col-6"><label class="field-label">Spouse Name</label>
+        <input type="text" class="form-control" name="spouseName" placeholder="If married"></div>
+      <div class="col-6"><label class="field-label">Marital Status</label>
+        <select class="form-select" name="maritalStatus">
+          <option value="">Select...</option><option>Single</option><option>Married</option>
+          <option>Divorced</option><option>Widowed</option></select></div>
+      <div class="col-6"><label class="field-label">No. of Dependents</label>
+        <select class="form-select" name="dependents">
+          <option value="">Select...</option><option>0</option><option>1</option>
+          <option>2</option><option>3</option><option>4</option><option>5+</option></select></div>
+      <div class="col-6"><label class="field-label">Qualification</label>
+        <select class="form-select" name="qualification">
+          <option value="">Select...</option><option>Under Graduate</option>
+          <option>Graduate</option><option>Post Graduate</option>
+          <option>Professional (CA/Doctor/Engineer)</option><option>Other</option></select></div>
+      <div class="col-6"><label class="field-label">Personal Email</label>
+        <input type="email" class="form-control" name="personalEmail" placeholder="personal@email.com"></div>
+      <div class="col-12"><label class="field-label">Official Email ID</label>
+        <input type="email" class="form-control" name="officialEmail" placeholder="official@company.com"></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 3 — ADDRESS -->
+<div class="form-section" id="step3">
+  <div class="section-head">
+    <div class="section-icon">🏠</div>
+    <div><div class="section-title">Residence Details</div><div class="section-sub">Current and permanent address</div></div>
+  </div>
+  <div class="section-body">
+    <div class="row g-3">
+      <div class="col-12"><label class="field-label field-required">Current Residential Address</label>
+        <textarea class="form-control" name="currentAddress" rows="2" placeholder="Full address with pincode" required></textarea></div>
+      <div class="col-12"><label class="field-label">Permanent Address</label>
+        <textarea class="form-control" name="permanentAddress" rows="2" placeholder="If different from current address"></textarea></div>
+      <div class="col-6"><label class="field-label">Residence Status</label>
+        <select class="form-select" name="resiStatus">
+          <option value="">Select...</option><option>Owned</option><option>Rented</option>
+          <option>Company Provided</option><option>Living with Parents</option></select></div>
+      <div class="col-6"><label class="field-label">Residence Tel No</label>
+        <input type="tel" class="form-control" name="resiTelNo" placeholder="Landline if any"></div>
+      <div class="col-6"><label class="field-label">Years at Current Address</label>
+        <select class="form-select" name="yearsInResi">
+          <option value="">Select...</option><option>Less than 1 year</option>
+          <option>1-2 years</option><option>2-5 years</option>
+          <option>5-10 years</option><option>More than 10 years</option></select></div>
+      <div class="col-6"><label class="field-label">Total Years in City</label>
+        <select class="form-select" name="totalYearsInCity">
+          <option value="">Select...</option><option>Less than 1 year</option>
+          <option>1-2 years</option><option>2-5 years</option>
+          <option>5-10 years</option><option>More than 10 years</option>
+          <option>Born here</option></select></div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 4 — PROFESSIONAL -->
+<div class="form-section" id="step4">
+  <div class="section-head">
+    <div class="section-icon">🏢</div>
+    <div><div class="section-title" id="profTitle">Employment Details</div>
+      <div class="section-sub" id="profSub">Company and work information</div></div>
+  </div>
+  <div class="section-body">
+    <div id="salFields">
+      <div class="row g-3">
+        <div class="col-12"><label class="field-label">Company Name</label>
+          <input type="text" class="form-control" name="companyName" placeholder="Current employer name"></div>
+        <div class="col-12"><label class="field-label">Company / Office Address</label>
+          <textarea class="form-control" name="companyAddress" rows="2" placeholder="Office address with pincode"></textarea></div>
+        <div class="col-6"><label class="field-label">Office Tel No</label>
+          <input type="tel" class="form-control" name="officeTelNo" placeholder="Landline"></div>
+        <div class="col-6"><label class="field-label">Office Premises</label>
+          <select class="form-select" name="officeOwned"><option value="">Select...</option>
+            <option>Owned</option><option>Rented</option></select></div>
+        <div class="col-12"><label class="field-label">Nature of Business / Industry</label>
+          <input type="text" class="form-control" name="natureOfBusiness" placeholder="e.g. IT, Banking, Manufacturing"></div>
+        <div class="col-6"><label class="field-label">Years at Current Job</label>
+          <select class="form-select" name="yearsAtWork"><option value="">Select...</option>
+            <option>Less than 6 months</option><option>6 months - 1 year</option>
+            <option>1-2 years</option><option>2-5 years</option>
+            <option>5-10 years</option><option>More than 10 years</option></select></div>
+        <div class="col-6"><label class="field-label">Total Work Experience</label>
+          <select class="form-select" name="totalYearsWork"><option value="">Select...</option>
+            <option>Less than 1 year</option><option>1-2 years</option>
+            <option>2-5 years</option><option>5-10 years</option>
+            <option>More than 10 years</option></select></div>
+        <div class="col-12"><label class="field-label">Net Monthly Income (₹)</label>
+          <input type="number" class="form-control" name="monthlyIncomeSal" placeholder="In-hand salary per month"></div>
+      </div>
+    </div>
+
+    <div id="selfFields" style="display:none">
+      <div class="row g-3">
+        <div class="col-12"><label class="field-label">Business / Firm Name</label>
+          <input type="text" class="form-control" name="businessName" placeholder="Registered business name"></div>
+        <div class="col-12"><label class="field-label">Business Address</label>
+          <textarea class="form-control" name="businessAddress" rows="2" placeholder="Business address with pincode"></textarea></div>
+        <div class="col-6"><label class="field-label">Office Tel No</label>
+          <input type="tel" class="form-control" name="officeTelNoSelf" placeholder="Landline"></div>
+        <div class="col-6"><label class="field-label">GST No</label>
+          <input type="text" class="form-control" name="gstNo" placeholder="If applicable"></div>
+        <div class="col-12"><label class="field-label">Nature of Business</label>
+          <input type="text" class="form-control" name="natureOfBusinessSelf" placeholder="e.g. Trading, Manufacturing"></div>
+        <div class="col-6"><label class="field-label">Years in Business</label>
+          <select class="form-select" name="yearsInBusiness"><option value="">Select...</option>
+            <option>Less than 1 year</option><option>1-2 years</option><option>2-3 years</option>
+            <option>3-5 years</option><option>5-10 years</option><option>More than 10 years</option></select></div>
+        <div class="col-6"><label class="field-label">Total Work Experience</label>
+          <select class="form-select" name="totalYearsWorkSelf"><option value="">Select...</option>
+            <option>Less than 2 years</option><option>2-5 years</option>
+            <option>5-10 years</option><option>More than 10 years</option></select></div>
+        <div class="col-12"><label class="field-label">Average Monthly Income (₹)</label>
+          <input type="number" class="form-control" name="monthlyIncomeSelf" placeholder="Average monthly earnings"></div>
+      </div>
+    </div>
+
+    <hr class="field-divider">
+    <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:12px">📞 References</div>
+
+    <div id="salRefs">
+      <div class="row g-3">
+        <div class="col-6"><label class="field-label">Reference 1 Name</label>
+          <input type="text" class="form-control" name="ref1Name" placeholder="Full name"></div>
+        <div class="col-6"><label class="field-label">Ref 1 Mobile</label>
+          <input type="tel" class="form-control" name="ref1Mobile" placeholder="Mobile no"></div>
+        <div class="col-12"><label class="field-label">Ref 1 Address</label>
+          <input type="text" class="form-control" name="ref1Address" placeholder="Address"></div>
+        <div class="col-6"><label class="field-label">Reference 2 Name</label>
+          <input type="text" class="form-control" name="ref2Name" placeholder="Full name"></div>
+        <div class="col-6"><label class="field-label">Ref 2 Mobile</label>
+          <input type="tel" class="form-control" name="ref2Mobile" placeholder="Mobile no"></div>
+        <div class="col-12"><label class="field-label">Ref 2 Address</label>
+          <input type="text" class="form-control" name="ref2Address" placeholder="Address"></div>
+      </div>
+    </div>
+
+    <div id="selfRefs" style="display:none">
+      <div class="row g-3">
+        <div class="col-12" style="font-size:12px;font-weight:600;color:var(--text2)">Trade References</div>
+        <div class="col-6"><label class="field-label">Trade Ref 1 Company</label>
+          <input type="text" class="form-control" name="tradeRef1Company" placeholder="Company name"></div>
+        <div class="col-6"><label class="field-label">Trade Ref 1 Mobile</label>
+          <input type="tel" class="form-control" name="tradeRef1Mobile" placeholder="Mobile no"></div>
+        <div class="col-12"><label class="field-label">Trade Ref 1 Address</label>
+          <input type="text" class="form-control" name="tradeRef1Address" placeholder="Address"></div>
+        <div class="col-6"><label class="field-label">Trade Ref 2 Company</label>
+          <input type="text" class="form-control" name="tradeRef2Company" placeholder="Company name"></div>
+        <div class="col-6"><label class="field-label">Trade Ref 2 Mobile</label>
+          <input type="tel" class="form-control" name="tradeRef2Mobile" placeholder="Mobile no"></div>
+        <div class="col-12"><label class="field-label">Trade Ref 2 Address</label>
+          <input type="text" class="form-control" name="tradeRef2Address" placeholder="Address"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 5 — FINANCIAL -->
+<div class="form-section" id="step5">
+  <div class="section-head">
+    <div class="section-icon">📊</div>
+    <div><div class="section-title">Financial Profile</div><div class="section-sub">CIBIL score and repayment history</div></div>
+  </div>
+  <div class="section-body">
+    <label class="field-label field-required" style="margin-bottom:10px">Your Approximate CIBIL Score</label>
+    <div class="radio-group mb-4">
+      <label class="radio-option" onclick="selectRadio('cibilScore','Above 750',this)">
+        <input type="radio" name="cibilScore" value="Above 750">
+        <div><div class="radio-label">🟢 Above 750 — Excellent</div><div class="radio-sub">Best loan terms available</div></div>
+      </label>
+      <label class="radio-option" onclick="selectRadio('cibilScore','700 - 750',this)">
+        <input type="radio" name="cibilScore" value="700 - 750">
+        <div><div class="radio-label">🟡 700 - 750 — Good</div><div class="radio-sub">Most loans available</div></div>
+      </label>
+      <label class="radio-option" onclick="selectRadio('cibilScore','650 - 700',this)">
+        <input type="radio" name="cibilScore" value="650 - 700">
+        <div><div class="radio-label">🟠 650 - 700 — Fair</div><div class="radio-sub">Limited options available</div></div>
+      </label>
+      <label class="radio-option" onclick="selectRadio('cibilScore','Below 650',this)">
+        <input type="radio" name="cibilScore" value="Below 650">
+        <div><div class="radio-label">🔴 Below 650</div><div class="radio-sub">Team will guide on best options</div></div>
+      </label>
+      <label class="radio-option" onclick="selectRadio('cibilScore','Not Checked',this)">
+        <input type="radio" name="cibilScore" value="Not Checked">
+        <div><div class="radio-label">❓ Not Checked Yet</div><div class="radio-sub">Team will assist you</div></div>
+      </label>
+    </div>
+
+    <label class="field-label field-required" style="margin-bottom:10px">EMI Payments & Cheque Bounce History</label>
+    <div class="info-box mb-3"><span>ℹ️</span>
+      <span>Please answer honestly — this helps us match you with the most suitable lender.</span></div>
+    <div class="radio-group">
+      <label class="radio-option" onclick="selectRadio('emiBounce','No EMI delays or cheque bounces in my account',this)">
+        <input type="radio" name="emiBounce" value="No EMI delays or cheque bounces in my account">
+        <div><div class="radio-label">✅ None</div>
+          <div class="radio-sub">No EMI delays or cheque bounces in my account</div></div>
+      </label>
+      <label class="radio-option" onclick="selectRadio('emiBounce','Yes — EMI delays or cheque bounces within last 6 months',this)">
+        <input type="radio" name="emiBounce" value="Yes — EMI delays or cheque bounces within last 6 months">
+        <div><div class="radio-label">⚠️ Yes — Within Last 6 Months</div>
+          <div class="radio-sub">Had EMI delays or bounces in last 6 months</div></div>
+      </label>
+      <label class="radio-option" onclick="selectRadio('emiBounce','Yes — EMI delays or cheque bounces between 6 months to 1 year ago, account now clear',this)">
+        <input type="radio" name="emiBounce" value="Yes — EMI delays or cheque bounces between 6 months to 1 year ago, account now clear">
+        <div><div class="radio-label">📋 Yes — 6 Months to 1 Year Ago</div>
+          <div class="radio-sub">Had issues 6-12 months ago, account is currently clear</div></div>
+      </label>
+    </div>
+  </div>
+</div>
+
+<!-- STEP 6 — CO-APPLICANT -->
+<div class="form-section" id="step6">
+  <div class="section-head">
+    <div class="section-icon">👥</div>
+    <div><div class="section-title">Co-Applicant Details</div>
+      <div class="section-sub" id="coAppSub">Joint applicant information</div></div>
+  </div>
+  <div class="section-body">
+    <div id="coAppMandatoryMsg" class="coapp-mandatory" style="display:none">
+      ⚠️ Co-Applicant is mandatory for this loan type
+    </div>
+    <div id="coAppOptionalToggle">
+      <div class="coapp-toggle" onclick="toggleCoApp()">
+        <input type="checkbox" id="hasCoApp">
+        <label for="hasCoApp">I have a Co-Applicant for this loan</label>
+      </div>
+    </div>
+    <div class="coapp-fields" id="coAppFields">
+      <div class="row g-3">
+        <div class="col-12"><label class="field-label">Co-Applicant Full Name</label>
+          <input type="text" class="form-control" name="coAppName" id="coAppName" placeholder="Full name as per PAN"></div>
+        <div class="col-6"><label class="field-label">Co-App Date of Birth</label>
+          <input type="date" class="form-control" name="coAppDob"></div>
+        <div class="col-6"><label class="field-label">Co-App Mobile No</label>
+          <input type="tel" class="form-control" name="coAppMobile" placeholder="Mobile number"></div>
+        <div class="col-6"><label class="field-label">Co-App PAN No</label>
+          <input type="text" class="form-control" name="coAppPan" placeholder="ABCDE1234F" style="text-transform:uppercase"></div>
+        <div class="col-6"><label class="field-label">Co-App Aadhar No</label>
+          <input type="text" class="form-control" name="coAppAadhar" placeholder="12-digit number"></div>
+        <div class="col-6"><label class="field-label">Co-App Mother's Name</label>
+          <input type="text" class="form-control" name="coAppMotherName" placeholder="Mother's name"></div>
+        <div class="col-6"><label class="field-label">Co-App Spouse Name</label>
+          <input type="text" class="form-control" name="coAppSpouseName" placeholder="If married"></div>
+        <div class="col-6"><label class="field-label">Relationship</label>
+          <select class="form-select" name="coAppRelation"><option value="">Select...</option>
+            <option>Spouse</option><option>Father</option><option>Mother</option>
+            <option>Son</option><option>Daughter</option><option>Brother</option>
+            <option>Sister</option><option>Business Partner</option><option>Other</option></select></div>
+        <div class="col-6"><label class="field-label">Co-App Employment</label>
+          <select class="form-select" name="coAppEmpType"><option value="">Select...</option>
+            <option>Salaried</option><option>Self-Employed</option>
+            <option>Retired</option><option>Homemaker</option></select></div>
+        <div class="col-12"><label class="field-label">Co-App Company / Business</label>
+          <input type="text" class="form-control" name="coAppCompany" placeholder="Employer or business name"></div>
+        <div class="col-6"><label class="field-label">Co-App Monthly Income (₹)</label>
+          <input type="number" class="form-control" name="coAppIncome" placeholder="Monthly income"></div>
+        <div class="col-6"><label class="field-label">Co-App CIBIL Score</label>
+          <select class="form-select" name="coAppCibil"><option value="">Select...</option>
+            <option>Above 750</option><option>700 - 750</option>
+            <option>650 - 700</option><option>Below 650</option><option>Not Checked</option></select></div>
+        <div class="col-12"><label class="field-label">Co-App EMI / Bounce History</label>
+          <select class="form-select" name="coAppEmiBounce"><option value="">Select...</option>
+            <option>No EMI delays or cheque bounces</option>
+            <option>Yes — Within last 6 months</option>
+            <option>Yes — Between 6 months to 1 year ago, account now clear</option></select></div>
+      </div>
+
+      <hr class="field-divider">
+      <div style="font-size:13px;font-weight:700;color:var(--primary);margin-bottom:8px">📁 Co-Applicant Documents</div>
+      <div class="doc-list mb-2">
+        <div class="doc-item" id="area_coapp_pan" onclick="showSourcePicker('coapp_pan','Co-App PAN Card')">
+
+          <div class="doc-icon">🪪</div>
+          <div class="doc-info">
+            <div class="doc-name" id="label_coapp_pan">Co-App PAN Card</div>
+            <div class="doc-sub">Front side clearly visible</div>
+            <span class="doc-badge req">Required</span>
+          </div>
+          <div class="doc-action" id="action_coapp_pan">📷</div>
+        </div>
+        <div class="doc-item" id="area_coapp_aadhar" onclick="showSourcePicker('coapp_aadhar','Co-App Aadhar Card')">
+          <div class="doc-icon">🪪</div>
+          <div class="doc-info">
+            <div class="doc-name" id="label_coapp_aadhar">Co-App Aadhar Card</div>
+            <div class="doc-sub">Both front and back</div>
+            <span class="doc-badge req">Required</span>
+          </div>
+          <div class="doc-action" id="action_coapp_aadhar">📷</div>
+        </div>
+        <div class="doc-item" id="area_coapp_salary" onclick="openUpload('coapp_salary')">
+          <div class="doc-icon">📄</div>
+          <div class="doc-info">
+            <div class="doc-name" id="label_coapp_salary">Co-App Salary Slip / ITR</div>
+            <div class="doc-sub">Income proof</div>
+            <span class="doc-badge opt">Optional</span>
+          </div>
+          <div class="doc-action" id="action_coapp_salary">📷</div>
+        </div>
+        <div class="doc-item" id="area_coapp_bank" onclick="openUpload('coapp_bank')">
+          <div class="doc-icon">🏦</div>
+          <div class="doc-info">
+            <div class="doc-name" id="label_coapp_bank">Co-App Bank Statement</div>
+            <div class="doc-sub">Last 6 months — PDF only</div>
+            <span class="doc-badge opt">Optional</span>
+          </div>
+          <div class="doc-action" id="action_coapp_bank">📄</div>
+        </div>
+      </div>
+      <input type="file" id="input_coapp_pan_cam" accept="image/*" class="d-none"
+  onchange="handleDocUpload(this,'file_coapp_pan','area_coapp_pan','label_coapp_pan','action_coapp_pan','Co-App PAN Card',false)">
+<input type="file" id="input_coapp_pan_gal" accept="image/*,application/pdf" class="d-none"
+  onchange="handleDocUpload(this,'file_coapp_pan','area_coapp_pan','label_coapp_pan','action_coapp_pan','Co-App PAN Card',false)">
+
+<input type="file" id="input_coapp_aadhar_cam" accept="image/*" class="d-none"
+  onchange="handleDocUpload(this,'file_coapp_aadhar','area_coapp_aadhar','label_coapp_aadhar','action_coapp_aadhar','Co-App Aadhar Card',false)">
+<input type="file" id="input_coapp_aadhar_gal" accept="image/*,application/pdf" class="d-none"
+  onchange="handleDocUpload(this,'file_coapp_aadhar','area_coapp_aadhar','label_coapp_aadhar','action_coapp_aadhar','Co-App Aadhar Card',false)">
+
+      <input type="file" id="input_coapp_salary" accept="image/*,application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_coapp_salary','area_coapp_salary','label_coapp_salary','action_coapp_salary','Co-App Salary/ITR',false)">
+      <input type="file" id="input_coapp_bank" accept="application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_coapp_bank','area_coapp_bank','label_coapp_bank','action_coapp_bank','Co-App Bank Statement',true)">
+      <input type="hidden" name="file_coapp_pan"    id="val_file_coapp_pan">
+      <input type="hidden" name="file_coapp_aadhar" id="val_file_coapp_aadhar">
+      <input type="hidden" name="file_coapp_salary" id="val_file_coapp_salary">
+      <input type="hidden" name="file_coapp_bank"   id="val_file_coapp_bank">
+    </div>
+  </div>
+</div>
+
+<!-- STEP 7 — DOCUMENTS -->
+<div class="form-section" id="step7">
+  <div class="section-head">
+    <div class="section-icon">📁</div>
+    <div><div class="section-title">Upload Documents</div>
+      <div class="section-sub">Tap to scan & crop each document</div></div>
+  </div>
+  <div class="section-body">
+    <div class="info-box mb-2">
+      <span>📸</span>
+      <span><strong>Tap any document below</strong> → Choose Camera or Gallery → Crop to edges → Attach!</span>
+    </div>
+    <div class="info-box mb-2" style="background:#f0fdf4;border-color:#a7f3d0;color:#065f46">
+      <span>📄</span>
+      <span>Bank Statement and ITR must be uploaded as <strong>PDF only</strong>.</span>
+    </div>
+
+    <div class="doc-progress-wrap mb-3">
+      <div class="doc-progress-title">
+        <span>Documents Uploaded</span>
+        <span id="docProgressText">0 / 2</span>
+      </div>
+      <div class="doc-progress-bar">
+        <div class="doc-progress-fill" id="docProgressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="doc-group-title">🪪 Identity Documents</div>
+    <div class="doc-list mb-2">
+      <div class="doc-item" id="area_pan" onclick="showSourcePicker('pan','PAN Card')">
+        <div class="doc-icon">🪪</div>
+        <div class="doc-info">
+          <div class="doc-name" id="label_pan">PAN Card</div>
+          <div class="doc-sub">Front side clearly visible</div>
+          <span class="doc-badge req">Required</span>
+        </div>
+        <div class="doc-action" id="action_pan">📷</div>
+      </div>
+      <div class="doc-item" id="area_aadhar" onclick="showSourcePicker('aadhar','Aadhar Card')">
+        <div class="doc-icon">🪪</div>
+        <div class="doc-info">
+          <div class="doc-name" id="label_aadhar">Aadhar Card</div>
+          <div class="doc-sub">Both front and back</div>
+          <span class="doc-badge req">Required</span>
+        </div>
+        <div class="doc-action" id="action_aadhar">📷</div>
+      </div>
+    </div>
+
+    <input type="file" id="input_pan_cam"    accept="image/*" class="d-none"
+      onchange="handleDocUpload(this,'file_pan','area_pan','label_pan','action_pan','PAN Card',false)">
+    <input type="file" id="input_pan_gal"    accept="image/*,application/pdf" class="d-none"
+      onchange="handleDocUpload(this,'file_pan','area_pan','label_pan','action_pan','PAN Card',false)">
+    <input type="file" id="input_aadhar_cam" accept="image/*" class="d-none"
+      onchange="handleDocUpload(this,'file_aadhar','area_aadhar','label_aadhar','action_aadhar','Aadhar Card',false)">
+    <input type="file" id="input_aadhar_gal" accept="image/*,application/pdf" class="d-none"
+      onchange="handleDocUpload(this,'file_aadhar','area_aadhar','label_aadhar','action_aadhar','Aadhar Card',false)">
+    <input type="hidden" name="file_pan"    id="val_file_pan">
+    <input type="hidden" name="file_aadhar" id="val_file_aadhar">
+
+    <!-- SALARIED DOCS -->
+    <div id="docsSalaried">
+      <div class="doc-group-title">💰 Financial Documents</div>
+      <div class="doc-list mb-2">
+        <div class="doc-item" id="area_salary1" onclick="showSourcePicker('salary1','Salary Slip 1')">
+          <div class="doc-icon">📄</div>
+          <div class="doc-info"><div class="doc-name" id="label_salary1">Salary Slip 1</div>
+            <div class="doc-sub">Latest month</div><span class="doc-badge req">Required</span></div>
+          <div class="doc-action" id="action_salary1">📷</div>
+        </div>
+        <div class="doc-item" id="area_salary2" onclick="showSourcePicker('salary2','Salary Slip 2')">
+          <div class="doc-icon">📄</div>
+          <div class="doc-info"><div class="doc-name" id="label_salary2">Salary Slip 2</div>
+            <div class="doc-sub">Previous month</div></div>
+          <div class="doc-action" id="action_salary2">📷</div>
+        </div>
+        <div class="doc-item" id="area_salary3" onclick="showSourcePicker('salary3','Salary Slip 3')">
+          <div class="doc-icon">📄</div>
+          <div class="doc-info"><div class="doc-name" id="label_salary3">Salary Slip 3</div>
+            <div class="doc-sub">Older month</div></div>
+          <div class="doc-action" id="action_salary3">📷</div>
+        </div>
+        <div class="doc-item" id="area_offer" onclick="showSourcePicker('offer','Offer Letter')">
+          <div class="doc-icon">📄</div>
+          <div class="doc-info"><div class="doc-name" id="label_offer">Offer Letter</div>
+            <div class="doc-sub">Current employer</div><span class="doc-badge opt">Optional</span></div>
+          <div class="doc-action" id="action_offer">📷</div>
+        </div>
+        <!-- Bank Statement — PDF only -->
+        <div class="doc-item" id="area_bankSal" onclick="openPDFUpload('bankSal')">
+          <div class="doc-icon">🏦</div>
+          <div class="doc-info"><div class="doc-name" id="label_bankSal">Bank Statement</div>
+            <div class="doc-sub">Last 6 months — PDF only</div><span class="doc-badge req">Required</span></div>
+          <div class="doc-action" id="action_bankSal">📄</div>
+        </div>
+        <div class="doc-item" id="area_form16" onclick="showSourcePicker('form16','Form 16')">
+          <div class="doc-icon">📋</div>
+          <div class="doc-info"><div class="doc-name" id="label_form16">Form 16</div>
+            <div class="doc-sub">Latest available</div><span class="doc-badge opt">Optional</span></div>
+          <div class="doc-action" id="action_form16">📷</div>
+        </div>
+      </div>
+
+      <input type="file" id="input_salary1_cam" accept="image/*" class="d-none"
+        onchange="handleDocUpload(this,'file_salary1','area_salary1','label_salary1','action_salary1','Salary Slip 1',false)">
+      <input type="file" id="input_salary1_gal" accept="image/*,application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_salary1','area_salary1','label_salary1','action_salary1','Salary Slip 1',false)">
+      <input type="file" id="input_salary2_cam" accept="image/*" class="d-none"
+        onchange="handleDocUpload(this,'file_salary2','area_salary2','label_salary2','action_salary2','Salary Slip 2',false)">
+      <input type="file" id="input_salary2_gal" accept="image/*,application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_salary2','area_salary2','label_salary2','action_salary2','Salary Slip 2',false)">
+      <input type="file" id="input_salary3_cam" accept="image/*" class="d-none"
+        onchange="handleDocUpload(this,'file_salary3','area_salary3','label_salary3','action_salary3','Salary Slip 3',false)">
+      <input type="file" id="input_salary3_gal" accept="image/*,application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_salary3','area_salary3','label_salary3','action_salary3','Salary Slip 3',false)">
+      <input type="file" id="input_offer_cam" accept="image/*" class="d-none"
+        onchange="handleDocUpload(this,'file_offer','area_offer','label_offer','action_offer','Offer Letter',false)">
+      <input type="file" id="input_offer_gal" accept="image/*,application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_offer','area_offer','label_offer','action_offer','Offer Letter',false)">
+      <input type="file" id="input_bankSal_pdf" accept="application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_bankSal','area_bankSal','label_bankSal','action_bankSal','Bank Statement',true)">
+      <input type="file" id="input_form16_cam" accept="image/*" class="d-none"
+        onchange="handleDocUpload(this,'file_form16','area_form16','label_form16','action_form16','Form 16',false)">
+      <input type="file" id="input_form16_gal" accept="image/*,application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_form16','area_form16','label_form16','action_form16','Form 16',false)">
+
+      <input type="hidden" name="file_salary1" id="val_file_salary1">
+      <input type="hidden" name="file_salary2" id="val_file_salary2">
+      <input type="hidden" name="file_salary3" id="val_file_salary3">
+      <input type="hidden" name="file_offer"   id="val_file_offer">
+      <input type="hidden" name="file_bankSal" id="val_file_bankSal">
+      <input type="hidden" name="file_form16"  id="val_file_form16">
+    </div>
+
+    <!-- SELF-EMPLOYED DOCS -->
+    <div id="docsSelfEmployed" style="display:none">
+      <div class="doc-group-title">💼 Business Documents</div>
+      <div class="doc-list mb-2">
+        <div class="doc-item" id="area_gst" onclick="showSourcePicker('gst','GST Certificate')">
+          <div class="doc-icon">📄</div>
+          <div class="doc-info"><div class="doc-name" id="label_gst">GST / Udyam Certificate</div>
+            <div class="doc-sub">Business registration</div><span class="doc-badge req">Required</span></div>
+          <div class="doc-action" id="action_gst">📷</div>
+        </div>
+        <!-- ITR — PDF only -->
+        <div class="doc-item" id="area_itr1" onclick="openPDFUpload('itr1')">
+          <div class="doc-icon">📋</div>
+          <div class="doc-info"><div class="doc-name" id="label_itr1">ITR Year 1</div>
+            <div class="doc-sub">PDF only</div><span class="doc-badge req">Required</span></div>
+          <div class="doc-action" id="action_itr1">📄</div>
+        </div>
+        <div class="doc-item" id="area_itr2" onclick="openPDFUpload('itr2')">
+          <div class="doc-icon">📋</div>
+          <div class="doc-info"><div class="doc-name" id="label_itr2">ITR Year 2</div>
+            <div class="doc-sub">PDF only</div></div>
+          <div class="doc-action" id="action_itr2">📄</div>
+        </div>
+        <div class="doc-item" id="area_itr3" onclick="openPDFUpload('itr3')">
+          <div class="doc-icon">📋</div>
+          <div class="doc-info"><div class="doc-name" id="label_itr3">ITR Year 3</div>
+            <div class="doc-sub">PDF only</div></div>
+          <div class="doc-action" id="action_itr3">📄</div>
+        </div>
+        <!-- Business Bank Statement — PDF only -->
+        <div class="doc-item" id="area_bankSelf" onclick="openPDFUpload('bankSelf')">
+          <div class="doc-icon">🏦</div>
+          <div class="doc-info"><div class="doc-name" id="label_bankSelf">Business Bank Statement</div>
+            <div class="doc-sub">Last 1 year — PDF only</div><span class="doc-badge req">Required</span></div>
+          <div class="doc-action" id="action_bankSelf">📄</div>
+        </div>
+      </div>
+
+      <input type="file" id="input_gst_cam" accept="image/*" class="d-none"
+        onchange="handleDocUpload(this,'file_gst','area_gst','label_gst','action_gst','GST Certificate',false)">
+      <input type="file" id="input_gst_gal" accept="image/*,application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_gst','area_gst','label_gst','action_gst','GST Certificate',false)">
+      <input type="file" id="input_itr1_pdf" accept="application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_itr1','area_itr1','label_itr1','action_itr1','ITR Year 1',true)">
+      <input type="file" id="input_itr2_pdf" accept="application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_itr2','area_itr2','label_itr2','action_itr2','ITR Year 2',true)">
+      <input type="file" id="input_itr3_pdf" accept="application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_itr3','area_itr3','label_itr3','action_itr3','ITR Year 3',true)">
+      <input type="file" id="input_bankSelf_pdf" accept="application/pdf" class="d-none"
+        onchange="handleDocUpload(this,'file_bankSelf','area_bankSelf','label_bankSelf','action_bankSelf','Business Bank Statement',true)">
+
+      <input type="hidden" name="file_gst"      id="val_file_gst">
+      <input type="hidden" name="file_itr1"     id="val_file_itr1">
+      <input type="hidden" name="file_itr2"     id="val_file_itr2">
+      <input type="hidden" name="file_itr3"     id="val_file_itr3">
+      <input type="hidden" name="file_bankSelf" id="val_file_bankSelf">
+    </div>
+
+    <hr class="field-divider">
+    <div class="consent-box mb-3">
+      <label>
+        <input type="checkbox" id="consentCheck">
+        <span>I confirm all details are accurate and consent to VastMyWealth sharing this information with lending institutions for loan processing.</span>
+      </label>
+    </div>
+
+    <button type="button" class="btn-submit" id="submitBtn" onclick="submitForm()">
+      <span id="submitText">🚀 Submit Complete Profile</span>
+      <span id="submitSpinner" style="display:none">⏳ Processing... Please wait</span>
+    </button>
+  </div>
+</div>
+
+</form>
+</div>
+</div>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="successScreen">
+
+  <div class="success-icon">🎉</div>
+  <div class="success-title">Profile Submitted!</div>
+  <div class="success-sub">
+    Your profile has been submitted successfully.<br>
+    Our team will review and contact you shortly with the best loan options!
+  </div>
+
+  <div style="background:linear-gradient(135deg,#004a99,#0062cc);border-radius:20px;
+    padding:24px 20px;margin:0 auto 20px;max-width:400px;color:white;text-align:center">
+    <div style="font-size:32px;margin-bottom:10px">🤝</div>
+    <div style="font-size:20px;font-weight:800;margin-bottom:8px">Partner With Us & Earn!</div>
+    <div style="font-size:13px;opacity:0.85;margin-bottom:16px;line-height:1.6">
+      Help people get loans and earn commission<br>
+      on every successful disbursement!<br><br>
+      🏠 Home Loan ₹50L = <strong>₹10,000 yours!</strong><br>
+      🏢 LAP ₹1Cr = <strong>₹20,000 yours!</strong>
+    </div>
+    <button onclick="window.open('https://forms.gle/LWN949M1k9khsUrGA','_blank')"
+      style="width:100%;padding:14px;background:#25d366;border:none;border-radius:12px;
+      font-size:15px;font-weight:800;color:white;cursor:pointer">
+      🤝 Become a Channel Partner →
+    </button>
+  </div>
+
+</div>
+</div>
+
+<!-- NAV -->
+<div class="nav-btns" id="navBtns">
+  <button type="button" class="btn-prev" id="btnPrev" onclick="prevStep()" style="display:none">← Back</button>
+  <button type="button" class="btn-next" id="btnNext" onclick="nextStep()">Next Step →</button>
+</div>
+
+<!-- SOURCE PICKER MODAL -->
+<div class="crop-modal" id="sourceModal" style="background:rgba(0,0,0,0.7)">
+  <div style="margin-top:auto;background:white;border-radius:20px 20px 0 0;padding:20px;">
+    <div style="font-size:16px;font-weight:700;color:#1a1a2e;margin-bottom:16px;text-align:center" id="sourceTitle">Select Source</div>
+    <div style="display:flex;gap:12px;margin-bottom:12px">
+      <button onclick="pickFromCamera()" ...>
+  <div style="font-size:32px;margin-bottom:6px">📷</div>Photo Upload
+</button>
+<button onclick="pickFromGallery()" ...>
+  <div style="font-size:32px;margin-bottom:6px">📄</div>PDF Upload
+</button>
+
+    </div>
+    <button onclick="closeSourceModal()" style="width:100%;padding:13px;border:2px solid #e5e7eb;border-radius:12px;background:white;font-size:15px;font-weight:600;color:#6c757d;cursor:pointer">Cancel</button>
+  </div>
+</div>
+
+<!-- CROP MODAL -->
+<div class="crop-modal" id="cropModal">
+  <div class="crop-header">
+    <div><div class="crop-title" id="cropTitle">Crop Document</div>
+      <div class="crop-sub">Align the frame to document edges</div></div>
+    <div class="crop-close" onclick="closeCrop()">✕</div>
+  </div>
+  <div class="crop-body"><img id="imageToCrop" src="" alt=""></div>
+  <div class="crop-footer">
+    <div class="crop-hint">📐 Drag to move • Pinch to zoom • Drag corners to resize</div>
+    <button class="btn-crop" onclick="saveCrop()">✂️ Crop & Attach Document</button>
+  </div>
+</div>
+
+<div class="vmw-toast" id="toastEl"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+var WEBHOOK        = "https://script.google.com/macros/s/AKfycbytDsEm2Z1_JD1Gpn-faYSdF1lVMIXxotMQ3qcB4P_7QIZC3juK8PZuhSTinkdlhASdEA/exec";
+var RENDER_URL     = "https://vmw-ai-analyzer.onrender.com";
+var BASE_FORM_URL  = "https://tinyurl.com/Bank-System-Details";
+var MAX_FILE_SIZE  = 2 * 1024 * 1024; // 2MB
+var ALLOWED_TYPES  = ["image/jpeg","image/jpg","image/png","application/pdf"];
+var isAdminMode    = false;
+
+// ============================================================
+// ADMIN MODE FUNCTIONS
+// ============================================================
+var adminUploadedDocs = {};
+var adminDocCount     = 0;
+
+function adminMobileCheck() {
+  var mobile = document.getElementById("adminMobile").value.trim().replace(/\D/g,"");
+  var status = document.getElementById("adminMobileStatus");
+  if (mobile.length !== 10) { status.textContent = ""; return; }
+
+  status.textContent = "🔍 Checking...";
+  fetch(WEBHOOK + "?action=getLoanTypeByMobile&mobile=" + mobile)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d.success && d.name) {
+        document.getElementById("adminName").value = d.name;
+        status.textContent = "✅ Found: " + d.name;
+        status.style.color = "#16a34a";
+        if (d.loanType) {
+          document.getElementById("adminLoanType").value = d.loanType;
+        }
+      } else {
+        status.textContent = "ℹ️ New customer — fill details below";
+        status.style.color = "#6c757d";
+      }
+    })
+    .catch(function() { status.textContent = ""; });
+}
+
+function handleAdminUpload(input, key, title) {
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+
+  // File size check
+  if (file.size > MAX_FILE_SIZE) {
+    showToast("❌ File too large! Max 2MB. Please compress and retry.", "err");
+    input.value = "";
+    return;
+  }
+
+  // File type check
+  if (ALLOWED_TYPES.indexOf(file.type) === -1) {
+    showToast("❌ Only JPG, PNG or PDF allowed!", "err");
+    input.value = "";
+    return;
+  }
+
+  // Max 15 files check
+  if (adminDocCount >= 15 && !adminUploadedDocs[key]) {
+    showToast("❌ Maximum 15 documents reached!", "err");
+    input.value = "";
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var isPDF = file.type === "application/pdf";
+    var b64   = e.target.result.replace(/^data:[^;]+;base64,/, "");
+    document.getElementById("admin_val_" + key).value = isPDF ? "PDF:" + b64 : b64;
+
+    if (!adminUploadedDocs[key]) {
+      adminDocCount++;
+      adminUploadedDocs[key] = true;
+    }
+
+    var area = document.getElementById("admin_area_" + key);
+    var lbl  = document.getElementById("admin_lbl_" + key);
+    var act  = document.getElementById("admin_act_" + key);
+    if (area) area.classList.add("uploaded");
+    if (lbl)  lbl.textContent = isPDF ? "📄 PDF — " + title : "✅ " + title;
+    if (act)  act.textContent = "✅";
+
+    document.getElementById("adminDocCount").textContent = adminDocCount + " / 15 documents uploaded";
+    showToast("✅ " + title + " uploaded!", "ok");
+  };
+  reader.readAsDataURL(file);
+  input.value = "";
+}
+
+function submitAdminForm() {
+  var mobile   = document.getElementById("adminMobile").value.trim().replace(/\D/g,"");
+  var name     = document.getElementById("adminName").value.trim();
+  var loanType = document.getElementById("adminLoanType").value;
+  var amount   = document.getElementById("adminLoanAmount").value.trim();
+
+  if (mobile.length !== 10) { showToast("❌ Please enter valid 10-digit mobile!", "err"); return; }
+  if (!name)                 { showToast("❌ Please enter customer name!", "err"); return; }
+  if (!loanType)             { showToast("❌ Please select loan type!", "err"); return; }
+  if (adminDocCount === 0)   { showToast("❌ Please upload at least one document!", "err"); return; }
+
+  document.getElementById("adminSubmitText").style.display    = "none";
+  document.getElementById("adminSubmitSpinner").style.display = "inline";
+  document.getElementById("adminSubmitBtn").disabled          = true;
+
+  var data = {
+    applicantName: name,
+    mobile       : mobile,
+    loanType     : loanType,
+    loanAmount   : amount,
+    empType      : "Salaried",
+    isAdmin      : true,
+    file_pan     : document.getElementById("admin_val_pan").value,
+    file_aadhar  : document.getElementById("admin_val_aadhar").value,
+    file_salary1 : document.getElementById("admin_val_salary").value,
+    file_bankSal : document.getElementById("admin_val_bank").value,
+    file_extra1  : document.getElementById("admin_val_extra1").value,
+    file_extra2  : document.getElementById("admin_val_extra2").value,
+    file_extra3  : document.getElementById("admin_val_extra3").value
+  };
+
+  // Save to Drive + Master Sheet via Apps Script
+  fetch(WEBHOOK, {
+    method:"POST", mode:"no-cors",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(data)
+  })
+  .then(function() {
+    // Send to Render for AI analysis
+    sendToRenderForAnalysis(data);
+    showAdminSuccess();
+  })
+  .catch(function() { showAdminSuccess(); });
+}
+
+function showAdminSuccess() {
+  document.getElementById("adminUploadScreen").style.display = "none";
+  document.getElementById("successScreen").classList.add("show");
+  window.scrollTo(0,0);
+}
+
+function scrollToField(el) {
+  setTimeout(function() {
+    el.scrollIntoView({behavior:"smooth", block:"center"});
+  }, 300);
+}
+
+// Add scroll fix to all inputs
+document.addEventListener("focusin", function(e) {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.tagName === "SELECT") {
+    setTimeout(function() {
+      e.target.scrollIntoView({behavior:"smooth", block:"center"});
+    }, 300);
+  }
+});
+
+// ============================================================
+// MOBILE VERIFICATION
+// ============================================================
+function verifyMobile() {
+  var mobile = document.getElementById("verifyMobile").value.trim().replace(/\D/g,"");
+  var errEl  = document.getElementById("verifyError");
+  var btn    = document.getElementById("verifyBtn");
+  var btnTxt = document.getElementById("verifyBtnText");
+
+  errEl.style.display = "none";
+
+  if (mobile.length !== 10) {
+    errEl.textContent    = "Please enter a valid 10-digit mobile number!";
+    errEl.style.display  = "block";
+    return;
+  }
+
+  btn.disabled   = true;
+  btnTxt.textContent = "⏳ Verifying...";
+
+  // Check mobile in Master Sheet and get loan type
+  fetch(WEBHOOK + "?action=getLoanTypeByMobile&mobile=" + mobile)
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      btn.disabled       = false;
+      btnTxt.textContent = "Continue →";
+
+      if (d.success && d.loanType) {
+        var lt = d.loanType.toLowerCase();
+
+        // Determine mode
+        var isSimple = lt.indexOf("home") !== -1 ||
+                       lt.indexOf("property") !== -1 ||
+                       lt.indexOf("lap") !== -1 ||
+                       lt.indexOf("balance transfer") !== -1 ||
+                       lt.indexOf("top up") !== -1;
+        var isCF = lt.indexOf("construction") !== -1;
+
+        // Hide verify screen
+        document.getElementById("mobileVerifyScreen").style.display = "none";
+
+        if (isCF) {
+          // Show Construction Finance screen
+          document.getElementById("cfScreen").style.display = "block";
+          document.getElementById("cfMobile").value         = mobile;
+          document.getElementById("cfMobileDisplay").value  = mobile;
+        } else if (isSimple) {
+          // Show simple upload screen
+          document.getElementById("simpleUploadScreen").style.display = "block";
+          document.getElementById("simpleMobile").value        = mobile;
+          document.getElementById("simpleMobileDisplay").value = mobile;
+          document.getElementById("simpleLoanType").value      = d.loanType;
+          document.getElementById("simplePortalSub").textContent = d.loanType + " — Document Upload";
+          document.getElementById("portalHeader").style.display = "none";
+        } else {
+          // Show full 7-step form (PL/BL)
+          document.getElementById("portalHeader").style.display = "block";
+          document.getElementById("mainFormWrap").style.display = "block";
+          // Pre-fill mobile
+          var mobEl = document.querySelector('[name="mobile"]');
+          if (mobEl) mobEl.value = mobile;
+          // Set loan type
+          var ltEl = document.getElementById("loanTypeSelect");
+          if (ltEl) {
+            var opts = ltEl.options;
+            for (var i = 0; i < opts.length; i++) {
+              if (opts[i].value.toLowerCase().indexOf(lt) !== -1 || lt.indexOf(opts[i].value.toLowerCase()) !== -1) {
+                ltEl.value = opts[i].value;
+                break;
+              }
+            }
+            onLoanTypeChange();
+          }
+        }
+      } else {
+        // Mobile not found — show full form as default
+        document.getElementById("mobileVerifyScreen").style.display = "none";
+        document.getElementById("portalHeader").style.display = "block";
+        document.getElementById("mainFormWrap").style.display = "block";
+        var mobEl2 = document.querySelector('[name="mobile"]');
+        if (mobEl2) mobEl2.value = mobile;
+      }
+    })
+    .catch(function() {
+      btn.disabled       = false;
+      btnTxt.textContent = "Continue →";
+      // On error — show full form
+      document.getElementById("mobileVerifyScreen").style.display = "none";
+      document.getElementById("portalHeader").style.display = "block";
+      document.getElementById("mainFormWrap").style.display = "block";
+    });
+}
+
+// ============================================================
+// SIMPLE UPLOAD — Source Picker
+// ============================================================
+var sActiveKey = "", sActiveArea = "", sActiveLbl = "", sActiveAct = "";
+var sActivePickerKey = "";
+var simpleUploadedDocs = {};
+
+function showSourcePickerSimple(key, title) {
+  sActivePickerKey = key;
+  sActiveKey       = "s_" + key;
+  sActiveArea      = "s_area_" + key;
+  sActiveLbl       = "s_label_" + key;
+  sActiveAct       = "s_action_" + key;
+  document.getElementById("sourceTitle").textContent = "📎 Upload — " + title;
+  document.getElementById("sourceModal").classList.add("show");
+  // Override picker functions for simple mode
+  window._simpleMode = true;
+}
+
+function openSimplePDFUpload(key) {
+  var el = document.getElementById("s_input_" + key + "_pdf");
+  if (el) el.click();
+}
+
+function handleSimpleUpload(input, key, areaId, lblId, actId, title, pdfOnly) {
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+
+  // File size check — 2MB max
+  if (file.size > MAX_FILE_SIZE) {
+    showToast("❌ File too large! Max 2MB. Please compress and retry.", "err");
+    input.value = "";
+    return;
+  }
+
+  // File type check
+  if (ALLOWED_TYPES.indexOf(file.type) === -1) {
+    showToast("❌ Only JPG, PNG or PDF allowed!", "err");
+    input.value = "";
+    return;
+  }
+
+  if (file.type === "application/pdf" || pdfOnly) {
+    if (file.type !== "application/pdf" && pdfOnly) {
+      showToast("❌ Only PDF allowed for " + title, "err");
+      input.value = "";
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var b64 = e.target.result.replace(/^data:application\/pdf;base64,/, "");
+      document.getElementById("val_" + key).value = "PDF:" + b64;
+      simpleUploadedDocs[key] = true;
+      markSimpleUploaded(areaId, lblId, actId, "📄 PDF Attached");
+      updateSimpleDocProgress();
+      showToast("✅ PDF attached!", "ok");
+    };
+    reader.readAsDataURL(file);
+    input.value = "";
+    return;
+  }
+
+  var reader2 = new FileReader();
+  reader2.onload = function(ev) {
+    var b64 = ev.target.result.replace(/^data:[^;]+;base64,/, "");
+    document.getElementById("val_" + key).value = b64;
+    simpleUploadedDocs[key] = true;
+    markSimpleUploaded(areaId, lblId, actId, "✅ Attached!");
+    updateSimpleDocProgress();
+    showToast("✅ Document attached!", "ok");
+  };
+  reader2.readAsDataURL(file);
+  input.value = "";
+}
+
+function markSimpleUploaded(areaId, lblId, actId, text) {
+  var area = document.getElementById(areaId);
+  var lbl  = document.getElementById(lblId);
+  var act  = document.getElementById(actId);
+  if (area) area.classList.add("uploaded");
+  if (lbl)  lbl.textContent = text || "✅ Attached!";
+  if (act)  act.textContent = "✅";
+}
+
+function updateSimpleDocProgress() {
+  var req  = ["s_pan", "s_aadhar", "s_bank"];
+  var done = 0;
+  req.forEach(function(k) { if (simpleUploadedDocs[k]) done++; });
+  var pct  = Math.round((done / req.length) * 100);
+  document.getElementById("simpleDocProgressFill").style.width = pct + "%";
+  document.getElementById("simpleDocProgressText").textContent = done + " / " + req.length;
+}
+
+// ============================================================
+// SUBMIT SIMPLE FORM
+// ============================================================
+function submitSimpleForm() {
+  if (!document.getElementById("simpleConsentCheck").checked) {
+    showToast("Please accept the consent to proceed!", "err"); return;
+  }
+  var name = document.getElementById("simpleApplicantName").value.trim();
+  if (!name) { showToast("Please enter your full name!", "err"); return; }
+  if (!simpleUploadedDocs["s_pan"])    { showToast("PAN Card is required!", "err"); return; }
+  if (!simpleUploadedDocs["s_aadhar"]) { showToast("Aadhar Card is required!", "err"); return; }
+  if (!simpleUploadedDocs["s_bank"])   { showToast("Bank Statement is required!", "err"); return; }
+
+  var data = {
+    applicantName : name,
+    mobile        : document.getElementById("simpleMobile").value,
+    loanType      : document.getElementById("simpleLoanType").value,
+    empType       : "Salaried",
+    file_pan      : document.getElementById("val_s_pan").value,
+    file_aadhar   : document.getElementById("val_s_aadhar").value,
+    file_bankSal  : document.getElementById("val_s_bank").value,
+    file_salary1  : document.getElementById("val_s_income").value,
+    file_offer    : document.getElementById("val_s_extra").value
+  };
+
+  if (refSource) data.refSource = refSource;
+
+  document.getElementById("simpleSubmitText").style.display    = "none";
+  document.getElementById("simpleSubmitSpinner").style.display = "inline";
+  document.getElementById("simpleSubmitBtn").disabled          = true;
+
+  fetch(WEBHOOK, {
+    method:"POST", mode:"no-cors",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(data)
+  })
+  .then(function() {
+    // Also send to Render for AI analysis
+    sendToRenderForAnalysis(data);
+    showSimpleSuccess();
+  })
+  .catch(function() { showSimpleSuccess(); });
+}
+
+function showSimpleSuccess() {
+  document.getElementById("simpleUploadScreen").style.display = "none";
+  document.getElementById("successScreen").classList.add("show");
+  window.scrollTo(0,0);
+}
+
+// ============================================================
+// SUBMIT CONSTRUCTION FINANCE FORM
+// ============================================================
+function submitCFForm() {
+  if (!document.getElementById("cfConsentCheck").checked) {
+    showToast("Please accept the consent to proceed!", "err"); return;
+  }
+  var name    = document.getElementById("cfName").value.trim();
+  var address = document.querySelector('[name="projectAddress"]');
+  var amount  = document.querySelector('[name="loanAmount"]');
+
+  if (!name)                            { showToast("Please enter your name!", "err"); return; }
+  if (!address || !address.value.trim()){ showToast("Please enter project address!", "err"); return; }
+  if (!amount  || !amount.value)        { showToast("Please enter loan amount!", "err"); return; }
+
+  var form = document.getElementById("cfForm");
+  var data = {};
+  new FormData(form).forEach(function(v,k){ data[k]=v; });
+  data.mobile = document.getElementById("cfMobile").value;
+  if (refSource) data.refSource = refSource;
+
+  document.getElementById("cfSubmitText").style.display    = "none";
+  document.getElementById("cfSubmitSpinner").style.display = "inline";
+  document.getElementById("cfSubmitBtn").disabled          = true;
+
+  fetch(WEBHOOK, {
+    method:"POST", mode:"no-cors",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify(data)
+  })
+  .then(function()  { showCFSuccess(); })
+  .catch(function() { showCFSuccess(); });
+}
+
+function showCFSuccess() {
+  document.getElementById("cfScreen").style.display = "none";
+  document.getElementById("successScreen").classList.add("show");
+  window.scrollTo(0,0);
+}
+
+// ============================================================
+// STATE
+// ============================================================
+var currentStep   = 1;
+var totalSteps    = 7;
+var cropper       = null;
+var activeKey     = "", activeAreaId = "", activeLblId = "", activeActId = "";
+var activePickerKey = "";
+var PROGRESS      = [14, 28, 42, 57, 71, 85, 100];
+var uploadedDocs  = {};
+var coAppMandatory= false;
+var refSource     = ""; // From URL ?ref= parameter
+
+// Required docs per type
+var salRequiredDocs  = ["file_pan","file_aadhar","file_salary1","file_bankSal"];
+var selfRequiredDocs = ["file_pan","file_aadhar","file_gst","file_itr1","file_bankSelf"];
+
+// Read ?ref= and ?admin= from URL
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  refSource   = params.get("ref")   || "";
+  isAdminMode = params.get("admin") === "true";
+  if (isAdminMode) {
+    // Skip mobile verification — show admin quick upload directly
+    document.getElementById("mobileVerifyScreen").style.display = "none";
+    document.getElementById("adminUploadScreen").style.display  = "block";
+  }
+})();
+
+// Block browser back
+history.pushState(null, null, location.href);
+window.addEventListener("popstate", function() {
+  history.pushState(null, null, location.href);
+  if (currentStep > 1) prevStep();
+  else showToast("Use the buttons below to navigate!", "err");
+});
+
+// ============================================================
+// EMPLOYMENT TYPE
+// ============================================================
+function setEmpType(t) {
+  document.getElementById("empType").value = t;
+  var s = t === "Salaried";
+  document.getElementById("btnSal").classList.toggle("active", s);
+  document.getElementById("btnSelf").classList.toggle("active", !s);
+  document.getElementById("salFields").style.display          = s ? "block" : "none";
+  document.getElementById("selfFields").style.display         = s ? "none"  : "block";
+  document.getElementById("salRefs").style.display            = s ? "block" : "none";
+  document.getElementById("selfRefs").style.display           = s ? "none"  : "block";
+  document.getElementById("docsSalaried").style.display       = s ? "block" : "none";
+  document.getElementById("docsSelfEmployed").style.display   = s ? "none"  : "block";
+  document.getElementById("salChecklist").style.display       = s ? "block" : "none";
+  document.getElementById("selfChecklist").style.display      = s ? "none"  : "block";
+  document.getElementById("profTitle").textContent = s ? "Employment Details" : "Business Details";
+  document.getElementById("profSub").textContent   = s ? "Company and work information" : "Business and profession details";
+  updateDocProgress();
+}
+
+// ============================================================
+// LOAN TYPE CHANGE
+// ============================================================
+function onLoanTypeChange() {
+  var lt        = document.getElementById("loanTypeSelect").value;
+  var isPL      = lt === "Personal Loan";
+  var isBL      = lt === "Business Loan";
+  var isHL      = lt === "Home Loan";
+  var isLAP     = lt === "Loan Against Property";
+  var isBTTU    = lt === "Balance Transfer + Top Up";
+  var isCF      = lt === "Construction Finance";
+  var isSimple  = isHL || isLAP || isBTTU;
+  var mandatory = isBL || isHL || isLAP || isBTTU;
+  coAppMandatory= mandatory;
+
+  // Handle CF — show CF screen, hide main form
+  if (isCF) {
+    document.getElementById("mobileVerifyScreen").style.display  = "none";
+    document.getElementById("simpleUploadScreen").style.display  = "none";
+    document.getElementById("cfScreen").style.display            = "block";
+    document.getElementById("portalHeader").style.display        = "none";
+    document.getElementById("mainFormWrap").style.display        = "none";
+    document.getElementById("navBtns").style.display             = "none";
+    // Copy mobile if already filled
+    var mob = document.querySelector('[name="mobile"]');
+    if (mob && mob.value) {
+      document.getElementById("cfMobile").value        = mob.value;
+      document.getElementById("cfMobileDisplay").value = mob.value;
+    }
+    return;
+  }
+
+  // Handle Simple (HL/LAP/BT+TU) — show simple upload screen
+  if (isSimple) {
+    document.getElementById("mobileVerifyScreen").style.display  = "none";
+    document.getElementById("cfScreen").style.display            = "none";
+    document.getElementById("simpleUploadScreen").style.display  = "block";
+    document.getElementById("portalHeader").style.display        = "none";
+    document.getElementById("mainFormWrap").style.display        = "none";
+    document.getElementById("navBtns").style.display             = "none";
+    document.getElementById("simpleLoanType").value              = lt;
+    document.getElementById("simplePortalSub").textContent       = lt + " — Document Upload";
+    // Copy mobile if already filled
+    var mob2 = document.querySelector('[name="mobile"]');
+    if (mob2 && mob2.value) {
+      document.getElementById("simpleMobile").value        = mob2.value;
+      document.getElementById("simpleMobileDisplay").value = mob2.value;
+    }
+    return;
+  }
+
+  // PL/BL — show full 7-step form
+  document.getElementById("simpleUploadScreen").style.display = "none";
+  document.getElementById("cfScreen").style.display           = "none";
+  document.getElementById("portalHeader").style.display       = "block";
+  document.getElementById("mainFormWrap").style.display       = "block";
+
+  // Co-applicant logic
+  var toggle  = document.getElementById("coAppOptionalToggle");
+  var mandMsg = document.getElementById("coAppMandatoryMsg");
+  var fields  = document.getElementById("coAppFields");
+  var sub     = document.getElementById("coAppSub");
+
+  if (isPL) {
+    toggle.style.display  = "none";
+    mandMsg.style.display = "none";
+    fields.classList.remove("show");
+    document.getElementById("hasCoApp").checked = false;
+    sub.textContent = "Not required for Personal Loan";
+  } else if (mandatory) {
+    toggle.style.display  = "none";
+    mandMsg.style.display = "flex";
+    fields.classList.add("show");
+    document.getElementById("hasCoApp").checked = true;
+    sub.textContent = "Mandatory for this loan type";
+  } else {
+    toggle.style.display  = "block";
+    mandMsg.style.display = "none";
+    sub.textContent       = "Joint applicant information (optional)";
+  }
+}
+
+function toggleCoApp() {
+  if (coAppMandatory) return;
+  var c = document.getElementById("hasCoApp").checked;
+  document.getElementById("coAppFields").classList.toggle("show", c);
+}
+
+// ============================================================
+// RADIO
+// ============================================================
+function selectRadio(name, value, el) {
+  document.querySelectorAll('[name="' + name + '"]').forEach(function(r) {
+    r.closest(".radio-option").classList.remove("selected");
+  });
+  el.classList.add("selected");
+  el.querySelector('input[type="radio"]').checked = true;
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function updateProgress() {
+  document.getElementById("progressFill").style.width = PROGRESS[currentStep - 1] + "%";
+  for (var i = 1; i <= totalSteps; i++) {
+    var el = document.getElementById("ps" + i);
+    if (el) el.classList.toggle("active", i === currentStep);
+  }
+  var last = currentStep === totalSteps;
+  document.getElementById("btnPrev").style.display = currentStep > 1 ? "block" : "none";
+  document.getElementById("btnNext").style.display = last ? "none" : "block";
+  document.getElementById("navBtns").style.display = last ? "none" : "flex";
+}
+
+function showStep(n) {
+  for (var i = 1; i <= totalSteps; i++) {
+    var s = document.getElementById("step" + i);
+    if (s) s.classList.toggle("active", i === n);
+  }
+  currentStep = n;
+  updateProgress();
+  window.scrollTo(0, 0);
+}
+
+function nextStep() { if (validateStep(currentStep) && currentStep < totalSteps) showStep(currentStep + 1); }
+function prevStep() { if (currentStep > 1) showStep(currentStep - 1); }
+
+function validateStep(step) {
+  var section = document.getElementById("step" + step);
+  var valid   = true;
+  section.querySelectorAll("[required]").forEach(function(el) {
+    if (!isVisible(el)) { el.classList.remove("is-invalid"); return; }
+    if (!el.value || !el.value.trim()) { el.classList.add("is-invalid"); valid = false; }
+    else el.classList.remove("is-invalid");
+  });
+  if (step === 6 && coAppMandatory) {
+    var coAppName = document.getElementById("coAppName");
+    if (coAppName && (!coAppName.value || !coAppName.value.trim())) {
+      coAppName.classList.add("is-invalid"); valid = false;
+    }
+  }
+  if (!valid) {
+    var f = section.querySelector(".is-invalid");
+    if (f) f.scrollIntoView({behavior:"smooth", block:"center"});
+    showToast("Please fill all required fields!", "err");
+  }
+  return valid;
+}
+
+function isVisible(el) {
+  var node = el;
+  while (node && node !== document.body) {
+    if (window.getComputedStyle(node).display === "none") return false;
+    node = node.parentElement;
+  }
+  return true;
+}
+
+// ============================================================
+// SOURCE PICKER
+// ============================================================
+function showSourcePicker(key, title) {
+  activePickerKey = key;
+  activeKey       = "file_" + key;
+  activeAreaId    = "area_" + key;
+  activeLblId     = "label_" + key;
+  activeActId     = "action_" + key;
+  document.getElementById("sourceTitle").textContent = "📎 Upload — " + title;
+  document.getElementById("sourceModal").classList.add("show");
+}
+
+
+function closeSourceModal() { document.getElementById("sourceModal").classList.remove("show"); }
+
+function pickFromCamera() {
+  closeSourceModal();
+  if (window._simpleMode) {
+    window._simpleMode = false;
+    var el = document.getElementById("s_input_" + sActivePickerKey + "_cam");
+    if (el) el.click();
+  } else {
+    var el = document.getElementById("input_" + activePickerKey + "_cam");
+    if (el) el.click();
+  }
+}
+
+function pickFromGallery() {
+  closeSourceModal();
+  if (window._simpleMode) {
+    window._simpleMode = false;
+    var el = document.getElementById("s_input_" + sActivePickerKey + "_gal");
+    if (el) el.click();
+  } else {
+    var el = document.getElementById("input_" + activePickerKey + "_gal");
+    if (el) el.click();
+  }
+}
+
+function openUpload(key) {
+  var el = document.getElementById("input_" + key);
+  if (el) el.click();
+}
+
+// PDF only upload trigger
+function openPDFUpload(key) {
+  var el = document.getElementById("input_" + key + "_pdf");
+  if (el) el.click();
+}
+
+// ============================================================
+// HANDLE DOC UPLOAD — File size check + PDF/image routing
+// pdfOnly: true = only PDF accepted (bank statements, ITR)
+// ============================================================
+function handleDocUpload(input, key, areaId, lblId, actId, title, pdfOnly) {
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+
+  // File size check — max 5MB
+  if (file.size > MAX_FILE_SIZE) {
+    showToast("❌ File too large! Max 5MB allowed.", "err");
+    input.value = "";
+    return;
+  }
+
+  activeKey    = key;
+  activeAreaId = areaId;
+  activeLblId  = lblId;
+  activeActId  = actId;
+  document.getElementById("cropTitle").textContent = "Crop — " + title;
+
+  // PDF handling
+  if (file.type === "application/pdf" || pdfOnly) {
+    if (file.type !== "application/pdf" && pdfOnly) {
+      showToast("❌ Only PDF allowed for " + title, "err");
+      input.value = "";
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var b64 = e.target.result.replace(/^data:application\/pdf;base64,/, "");
+      document.getElementById("val_" + activeKey).value = "PDF:" + b64;
+      uploadedDocs[activeKey] = true;
+      markDocUploaded(activeAreaId, activeLblId, activeActId, "📄 PDF Attached");
+      updateDocProgress();
+      showToast("PDF attached! ✅", "ok");
+    };
+    reader.readAsDataURL(file);
+    input.value = "";
+    return;
+  }
+
+  // Image — basic quality check
+  // Mobile — skip cropper, attach directly
+  if (/iPhone|iPad|iPod|Android|WhatsApp/i.test(navigator.userAgent)) {
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      var b64 = ev.target.result.replace(/^data:[^;]+;base64,/, "");
+      document.getElementById("val_" + activeKey).value = b64;
+      uploadedDocs[activeKey] = true;
+      markDocUploaded(activeAreaId, activeLblId, activeActId, "✅ Attached!");
+      updateDocProgress();
+      showToast("✅ Document attached!", "ok");
+    };
+    reader.readAsDataURL(file);
+    input.value = "";
+    return;
+  }
+
+  var img    = new Image();
+  var objUrl = URL.createObjectURL(file);
+  img.onload = function() {
+    URL.revokeObjectURL(objUrl);
+    if (img.width < 400 || img.height < 300) {
+      showToast("⚠️ Image may be blurry — consider retaking", "err");
+    }
+    // Open cropper
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var cropImg = document.getElementById("imageToCrop");
+      cropImg.src = e.target.result;
+      document.getElementById("cropModal").classList.add("show");
+      if (cropper) { cropper.destroy(); cropper = null; }
+      setTimeout(function() {
+        cropper = new Cropper(cropImg, {
+          viewMode:1, dragMode:"move", autoCropArea:0.85,
+          responsive:true, guides:true
+        });
+      }, 400);
+    };
+    reader.readAsDataURL(file);
+    input.value = "";
+  };
+  img.src = objUrl;
+}
+
+// Legacy crop init for co-app docs
+function initCrop(input, key, areaId, lblId, actId, title) {
+  handleDocUpload(input, key, areaId, lblId, actId, title, false);
+}
+
+function markDocUploaded(areaId, lblId, actId, text) {
+  var area = document.getElementById(areaId);
+  var lbl  = document.getElementById(lblId);
+  var act  = document.getElementById(actId);
+  if (area) area.classList.add("uploaded");
+  if (lbl)  lbl.textContent = text || "✅ Attached!";
+  if (act)  act.textContent = "✅";
+}
+
+function saveCrop() {
+  if (!cropper) return;
+  var canvas = cropper.getCroppedCanvas({width:1400});
+
+  // Convert to PDF using jsPDF
+  try {
+    var { jsPDF } = window.jspdf;
+    var pdf       = new jsPDF({orientation:"portrait", unit:"px", format:[canvas.width, canvas.height]});
+    var imgData   = canvas.toDataURL("image/jpeg", 0.85);
+    pdf.addImage(imgData, "JPEG", 0, 0, canvas.width, canvas.height);
+    var pdfB64 = pdf.output("datauristring").replace(/^data:application\/pdf;base64,/, "");
+    document.getElementById("val_" + activeKey).value = "PDF:" + pdfB64;
+  } catch(e) {
+    // Fallback to PNG if jsPDF fails
+    var b64 = canvas.toDataURL("image/png").replace(/^data:image\/(png|jpg);base64,/, "");
+    document.getElementById("val_" + activeKey).value = b64;
+  }
+
+  uploadedDocs[activeKey] = true;
+  markDocUploaded(activeAreaId, activeLblId, activeActId, "✅ Attached!");
+  closeCrop();
+  updateDocProgress();
+  showToast("Document attached! ✅", "ok");
+}
+
+function closeCrop() {
+  document.getElementById("cropModal").classList.remove("show");
+  if (cropper) { cropper.destroy(); cropper = null; }
+}
+
+// ============================================================
+// DOC PROGRESS
+// ============================================================
+function updateDocProgress() {
+  var emp  = document.getElementById("empType").value;
+  var req  = emp === "Salaried" ? salRequiredDocs : selfRequiredDocs;
+  var done = 0;
+  req.forEach(function(k) { if (uploadedDocs[k]) done++; });
+  var pct  = Math.round((done / req.length) * 100);
+  document.getElementById("docProgressFill").style.width = pct + "%";
+  document.getElementById("docProgressText").textContent = done + " / " + req.length;
+}
+
+// ============================================================
+// SUBMIT
+// ============================================================
+function submitForm() {
+  if (!document.getElementById("consentCheck").checked) {
+    showToast("Please accept the consent to proceed!", "err"); return;
+  }
+  if (!document.getElementById("val_file_pan").value) {
+    showToast("PAN Card is required!", "err"); return;
+  }
+
+  var form = document.getElementById("mainForm");
+  var data = {};
+  new FormData(form).forEach(function(v, k) { data[k] = v; });
+
+  var emp = document.getElementById("empType").value;
+  data.monthlyIncome = emp === "Salaried"
+    ? (document.querySelector('[name="monthlyIncomeSal"]') || {}).value || ""
+    : (document.querySelector('[name="monthlyIncomeSelf"]') || {}).value || "";
+
+  // Include ref source
+  if (refSource) data.refSource = refSource;
+
+  // Collect all file values
+  var allFiles = [
+    "pan","aadhar","salary1","salary2","salary3","offer","bankSal","form16",
+    "gst","itr1","itr2","itr3","bankSelf",
+    "coapp_pan","coapp_aadhar","coapp_salary","coapp_bank"
+  ];
+  allFiles.forEach(function(k) {
+    var el = document.getElementById("val_file_" + k);
+    if (el) data["file_" + k] = el.value;
+  });
+
+  document.getElementById("submitText").style.display   = "none";
+  document.getElementById("submitSpinner").style.display= "inline";
+  document.getElementById("submitBtn").disabled         = true;
+
+  fetch(WEBHOOK, {
+    method : "POST",
+    mode   : "no-cors",
+    headers: {"Content-Type": "application/json"},
+    body   : JSON.stringify(data)
+  })
+  .then(function() {
+    // Also send to Render for AI analysis
+    sendToRenderForAnalysis(data);
+    showSuccess(data.mobile || "");
+  })
+  .catch(function() { showSuccess(data.mobile || ""); });
+}
+
+// ============================================================
+// SEND TO RENDER FOR AI ANALYSIS
+// Fires in background after form submission
+// ============================================================
+function sendToRenderForAnalysis(data) {
+  try {
+    // Build analysis payload — key docs only
+    var analysisData = {
+      action      : "analyze-portal",
+      name        : data.applicantName || data.name || "",
+      mobile      : data.mobile        || "",
+      loanType    : data.loanType      || "",
+      empType     : data.empType       || "Salaried",
+      cibil       : data.cibilScore    || "",
+      income      : data.monthlyIncome || data.monthlyIncomeSal || data.monthlyIncomeSelf || "",
+      isAdmin     : isAdminMode,
+      // Key documents for AI analysis
+      file_pan    : data.file_pan      || "",
+      file_aadhar : data.file_aadhar   || "",
+      file_salary1: data.file_salary1  || "",
+      file_bankSal: data.file_bankSal  || data.file_bankSelf || "",
+      file_itr1   : data.file_itr1     || ""
+    };
+
+    fetch(RENDER_URL + "/analyze-portal", {
+      method : "POST",
+      headers: {"Content-Type": "application/json"},
+      body   : JSON.stringify(analysisData)
+    })
+    .then(function(r) { console.log("Render analysis triggered"); })
+    .catch(function(e) { console.log("Render analysis failed — fallback to manual: " + e.message); });
+
+  } catch(e) {
+    console.log("sendToRenderForAnalysis error: " + e.message);
+  }
+}
+
+// ============================================================
+// SHOW SUCCESS
+// ============================================================
+function showSuccess(mobile) {
+  document.getElementById("mainForm").style.display      = "none";
+  document.getElementById("navBtns").style.display       = "none";
+  document.getElementById("portalHeader").style.display  = "none";
+  document.getElementById("successScreen").classList.add("show");
+  window.scrollTo(0, 0);
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type) {
+  var t = document.getElementById("toastEl");
+  t.textContent = msg;
+  t.className   = "vmw-toast " + (type || "");
+  t.classList.add("show");
+  clearTimeout(t._t);
+  t._t = setTimeout(function() { t.classList.remove("show"); }, 3000);
+}
+
+updateProgress();
+</script>
+</body>
+</html>
+
+
+
