@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>VastMyWealth — Admin Upload</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: #f0f4f8;
+  min-height: 100vh;
+  color: #1a1a2e;
+}
+
+.header {
+  background: linear-gradient(135deg, #004a99, #0062cc);
+  color: white;
+  padding: 16px;
+  text-align: center;
+}
+.header-logo { font-size: 32px; margin-bottom: 6px; }
+.header-title { font-size: 18px; font-weight: 700; }
+.header-badge {
+  display: inline-block;
+  background: #f59e0b;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 20px;
+  margin-top: 6px;
+}
+
+.wrap {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 16px 16px 100px;
+}
+
+.section {
+  background: white;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #004a99;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 14px;
+}
+
+.field { margin-bottom: 12px; }
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 5px;
+}
+.field input, .field select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1a2e;
+  outline: none;
+  transition: border 0.2s;
+}
+.field input:focus, .field select:focus { border-color: #004a99; }
+
+.status-text {
+  font-size: 12px;
+  margin-top: 4px;
+  color: #6c757d;
+}
+
+/* DOC UPLOAD */
+.doc-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 8px;
+  transition: all 0.2s;
+  background: #f8fafc;
+}
+.doc-area:hover { border-color: #004a99; background: #e8f0fb; }
+.doc-area.uploaded { border-color: #16a34a; background: #f0fdf4; border-style: solid; }
+.doc-icon { font-size: 20px; flex-shrink: 0; }
+.doc-info { flex: 1; }
+.doc-name { font-size: 13px; font-weight: 600; color: #374151; }
+.doc-sub  { font-size: 11px; color: #94a3b8; }
+.doc-action { font-size: 12px; color: #004a99; font-weight: 700; flex-shrink: 0; }
+
+.doc-count {
+  font-size: 13px;
+  font-weight: 700;
+  color: #004a99;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: #e8f0fb;
+  border-radius: 8px;
+}
+
+/* SUBMIT */
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #004a99, #0062cc);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.btn-submit:disabled { opacity: 0.6; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  z-index: 999;
+  display: none;
+  max-width: 90%;
+  text-align: center;
+}
+.toast.ok  { background: #16a34a; }
+.toast.err { background: #dc2626; }
+
+/* SUCCESS */
+.success {
+  display: none;
+  text-align: center;
+  padding: 40px 20px;
+}
+.success-icon  { font-size: 60px; margin-bottom: 16px; }
+.success-title { font-size: 22px; font-weight: 700; color: #16a34a; margin-bottom: 8px; }
+.success-sub   { font-size: 14px; color: #6c757d; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">💰</div>
+  <div class="header-title">VastMyWealth Advisory</div>
+  <div class="header-badge">🔐 Admin Upload — Manoj</div>
+</div>
+
+<div class="wrap" id="mainWrap">
+
+  <!-- Customer Details -->
+  <div class="section">
+    <div class="section-title">👤 Customer Details</div>
+
+    <div class="field">
+      <label>Mobile Number <span style="color:red">*</span></label>
+      <input type="tel" id="mobile" placeholder="10-digit mobile" maxlength="10"
+        oninput="onMobileInput()" />
+      <div class="status-text" id="mobileStatus"></div>
+    </div>
+
+    <div class="field">
+      <label>Customer Name <span style="color:red">*</span></label>
+      <input type="text" id="custName" placeholder="Full name" />
+    </div>
+
+    <div class="field">
+      <label>Loan Type <span style="color:red">*</span></label>
+      <select id="loanType">
+        <option value="">Select loan type...</option>
+        <option value="Personal Loan">Personal Loan</option>
+        <option value="Business Loan">Business Loan</option>
+        <option value="Home Loan">Home Loan</option>
+        <option value="Loan Against Property">Loan Against Property</option>
+        <option value="Balance Transfer + Top Up">Balance Transfer + Top Up</option>
+        <option value="Construction Finance">Construction Finance</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Loan Amount</label>
+      <input type="text" id="loanAmount" placeholder="e.g. 50 Lakhs" />
+    </div>
+
+    <div class="field">
+      <label>Employment Type</label>
+      <select id="empType">
+        <option value="Salaried">Salaried</option>
+        <option value="Self Employed">Self Employed</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Documents -->
+  <div class="section">
+    <div class="section-title">📁 Upload Documents</div>
+    <div style="font-size:12px;color:#6c757d;margin-bottom:10px;">
+      Max 2MB per file • JPG, PNG, PDF only • Max 15 files
+    </div>
+
+    <div class="doc-count" id="docCount">0 / 15 documents uploaded</div>
+
+    <!-- PAN -->
+    <div class="doc-area" id="area_pan" onclick="document.getElementById('inp_pan').click()">
+      <div class="doc-icon">🪪</div>
+      <div class="doc-info">
+        <div class="doc-name" id="lbl_pan">PAN Card</div>
+        <div class="doc-sub">JPG, PNG or PDF</div>
+      </div>
+      <div class="doc-action" id="act_pan">📎 Upload</div>
+      <input type="file" id="inp_pan" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+        onchange="handleDoc(this,'pan','PAN Card')">
+      <input type="hidden" id="val_pan">
+    </div>
+
+    <!-- Aadhar -->
+    <div class="doc-area" id="area_aadhar" onclick="document.getElementById('inp_aadhar').click()">
+      <div class="doc-icon">🪪</div>
+      <div class="doc-info">
+        <div class="doc-name" id="lbl_aadhar">Aadhar Card</div>
+        <div class="doc-sub">JPG, PNG or PDF</div>
+      </div>
+      <div class="doc-action" id="act_aadhar">📎 Upload</div>
+      <input type="file" id="inp_aadhar" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+        onchange="handleDoc(this,'aadhar','Aadhar Card')">
+      <input type="hidden" id="val_aadhar">
+    </div>
+
+    <!-- Salary / ITR -->
+    <div class="doc-area" id="area_salary" onclick="document.getElementById('inp_salary').click()">
+      <div class="doc-icon">💰</div>
+      <div class="doc-info">
+        <div class="doc-name" id="lbl_salary">Salary Slip / ITR</div>
+        <div class="doc-sub">JPG, PNG or PDF</div>
+      </div>
+      <div class="doc-action" id="act_salary">📎 Upload</div>
+      <input type="file" id="inp_salary" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+        onchange="handleDoc(this,'salary','Salary Slip')">
+      <input type="hidden" id="val_salary">
+    </div>
+
+    <!-- Bank Statement -->
+    <div class="doc-area" id="area_bank" onclick="document.getElementById('inp_bank').click()">
+      <div class="doc-icon">🏦</div>
+      <div class="doc-info">
+        <div class="doc-name" id="lbl_bank">Bank Statement</div>
+        <div class="doc-sub">PDF preferred • Max 100 pages</div>
+      </div>
+      <div class="doc-action" id="act_bank">📎 Upload</div>
+      <input type="file" id="inp_bank" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+        onchange="handleDoc(this,'bank','Bank Statement')">
+      <input type="hidden" id="val_bank">
+    </div>
+
+    <!-- Extra 1 -->
+    <div class="doc-area" id="area_ex1" onclick="document.getElementById('inp_ex1').click()">
+      <div class="doc-icon">📄</div>
+      <div class="doc-info">
+        <div class="doc-name" id="lbl_ex1">Additional Document 1</div>
+        <div class="doc-sub">Any supporting document</div>
+      </div>
+      <div class="doc-action" id="act_ex1">📎 Upload</div>
+      <input type="file" id="inp_ex1" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+        onchange="handleDoc(this,'ex1','Additional Doc 1')">
+      <input type="hidden" id="val_ex1">
+    </div>
+
+    <!-- Extra 2 -->
+    <div class="doc-area" id="area_ex2" onclick="document.getElementById('inp_ex2').click()">
+      <div class="doc-icon">📄</div>
+      <div class="doc-info">
+        <div class="doc-name" id="lbl_ex2">Additional Document 2</div>
+        <div class="doc-sub">Any supporting document</div>
+      </div>
+      <div class="doc-action" id="act_ex2">📎 Upload</div>
+      <input type="file" id="inp_ex2" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+        onchange="handleDoc(this,'ex2','Additional Doc 2')">
+      <input type="hidden" id="val_ex2">
+    </div>
+
+    <!-- Extra 3 -->
+    <div class="doc-area" id="area_ex3" onclick="document.getElementById('inp_ex3').click()">
+      <div class="doc-icon">📄</div>
+      <div class="doc-info">
+        <div class="doc-name" id="lbl_ex3">Additional Document 3</div>
+        <div class="doc-sub">Any supporting document</div>
+      </div>
+      <div class="doc-action" id="act_ex3">📎 Upload</div>
+      <input type="file" id="inp_ex3" accept=".jpg,.jpeg,.png,.pdf" style="display:none"
+        onchange="handleDoc(this,'ex3','Additional Doc 3')">
+      <input type="hidden" id="val_ex3">
+    </div>
+
+  </div>
+
+  <button class="btn-submit" id="submitBtn" onclick="submitForm()">
+    <span id="submitText">📤 Submit &amp; Analyze</span>
+    <span id="submitSpinner" style="display:none;">⏳ Processing...</span>
+  </button>
+
+</div>
+
+<!-- Success Screen -->
+<div class="wrap success" id="successWrap">
+  <div class="success-icon">🎉</div>
+  <div class="success-title">Submitted Successfully!</div>
+  <div class="success-sub">AI analysis has been triggered.<br>Check Telegram for the profile in 30-60 seconds!</div>
+  <br>
+  <button class="btn-submit" onclick="resetForm()" style="margin-top:16px;">
+    ➕ Upload Another Customer
+  </button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+var WEBHOOK     = "https://script.google.com/macros/s/AKfycbytDsEm2Z1_JD1Gpn-faYSdF1lVMIXxotMQ3qcB4P_7QIZC3juK8PZuhSTinkdlhASdEA/exec";
+var RENDER_URL  = "https://vmw-ai-analyzer.onrender.com";
+var MAX_SIZE    = 2 * 1024 * 1024; // 2MB
+var ALLOWED     = ["image/jpeg","image/jpg","image/png","application/pdf"];
+
+var uploadedDocs = {};
+var docCount     = 0;
+
+// ============================================================
+// MOBILE INPUT — Auto lookup
+// ============================================================
+function onMobileInput() {
+  var mobile = document.getElementById("mobile").value.trim().replace(/\D/g,"");
+  var status = document.getElementById("mobileStatus");
+  if (mobile.length !== 10) { status.textContent = ""; return; }
+
+  status.textContent = "🔍 Looking up...";
+  fetch(WEBHOOK + "?action=getLoanTypeByMobile&mobile=" + mobile)
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.success && d.name) {
+        document.getElementById("custName").value = d.name;
+        if (d.loanType) document.getElementById("loanType").value = d.loanType;
+        status.textContent = "✅ Found: " + d.name;
+        status.style.color = "#16a34a";
+      } else {
+        status.textContent = "ℹ️ New customer";
+        status.style.color = "#6c757d";
+      }
+    })
+    .catch(function(){ status.textContent = ""; });
+}
+
+// ============================================================
+// HANDLE DOCUMENT UPLOAD
+// ============================================================
+function handleDoc(input, key, title) {
+  if (!input.files || !input.files[0]) return;
+  var file = input.files[0];
+
+  if (file.size > MAX_SIZE) {
+    showToast("❌ File too large! Max 2MB. Please compress.", "err");
+    input.value = ""; return;
+  }
+  if (ALLOWED.indexOf(file.type) === -1) {
+    showToast("❌ Only JPG, PNG or PDF allowed!", "err");
+    input.value = ""; return;
+  }
+  if (docCount >= 15 && !uploadedDocs[key]) {
+    showToast("❌ Maximum 15 documents reached!", "err");
+    input.value = ""; return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var isPDF = file.type === "application/pdf";
+    var b64   = e.target.result.replace(/^data:[^;]+;base64,/, "");
+    document.getElementById("val_" + key).value = isPDF ? "PDF:" + b64 : b64;
+
+    if (!uploadedDocs[key]) { docCount++; uploadedDocs[key] = true; }
+
+    document.getElementById("area_" + key).classList.add("uploaded");
+    document.getElementById("lbl_"  + key).textContent = "✅ " + title;
+    document.getElementById("act_"  + key).textContent = "✅";
+    document.getElementById("docCount").textContent = docCount + " / 15 documents uploaded";
+    showToast("✅ " + title + " uploaded!", "ok");
+  };
+  reader.readAsDataURL(file);
+  input.value = "";
+}
+
+// ============================================================
+// SUBMIT
+// ============================================================
+function submitForm() {
+  var mobile   = document.getElementById("mobile").value.trim().replace(/\D/g,"");
+  var name     = document.getElementById("custName").value.trim();
+  var loanType = document.getElementById("loanType").value;
+  var amount   = document.getElementById("loanAmount").value.trim();
+  var empType  = document.getElementById("empType").value;
+
+  if (mobile.length !== 10) { showToast("❌ Enter valid 10-digit mobile!", "err"); return; }
+  if (!name)                 { showToast("❌ Enter customer name!", "err"); return; }
+  if (!loanType)             { showToast("❌ Select loan type!", "err"); return; }
+  if (docCount === 0)        { showToast("❌ Upload at least one document!", "err"); return; }
+
+  document.getElementById("submitText").style.display    = "none";
+  document.getElementById("submitSpinner").style.display = "inline";
+  document.getElementById("submitBtn").disabled          = true;
+
+  var data = {
+    applicantName: name,
+    mobile       : mobile,
+    loanType     : loanType,
+    loanAmount   : amount,
+    empType      : empType,
+    isAdmin      : true,
+    file_pan     : document.getElementById("val_pan").value,
+    file_aadhar  : document.getElementById("val_aadhar").value,
+    file_salary1 : document.getElementById("val_salary").value,
+    file_bankSal : document.getElementById("val_bank").value,
+    file_extra1  : document.getElementById("val_ex1").value,
+    file_extra2  : document.getElementById("val_ex2").value,
+    file_extra3  : document.getElementById("val_ex3").value
+  };
+
+  // Save to Drive + Master Sheet
+  fetch(WEBHOOK, {
+    method : "POST",
+    mode   : "no-cors",
+    headers: {"Content-Type":"application/json"},
+    body   : JSON.stringify(data)
+  })
+  .then(function() {
+    sendToRender(data);
+    showSuccess();
+  })
+  .catch(function() { showSuccess(); });
+}
+
+// ============================================================
+// SEND TO RENDER FOR AI ANALYSIS
+// ============================================================
+function sendToRender(data) {
+  try {
+    fetch(RENDER_URL + "/analyze-portal", {
+      method : "POST",
+      headers: {"Content-Type":"application/json"},
+      body   : JSON.stringify({
+        name        : data.applicantName,
+        mobile      : data.mobile,
+        loanType    : data.loanType,
+        empType     : data.empType,
+        isAdmin     : true,
+        file_pan    : data.file_pan    || "",
+        file_aadhar : data.file_aadhar || "",
+        file_salary1: data.file_salary1|| "",
+        file_bankSal: data.file_bankSal|| "",
+        file_extra1 : data.file_extra1 || "",
+        file_extra2 : data.file_extra2 || "",
+        file_extra3 : data.file_extra3 || ""
+      })
+    }).catch(function(e){ console.log("Render: " + e.message); });
+  } catch(e) { console.log("sendToRender error: " + e.message); }
+}
+
+// ============================================================
+// SUCCESS + RESET
+// ============================================================
+function showSuccess() {
+  document.getElementById("mainWrap").style.display    = "none";
+  document.getElementById("successWrap").style.display = "block";
+  window.scrollTo(0, 0);
+}
+
+function resetForm() {
+  document.getElementById("mainWrap").style.display    = "block";
+  document.getElementById("successWrap").style.display = "none";
+  document.getElementById("mobile").value    = "";
+  document.getElementById("custName").value  = "";
+  document.getElementById("loanType").value  = "";
+  document.getElementById("loanAmount").value= "";
+  document.getElementById("mobileStatus").textContent = "";
+  uploadedDocs = {};
+  docCount     = 0;
+  document.getElementById("docCount").textContent = "0 / 15 documents uploaded";
+  ["pan","aadhar","salary","bank","ex1","ex2","ex3"].forEach(function(k) {
+    document.getElementById("area_" + k).classList.remove("uploaded");
+    document.getElementById("act_"  + k).textContent = "📎 Upload";
+    document.getElementById("val_"  + k).value = "";
+  });
+  document.getElementById("lbl_pan").textContent    = "PAN Card";
+  document.getElementById("lbl_aadhar").textContent = "Aadhar Card";
+  document.getElementById("lbl_salary").textContent = "Salary Slip / ITR";
+  document.getElementById("lbl_bank").textContent   = "Bank Statement";
+  document.getElementById("lbl_ex1").textContent    = "Additional Document 1";
+  document.getElementById("lbl_ex2").textContent    = "Additional Document 2";
+  document.getElementById("lbl_ex3").textContent    = "Additional Document 3";
+  document.getElementById("submitText").style.display    = "inline";
+  document.getElementById("submitSpinner").style.display = "none";
+  document.getElementById("submitBtn").disabled          = false;
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, type) {
+  var t = document.getElementById("toast");
+  t.textContent  = msg;
+  t.className    = "toast " + type;
+  t.style.display= "block";
+  setTimeout(function(){ t.style.display = "none"; }, 3000);
+}
+</script>
+</body>
+</html>
+
