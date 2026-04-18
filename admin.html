@@ -271,6 +271,15 @@ body {
         onchange="handleDoc(this,'bank','Bank Statement')">
       <input type="hidden" id="val_bank">
     </div>
+<!-- Bank Statement Password -->
+<div id="bankPasswordWrap" style="display:none;margin-bottom:8px;">
+  <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:8px 12px;font-size:12px;color:#856404;">
+    🔒 Bank statement is password protected — enter password below
+  </div>
+  <input type="text" id="bankPassword"
+    style="margin-top:6px;width:100%;padding:10px;border:1.5px solid #ffc107;border-radius:8px;font-size:14px;outline:none;"
+    placeholder="Enter PDF password (e.g. DOB or mobile)">
+</div>
 
     <!-- Extra 1 -->
     <div class="doc-area" id="area_ex1" onclick="document.getElementById('inp_ex1').click()">
@@ -402,6 +411,10 @@ function handleDoc(input, key, title) {
     document.getElementById("lbl_"  + key).textContent = "✅ " + title;
     document.getElementById("act_"  + key).textContent = "✅";
     document.getElementById("docCount").textContent = docCount + " / 15 documents uploaded";
+    if (key === "bank" && file.type === "application/pdf") {
+  document.getElementById("bankPasswordWrap").style.display = "block";
+}
+
     showToast("✅ " + title + " uploaded!", "ok");
   };
   reader.readAsDataURL(file);
@@ -475,6 +488,8 @@ function sendToRender(data) {
         file_aadhar : data.file_aadhar || "",
         file_salary1: data.file_salary1|| "",
         file_bankSal: data.file_bankSal|| "",
+        bankPassword : document.getElementById("bankPassword").value || "",
+
         file_extra1 : data.file_extra1 || "",
         file_extra2 : data.file_extra2 || "",
         file_extra3 : data.file_extra3 || ""
