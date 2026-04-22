@@ -583,6 +583,41 @@ html, body {
       </div>
     </div>
   </div>
+  <!-- Loan Type Filters -->
+<div class="pipeline" style="margin-top:8px;">
+  <div class="pipeline-title">Filter by Loan Type</div>
+  <div class="pipeline-stats">
+    <div class="pstat active" onclick="filterByLoanType('')" id="lt-all">
+      <div class="pstat-icon">📋</div>
+      <div class="pstat-label">All</div>
+    </div>
+    <div class="pstat" onclick="filterByLoanType('Personal')" id="lt-pl">
+      <div class="pstat-icon">💰</div>
+      <div class="pstat-label">PL</div>
+    </div>
+    <div class="pstat" onclick="filterByLoanType('Business')" id="lt-bl">
+      <div class="pstat-icon">💼</div>
+      <div class="pstat-label">BL</div>
+    </div>
+    <div class="pstat" onclick="filterByLoanType('Home')" id="lt-hl">
+      <div class="pstat-icon">🏠</div>
+      <div class="pstat-label">HL</div>
+    </div>
+    <div class="pstat" onclick="filterByLoanType('Property')" id="lt-lap">
+      <div class="pstat-icon">🏢</div>
+      <div class="pstat-label">LAP</div>
+    </div>
+    <div class="pstat" onclick="filterByLoanType('Construction')" id="lt-cf">
+      <div class="pstat-icon">🏗️</div>
+      <div class="pstat-label">CF</div>
+    </div>
+    <div class="pstat" onclick="filterByLoanType('Partner')" id="lt-partner">
+      <div class="pstat-icon">🤝</div>
+      <div class="pstat-label">Partner</div>
+    </div>
+  </div>
+</div>
+
 
   <!-- Search -->
   <div class="search-wrap">
@@ -915,6 +950,28 @@ function isInactive(lead) {
 // ============================================================
 // FILTERS
 // ============================================================
+  function filterByLoanType(loanType) {
+  document.querySelectorAll("[id^='lt-']").forEach(function(p){ p.classList.remove("active"); });
+  var key = loanType === "" ? "lt-all" :
+    loanType === "Personal"     ? "lt-pl"     :
+    loanType === "Business"     ? "lt-bl"     :
+    loanType === "Home"         ? "lt-hl"     :
+    loanType === "Property"     ? "lt-lap"    :
+    loanType === "Construction" ? "lt-cf"     :
+    loanType === "Partner"      ? "lt-partner": "lt-all";
+  var el = document.getElementById(key);
+  if (el) el.classList.add("active");
+
+  if (loanType === "") {
+    filteredLeads = allLeads.slice();
+  } else {
+    filteredLeads = allLeads.filter(function(l) {
+      return (l.loanType||"").toLowerCase().indexOf(loanType.toLowerCase()) !== -1;
+    });
+  }
+  renderLeadList();
+}
+
 function filterByStatus(status) {
   statusFilter = status;
   // Update active pipeline stat
