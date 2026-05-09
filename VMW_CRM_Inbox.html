@@ -162,43 +162,6 @@ html, body {
 }
 .lead-item:hover  { background:var(--surface2); }
 .lead-item.active { background:#e8f0fb; border-left:3px solid var(--primary); }
-.lead-item.new-lead { background:#fffbeb; border-left:3px solid #f59e0b; }
-.lead-item.new-lead:hover { background:#fef3c7; }
-.new-badge {
-  background:#f59e0b; color:white; font-size:9px; font-weight:800;
-  padding:2px 6px; border-radius:8px; margin-left:4px;
-  text-transform:uppercase; letter-spacing:0.5px;
-}
-
-/* FEEDBACK */
-.feedback-wrap {
-  margin-top:12px; padding:12px;
-  background:#f0f9ff; border:1px solid #bae6fd;
-  border-radius:10px;
-}
-.feedback-label {
-  font-size:11px; font-weight:700; color:#0c4a6e;
-  text-transform:uppercase; letter-spacing:0.4px;
-  margin-bottom:6px; display:block;
-}
-.feedback-textarea {
-  width:100%; border:1.5px solid #bae6fd; border-radius:8px;
-  padding:8px 10px; font-size:13px; color:#0f172a;
-  background:white; resize:none; outline:none;
-  font-family:inherit; line-height:1.5;
-}
-.feedback-textarea:focus { border-color:#004a99; }
-.feedback-actions { display:flex; gap:8px; margin-top:8px; }
-.btn-save-feedback {
-  flex:1; padding:9px; border:none; border-radius:8px;
-  background:#004a99; color:white; font-size:13px;
-  font-weight:700; cursor:pointer;
-}
-.btn-delete-lead {
-  padding:9px 14px; border:none; border-radius:8px;
-  background:#fee2e2; color:#dc2626; font-size:13px;
-  font-weight:700; cursor:pointer; border:1px solid #fca5a5;
-}
 
 .li-avatar {
   width:40px; height:40px; border-radius:12px;
@@ -436,15 +399,6 @@ html, body {
 .tcat-m { background:#fef3c7; color:#92400e; }
 .tcat-u { background:#dbeafe; color:#1d4ed8; }
 
-/* ── PROFILE TAB ── */
-.profile-wrap { padding:4px 0; }
-.dsa-btn {
-  padding:8px 14px; border:1.5px solid #004a99;
-  border-radius:8px; background:white; color:#004a99;
-  font-size:13px; font-weight:700; cursor:pointer;
-}
-.dsa-btn:hover { background:#004a99; color:white; }
-
 /* ── STATUS TAB ── */
 .status-form { background:var(--surface); border-radius:12px; padding:14px; box-shadow:var(--shadow); }
 .status-label { font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; display:block; }
@@ -583,41 +537,6 @@ html, body {
       </div>
     </div>
   </div>
-  <!-- Loan Type Filters -->
-<div class="pipeline" style="margin-top:8px;">
-  <div class="pipeline-title">Filter by Loan Type</div>
-  <div class="pipeline-stats">
-    <div class="pstat active" onclick="filterByLoanType('')" id="lt-all">
-      <div class="pstat-icon">📋</div>
-      <div class="pstat-label">All</div>
-    </div>
-    <div class="pstat" onclick="filterByLoanType('Personal')" id="lt-pl">
-      <div class="pstat-icon">💰</div>
-      <div class="pstat-label">PL</div>
-    </div>
-    <div class="pstat" onclick="filterByLoanType('Business')" id="lt-bl">
-      <div class="pstat-icon">💼</div>
-      <div class="pstat-label">BL</div>
-    </div>
-    <div class="pstat" onclick="filterByLoanType('Home')" id="lt-hl">
-      <div class="pstat-icon">🏠</div>
-      <div class="pstat-label">HL</div>
-    </div>
-    <div class="pstat" onclick="filterByLoanType('Property')" id="lt-lap">
-      <div class="pstat-icon">🏢</div>
-      <div class="pstat-label">LAP</div>
-    </div>
-    <div class="pstat" onclick="filterByLoanType('Construction')" id="lt-cf">
-      <div class="pstat-icon">🏗️</div>
-      <div class="pstat-label">CF</div>
-    </div>
-    <div class="pstat" onclick="filterByLoanType('Partner')" id="lt-partner">
-      <div class="pstat-icon">🤝</div>
-      <div class="pstat-label">Partner</div>
-    </div>
-  </div>
-</div>
-
 
   <!-- Search -->
   <div class="search-wrap">
@@ -675,7 +594,6 @@ html, body {
       <div class="rp-tabs">
         <div class="rptab active" onclick="showTab('details',this)">📋 Details</div>
         <div class="rptab"        onclick="showTab('whatsapp',this)">💬 WhatsApp API</div>
-        <div class="rptab"        onclick="showTab('profile',this)">📄 Profile</div>
         <div class="rptab"        onclick="showTab('status',this)">🔄 Status</div>
       </div>
     </div>
@@ -701,64 +619,12 @@ html, body {
           <button class="wa-action-btn" onclick="showQuickReplies()">⚡ Quick Reply</button>
         </div>
         <div id="waSubPanel"></div>
-
-        <!-- FEEDBACK SECTION -->
-        <div class="feedback-wrap">
-          <label class="feedback-label">📝 Feedback / Notes</label>
-          <textarea class="feedback-textarea" id="feedbackInput" rows="3"
-            placeholder="e.g. Interested — will apply next week. Follow up Monday."></textarea>
-          <div class="feedback-actions">
-            <button class="btn-save-feedback" onclick="saveFeedback()">💾 Save Feedback</button>
-            <button class="btn-delete-lead" onclick="deleteLead()">🗑️ Delete Lead</button>
-          </div>
-        </div>
-
         <div class="wa-input-wrap">
           <div class="wa-input-row">
             <textarea class="wa-textarea" id="waInput" placeholder="Type a message (24hr window only)..."
               rows="1" oninput="autoResize(this)" onkeydown="handleWAKey(event)"></textarea>
             <button class="wa-send" onclick="sendWAMessage()">➤</button>
           </div>
-        </div>
-      </div>
-
-      <!-- PROFILE TAB -->
-      <div class="tab-pane" id="tab-profile">
-        <div class="profile-wrap">
-
-          <!-- Profile display -->
-          <div id="profileContent" style="white-space:pre-wrap;font-size:12px;font-family:'JetBrains Mono',monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;margin-bottom:12px;min-height:100px;">
-            <span style="color:#94a3b8;">No profile generated yet.\nSubmit documents via Banking Portal to generate AI profile.</span>
-          </div>
-
-          <!-- Corrections -->
-          <div class="feedback-wrap" style="background:#f0fdf4;border-color:#86efac;">
-            <label class="feedback-label" style="color:#166534;">✏️ Corrections / Additional Info</label>
-            <textarea id="profileCorrections" class="feedback-textarea" rows="3"
-              placeholder="e.g. Income is 95000 not 85000&#10;Additional strength: Government employee, pension after retirement"></textarea>
-            <div class="feedback-actions">
-              <button class="btn-save-feedback" onclick="regenerateProfile()" style="background:#16a34a;">🔄 Regenerate Profile</button>
-            </div>
-          </div>
-
-          <!-- DSA Allocation -->
-          <div style="margin-top:12px;">
-            <label class="feedback-label">🏦 Allocate DSA</label>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button class="dsa-btn" onclick="allocateDSA('My Mudra')">My Mudra</button>
-              <button class="dsa-btn" onclick="allocateDSA('RU Loans')">RU Loans</button>
-              <button class="dsa-btn" onclick="allocateDSA('Turtlemint')">Turtlemint</button>
-              <button class="dsa-btn" onclick="allocateDSA('Manual Decision')">⚙️ Manual</button>
-            </div>
-          </div>
-
-          <!-- Gmail Button -->
-          <div style="margin-top:12px;">
-            <button class="btn-save-feedback" onclick="openGmailDSA()" style="width:100%;background:#004a99;">
-              📧 Open Gmail with Profile
-            </button>
-          </div>
-
         </div>
       </div>
 
@@ -950,28 +816,6 @@ function isInactive(lead) {
 // ============================================================
 // FILTERS
 // ============================================================
-  function filterByLoanType(loanType) {
-  document.querySelectorAll("[id^='lt-']").forEach(function(p){ p.classList.remove("active"); });
-  var key = loanType === "" ? "lt-all" :
-    loanType === "Personal"     ? "lt-pl"     :
-    loanType === "Business"     ? "lt-bl"     :
-    loanType === "Home"         ? "lt-hl"     :
-    loanType === "Property"     ? "lt-lap"    :
-    loanType === "Construction" ? "lt-cf"     :
-    loanType === "Partner"      ? "lt-partner": "lt-all";
-  var el = document.getElementById(key);
-  if (el) el.classList.add("active");
-
-  if (loanType === "") {
-    filteredLeads = allLeads.slice();
-  } else {
-    filteredLeads = allLeads.filter(function(l) {
-      return (l.loanType||"").toLowerCase().indexOf(loanType.toLowerCase()) !== -1;
-    });
-  }
-  renderLeadList();
-}
-
 function filterByStatus(status) {
   statusFilter = status;
   // Update active pipeline stat
@@ -1063,16 +907,14 @@ function renderLeadList() {
 
     var initials    = l.fullName && l.fullName !== "—" ? l.fullName.charAt(0).toUpperCase() : "?";
     var activeClass = selectedLead && selectedLead.row === l.row ? " active" : "";
-    var newClass    = (l.seen === "No" || !l.seen) && l.source !== undefined ? " new-lead" : "";
-    var newBadge    = (l.seen === "No" || !l.seen) && l.source !== undefined ? '<span class="new-badge">New</span>' : "";
     var dt = "";
     try { var d=new Date(l.timestamp); if(!isNaN(d)) dt=d.toLocaleDateString("en-IN",{day:"2-digit",month:"short"}); } catch(e){}
 
-    html += '<div class="lead-item'+activeClass+newClass+'" onclick="openLead('+i+')">' +
+    html += '<div class="lead-item'+activeClass+'" onclick="openLead('+i+')">' +
       '<div class="li-avatar" style="background:'+color+'">'+initials+'</div>' +
       '<div class="li-body">' +
         '<div class="li-row1">' +
-          '<div class="li-name">'+esc(l.fullName||"Unknown")+newBadge+'</div>' +
+          '<div class="li-name">'+esc(l.fullName||"Unknown")+'</div>' +
           '<div class="li-time">'+dt+'</div>' +
         '</div>' +
         '<div class="li-mobile">'+esc(l.refId)+'  •  '+esc(l.mobile)+'</div>' +
@@ -1132,14 +974,6 @@ function openLead(idx) {
   // Reset to details tab
   showTab("details", document.querySelector(".rptab"));
   renderLeadList();
-
-  // Mark as seen if new
-  if (l.seen === "No" || !l.seen) {
-    l.seen = "Yes";
-    fetch(APPS_SCRIPT_URL + "?action=markSeen&mobile=" + encodeURIComponent(l.mobile))
-      .catch(function(){});
-    renderLeadList();
-  }
 }
 
 function buildDetails(l) {
@@ -1195,82 +1029,57 @@ function loadWAMessages(mobile) {
   var container = document.getElementById("waMessages");
   container.innerHTML = '<div style="text-align:center;padding:16px"><div class="spinner" style="margin:0 auto"></div></div>';
 
-  var p1 = fetch(APPS_SCRIPT_URL + "?action=getMessages")
+  fetch(APPS_SCRIPT_URL + "?action=getMessages")
     .then(function(r){ return r.json(); })
-    .catch(function(){ return {success:false}; });
-
-  var p2 = fetch(APPS_SCRIPT_URL + "?action=getConversation&mobile=" + encodeURIComponent(mobile))
-    .then(function(r){ return r.json(); })
-    .catch(function(){ return {success:false, conversation:[]}; });
-
-  Promise.all([p1, p2]).then(function(results) {
-    var d    = results[0];
-    var conv = results[1];
-    var found = null;
-    if (d.success && d.messages) {
-      var cleanMob = mobile.replace(/\D/g,"");
-      d.messages.forEach(function(m) {
-        var cm = m.mobile.replace(/\D/g,"");
-        if (cm === cleanMob || cm === "91"+cleanMob || "91"+cm === cleanMob) found = m;
-      });
-    }
-    var conversation = (conv.conversation || []).slice(-6);
-    renderWAMessages(found, conversation);
-
-    // Load feedback
-    if (selectedLead) {
-      var fb = document.getElementById("feedbackInput");
-      if (fb) fb.value = selectedLead.feedback || "";
-    }
-  }).catch(function() {
-    container.innerHTML = '<div class="wa-no-msgs">Could not load messages</div>';
-  });
+    .then(function(d) {
+      if (d.success && d.messages) {
+        var cleanMob = mobile.replace(/\D/g,"");
+        var found = null;
+        d.messages.forEach(function(m) {
+          var cm = m.mobile.replace(/\D/g,"");
+          if (cm === cleanMob || cm === "91"+cleanMob || "91"+cm === cleanMob) found = m;
+        });
+        renderWAMessages(found);
+      } else {
+        container.innerHTML = '<div class="wa-no-msgs">No messages found</div>';
+      }
+    })
+    .catch(function() {
+      container.innerHTML = '<div class="wa-no-msgs">Could not load messages</div>';
+    });
 }
 
-function renderWAMessages(m, conversation) {
+function renderWAMessages(m) {
   var container = document.getElementById("waMessages");
+  if (!m) {
+    container.innerHTML = '<div class="wa-no-msgs">📭 No WhatsApp messages yet for this customer</div>';
+    return;
+  }
+
   var html = "";
 
-  // Show bot conversation if available
-  if (conversation && conversation.length > 0) {
-    html += '<div style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;margin-bottom:8px;padding:0 4px">💬 Bot Conversation</div>';
-    conversation.forEach(function(msg) {
-      var isBot      = msg.role === "bot";
-      var label      = isBot ? "🤖 Bot" : "👤 Customer";
-      var labelColor = isBot ? "color:#004a99" : "color:#16a34a";
-      html += '<div class="wa-bubble">' +
-        '<div class="wa-bubble-label" style="' + labelColor + '">' + label + '</div>' +
-        esc(msg.message || "").replace(/\n/g,"<br>") +
-        '</div>';
-    });
-    html += '<hr style="border:none;border-top:1px dashed #e2e8f0;margin:10px 0">';
+  if (m.message3 && m.message3.trim()) {
+    html += '<div class="wa-bubble"><div class="wa-bubble-label">Earlier</div>' +
+      esc(m.message3).replace(/\n/g,"<br>") + '</div>';
+  }
+  if (m.message2 && m.message2.trim()) {
+    html += '<div class="wa-bubble"><div class="wa-bubble-label">Previous</div>' +
+      esc(m.message2).replace(/\n/g,"<br>") + '</div>';
+  }
+  if (m.message1 && m.message1.trim()) {
+    html += '<div class="wa-bubble">' +
+      '<div class="wa-bubble-label">Latest — 📱 '+esc(m.mobile)+'</div>' +
+      esc(m.message1).replace(/\n/g,"<br>") +
+      '<div class="wa-bubble-time">'+(m.timestamp ? new Date(m.timestamp).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}) : "")+'</div>' +
+    '</div>';
+  }
+  if (!m.message1 && !m.message2 && !m.message3) {
+    html = '<div class="wa-no-msgs">📭 No message content yet</div>';
   }
 
-  // Show WA Lead messages
-  if (m) {
-    if (m.message3 && m.message3.trim()) {
-      html += '<div class="wa-bubble"><div class="wa-bubble-label" style="color:#16a34a">👤 Earlier</div>' +
-        esc(m.message3).replace(/\n/g,"<br>") + '</div>';
-    }
-    if (m.message2 && m.message2.trim()) {
-      html += '<div class="wa-bubble"><div class="wa-bubble-label" style="color:#16a34a">👤 Previous</div>' +
-        esc(m.message2).replace(/\n/g,"<br>") + '</div>';
-    }
-    if (m.message1 && m.message1.trim()) {
-      html += '<div class="wa-bubble">' +
-        '<div class="wa-bubble-label" style="color:#16a34a">👤 Latest — 📱 '+esc(m.mobile)+'</div>' +
-        esc(m.message1).replace(/\n/g,"<br>") +
-        '<div class="wa-bubble-time">'+(m.timestamp ? new Date(m.timestamp).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}) : "")+'</div>' +
-      '</div>';
-    }
-    if (m.templateSent === "Yes" && m.templateName) {
-      html += '<div class="wa-template-sent">✅ Template sent: <strong>'+esc(m.templateName)+'</strong>' +
-        (m.autoSentAt ? ' · '+esc(m.autoSentAt) : '') + '</div>';
-    }
-  }
-
-  if (!html) {
-    html = '<div class="wa-no-msgs">📭 No WhatsApp messages yet for this customer</div>';
+  if (m.templateSent === "Yes" && m.templateName) {
+    html += '<div class="wa-template-sent">✅ Template sent: <strong>'+esc(m.templateName)+'</strong>' +
+      (m.autoSentAt ? ' · '+esc(m.autoSentAt) : '') + '</div>';
   }
 
   container.innerHTML = html;
@@ -1306,27 +1115,11 @@ function sendTemplate(idx) {
   if (!selectedLead) return;
   var t = templates[idx];
   if (!t) return;
-
-  var bannerUrl = "";
-  if (t.name === "welcome_hl") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=151p69azxUf_tcJH9uwueGtigbyqMscFk";
-  } else if (t.name === "welcome_lap") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=1WUkhuqRbtAm5hHq3dnZ8JLzYHz4E2AHq";
-  } else if (t.name === "welcome_unsecured") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=1llb-yxEyzSR1JVEqdM4TmI7_ICDOFSrD";
-  } else if (t.name === "partner_recruitment") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=18WCgSkS9sLmeI8YNgaLPKbBw-QJ90xPv";
-  } else if (t.name === "construction_finance") {
-    bannerUrl = "https://drive.google.com/uc?export=download&id=1la4AWXmwlpwqXWC9cZsvUnwxgyq92Bxz";
-  }
-
   document.getElementById("waSubPanel").innerHTML = "";
   toast("📤 Sending " + t.name + "...", "ok");
   fetch(APPS_SCRIPT_URL + "?action=sendTemplate&mobile=" +
     encodeURIComponent(selectedLead.mobile) +
-    "&templateName=" + encodeURIComponent(t.name) +
-    "&params=[]" +
-    "&imageUrl=" + encodeURIComponent(bannerUrl))
+    "&templateName=" + encodeURIComponent(t.name) + "&params=[]")
     .then(function(r){ return r.json(); })
     .then(function(d) {
       if (d.success) { toast("✅ Template sent!", "ok"); loadWAMessages(selectedLead.mobile); }
@@ -1373,128 +1166,6 @@ function sendWAMessage() {
 
 function handleWAKey(e) {
   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendWAMessage(); }
-}
-
-// ============================================================
-// PROFILE TAB
-// ============================================================
-function loadProfile(lead) {
-  var profileEl = document.getElementById("profileContent");
-  if (!profileEl) return;
-  if (lead && lead.aiProfile && lead.aiProfile.length > 10) {
-    profileEl.textContent = lead.aiProfile;
-  } else {
-    profileEl.innerHTML = '<span style="color:#94a3b8;">No profile generated yet.\nSubmit documents via Banking Portal to generate AI profile.</span>';
-  }
-}
-
-function regenerateProfile() {
-  if (!selectedLead) return;
-  var corrections = document.getElementById("profileCorrections").value.trim();
-  if (!corrections) { toast("Please enter corrections first!", "err"); return; }
-
-  toast("🔄 Regenerating profile...", "ok");
-  fetch(APPS_SCRIPT_URL + "?action=regenerateProfile" +
-    "&mobile=" + encodeURIComponent(selectedLead.mobile) +
-    "&corrections=" + encodeURIComponent(corrections))
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if (d.success) {
-        toast("✅ Regeneration triggered! Check Telegram.", "ok");
-        document.getElementById("profileCorrections").value = "";
-      } else {
-        toast("❌ Failed!", "err");
-      }
-    })
-    .catch(function(){ toast("❌ Connection error", "err"); });
-}
-
-function allocateDSA(dsa) {
-  if (!selectedLead || !selectedLead.row) {
-    toast("❌ Cannot allocate — lead not in Master Sheet yet!", "err");
-    return;
-  }
-  if (!confirm("Allocate to " + dsa + "?")) return;
-  toast("⏳ Allocating to " + dsa + "...", "ok");
-  fetch(APPS_SCRIPT_URL + "?action=updateStatus" +
-    "&row="    + encodeURIComponent(selectedLead.row) +
-    "&status=" + encodeURIComponent("Allocated") +
-    "&vendor=" + encodeURIComponent(dsa))
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if (d.success) {
-        toast("✅ Allocated to " + dsa + "!", "ok");
-        selectedLead.vendorAllocation = dsa;
-      } else {
-        toast("❌ Allocation failed!", "err");
-      }
-    })
-    .catch(function(){ toast("❌ Connection error", "err"); });
-}
-
-function openGmailDSA() {
-  if (!selectedLead) return;
-  var profile  = document.getElementById("profileContent").textContent || "";
-  var dsa      = selectedLead.vendorAllocation || "";
-  var name     = selectedLead.fullName || "";
-  var loanType = selectedLead.loanType || "";
-  var refId    = selectedLead.refId    || "";
-
-  var subject  = encodeURIComponent(name + " | " + loanType + " | " + dsa);
-  var body     = encodeURIComponent(profile + "\n\nDrive: " + (selectedLead.driveFolderUrl || "N/A"));
-
-  window.open("mailto:?subject=" + subject + "&body=" + body);
-}
-
-// ============================================================
-// FEEDBACK
-// ============================================================
-function saveFeedback() {
-  if (!selectedLead) return;
-  var feedback = document.getElementById("feedbackInput").value.trim();
-  toast("💾 Saving feedback...", "ok");
-  fetch(APPS_SCRIPT_URL + "?action=saveFeedback" +
-    "&mobile="   + encodeURIComponent(selectedLead.mobile) +
-    "&feedback=" + encodeURIComponent(feedback))
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if (d.success) {
-        selectedLead.feedback = feedback;
-        toast("✅ Feedback saved!", "ok");
-      } else {
-        toast("❌ Save failed!", "err");
-      }
-    })
-    .catch(function(){ toast("❌ Connection error", "err"); });
-}
-
-// ============================================================
-// DELETE LEAD
-// ============================================================
-function deleteLead() {
-  if (!selectedLead) return;
-  var name = selectedLead.fullName || selectedLead.mobile;
-  if (!confirm("Delete " + name + "'s lead?\n\nThis will remove:\n• WA Leads record\n• Conversation history\n\nThis cannot be undone!")) return;
-
-  toast("🗑️ Deleting lead...", "ok");
-  fetch(APPS_SCRIPT_URL + "?action=deleteLead" +
-    "&mobile=" + encodeURIComponent(selectedLead.mobile))
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if (d.success) {
-        toast("✅ Lead deleted!", "ok");
-        // Remove from local list
-        allLeads = allLeads.filter(function(l) { return l.mobile !== selectedLead.mobile; });
-        filteredLeads = filteredLeads.filter(function(l) { return l.mobile !== selectedLead.mobile; });
-        selectedLead = null;
-        document.getElementById("rpEmpty").style.display  = "flex";
-        document.getElementById("rpActive").style.display = "none";
-        renderLeadList();
-      } else {
-        toast("❌ Delete failed!", "err");
-      }
-    })
-    .catch(function(){ toast("❌ Connection error", "err"); });
 }
 
 function autoResize(el) {
@@ -1561,10 +1232,9 @@ function showTab(name, el) {
   document.querySelectorAll(".rptab").forEach(function(t){ t.classList.remove("active"); });
   document.querySelectorAll(".tab-pane").forEach(function(p){ p.classList.remove("active"); });
   if (el) el.classList.add("active");
-  else document.querySelectorAll(".rptab")[name === "details" ? 0 : name === "whatsapp" ? 1 : name === "profile" ? 2 : 3].classList.add("active");
+  else document.querySelectorAll(".rptab")[name === "details" ? 0 : name === "whatsapp" ? 1 : 2].classList.add("active");
   document.getElementById("tab-" + name).classList.add("active");
   if (name === "whatsapp" && selectedLead) loadWAMessages(selectedLead.mobile);
-  if (name === "profile"  && selectedLead) loadProfile(selectedLead);
 }
 
 function closeDetail() {
