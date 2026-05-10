@@ -25,20 +25,13 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 #app { display:flex; height:100vh; width:100%; }
 
 /* LEFT PANEL */
-#leftPanel {
-  width:100%; max-width:360px; flex-shrink:0;
-  background:var(--surface); border-right:1px solid var(--border);
-  display:flex; flex-direction:column; box-shadow:var(--shadow2); z-index:10;
-}
+#leftPanel { width:100%; max-width:360px; flex-shrink:0; background:var(--surface); border-right:1px solid var(--border); display:flex; flex-direction:column; box-shadow:var(--shadow2); z-index:10; }
 
 /* RIGHT PANEL */
 #rightPanel { flex:1; display:flex; flex-direction:column; background:var(--bg); overflow:hidden; }
 
 /* HEADER */
-.crm-header {
-  background:linear-gradient(135deg,#004a99,#0062cc);
-  padding:12px 16px; display:flex; align-items:center; gap:10px; flex-shrink:0;
-}
+.crm-header { background:linear-gradient(135deg,#004a99,#0062cc); padding:12px 16px; display:flex; align-items:center; gap:10px; flex-shrink:0; }
 .crm-logo { width:36px; height:36px; border-radius:10px; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
 .crm-title { font-size:15px; font-weight:800; color:white; }
 .crm-sub   { font-size:11px; color:rgba(255,255,255,0.7); margin-top:1px; }
@@ -46,16 +39,16 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 .crm-refresh:hover { background:rgba(255,255,255,0.25); }
 
 /* PIPELINE */
-.pipeline { background:var(--surface); border-bottom:1px solid var(--border); padding:10px 12px; flex-shrink:0; }
-.pipeline-title { font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px; }
+.pipeline { background:var(--surface); border-bottom:1px solid var(--border); padding:8px 12px; flex-shrink:0; }
+.pipeline-title { font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
 .pipeline-stats { display:flex; gap:4px; overflow-x:auto; }
 .pipeline-stats::-webkit-scrollbar { display:none; }
-.pstat { flex-shrink:0; padding:6px 10px; border-radius:8px; cursor:pointer; border:1.5px solid var(--border); background:var(--surface2); transition:all 0.15s; text-align:center; min-width:60px; }
+.pstat { flex-shrink:0; padding:5px 8px; border-radius:8px; cursor:pointer; border:1.5px solid var(--border); background:var(--surface2); transition:all 0.15s; text-align:center; min-width:52px; }
 .pstat:hover { border-color:var(--primary); }
 .pstat.active { background:var(--primary3); border-color:var(--primary); }
-.pstat-icon  { font-size:14px; margin-bottom:2px; }
-.pstat-num   { font-size:14px; font-weight:800; color:var(--text); font-family:var(--mono); line-height:1; }
-.pstat-label { font-size:9px; color:var(--text3); font-weight:600; margin-top:2px; white-space:nowrap; }
+.pstat-icon  { font-size:12px; margin-bottom:1px; }
+.pstat-num   { font-size:13px; font-weight:800; color:var(--text); font-family:var(--mono); line-height:1; }
+.pstat-label { font-size:9px; color:var(--text3); font-weight:600; margin-top:1px; white-space:nowrap; }
 
 /* SEARCH */
 .search-wrap { padding:8px 12px; background:var(--surface); border-bottom:1px solid var(--border); flex-shrink:0; }
@@ -64,9 +57,9 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 .search-box input { flex:1; background:none; border:none; font-size:13px; color:var(--text); font-family:'Plus Jakarta Sans',sans-serif; outline:none; }
 .search-box input::placeholder { color:var(--text3); }
 
-.filter-tabs { display:flex; gap:4px; padding:8px 12px; background:var(--surface); border-bottom:1px solid var(--border); flex-shrink:0; overflow-x:auto; }
+.filter-tabs { display:flex; gap:4px; padding:6px 12px; background:var(--surface); border-bottom:1px solid var(--border); flex-shrink:0; overflow-x:auto; }
 .filter-tabs::-webkit-scrollbar { display:none; }
-.ftab { flex-shrink:0; padding:5px 12px; border-radius:20px; font-size:12px; font-weight:700; cursor:pointer; border:1.5px solid var(--border); color:var(--text2); background:var(--surface2); transition:all 0.15s; white-space:nowrap; }
+.ftab { flex-shrink:0; padding:4px 10px; border-radius:20px; font-size:11px; font-weight:700; cursor:pointer; border:1.5px solid var(--border); color:var(--text2); background:var(--surface2); transition:all 0.15s; white-space:nowrap; }
 .ftab.active { background:var(--primary); border-color:var(--primary); color:white; }
 
 /* LEAD LIST */
@@ -74,49 +67,29 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 .lead-list::-webkit-scrollbar { width:3px; }
 .lead-list::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
 
-.lead-item { padding:10px 14px; border-bottom:1px solid var(--border); cursor:pointer; transition:background 0.1s; display:flex; gap:10px; align-items:flex-start; }
+.lead-item { padding:10px 12px; border-bottom:1px solid var(--border); cursor:pointer; transition:background 0.1s; display:flex; gap:8px; align-items:flex-start; border-left:3px solid transparent; }
 .lead-item:hover  { background:var(--surface2); }
-.lead-item.active { background:#e8f0fb; border-left:3px solid var(--primary); }
-.lead-item.new-lead { background:#fffbeb; border-left:3px solid #f59e0b; }
-.lead-item.new-lead:hover { background:#fef3c7; }
+.lead-item.active { background:#e8f0fb; border-left-color:var(--primary); }
+.lead-item.is-new      { border-left-color:#f59e0b; background:#fffbeb; }
+.lead-item.is-case     { border-left-color:#16a34a; }
+.lead-item.is-callnow  { border-left-color:#ef4444; background:#fff5f5; animation:pulse-red 2s infinite; }
+.lead-item.is-manual   { border-left-color:#f59e0b; }
+.lead-item.is-hot      { border-left-color:#dc2626; }
+.lead-item.is-warm     { border-left-color:#f59e0b; }
+.lead-item.is-cold     { border-left-color:#94a3b8; }
 
-/* NEW — Case summary and call now indicators */
-.lead-item.case-ready { border-left:4px solid #16a34a; }
-.lead-item.call-now   { border-left:4px solid #ef4444; background:#fff5f5; animation:pulse-red 2s infinite; }
-.lead-item.manual-decision { border-left:4px solid #f59e0b; }
+@keyframes pulse-red { 0%,100%{background:#fff5f5} 50%{background:#fee2e2} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
-@keyframes pulse-red {
-  0%, 100% { background:#fff5f5; }
-  50%       { background:#fee2e2; }
-}
-
-.new-badge { background:#f59e0b; color:white; font-size:9px; font-weight:800; padding:2px 6px; border-radius:8px; margin-left:4px; text-transform:uppercase; letter-spacing:0.5px; }
-
-/* NEW BADGES */
-.case-badge   { background:#16a34a; color:white; font-size:9px; font-weight:800; padding:2px 6px; border-radius:8px; margin-left:4px; text-transform:uppercase; }
-.call-badge   { background:#ef4444; color:white; font-size:9px; font-weight:800; padding:2px 6px; border-radius:8px; margin-left:4px; text-transform:uppercase; animation:blink 1s infinite; }
-.manual-badge { background:#f59e0b; color:white; font-size:9px; font-weight:800; padding:2px 6px; border-radius:8px; margin-left:4px; text-transform:uppercase; }
-
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
-
-/* FEEDBACK */
-.feedback-wrap { margin-top:12px; padding:12px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; }
-.feedback-label { font-size:11px; font-weight:700; color:#0c4a6e; text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; display:block; }
-.feedback-textarea { width:100%; border:1.5px solid #bae6fd; border-radius:8px; padding:8px 10px; font-size:13px; color:#0f172a; background:white; resize:none; outline:none; font-family:inherit; line-height:1.5; }
-.feedback-textarea:focus { border-color:#004a99; }
-.feedback-actions { display:flex; gap:8px; margin-top:8px; }
-.btn-save-feedback { flex:1; padding:9px; border:none; border-radius:8px; background:#004a99; color:white; font-size:13px; font-weight:700; cursor:pointer; }
-.btn-delete-lead { padding:9px 14px; border:none; border-radius:8px; background:#fee2e2; color:#dc2626; font-size:13px; font-weight:700; cursor:pointer; border:1px solid #fca5a5; }
-
-.li-avatar { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; color:white; flex-shrink:0; }
+.li-avatar { width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800; color:white; flex-shrink:0; }
 .li-body { flex:1; min-width:0; }
-.li-row1 { display:flex; justify-content:space-between; align-items:center; margin-bottom:2px; }
-.li-name { font-size:13px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:170px; }
+.li-row1 { display:flex; justify-content:space-between; align-items:center; margin-bottom:1px; }
+.li-name { font-size:13px; font-weight:700; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:160px; }
 .li-time { font-size:10px; color:var(--text3); font-family:var(--mono); }
-.li-mobile { font-size:11px; color:var(--text3); font-family:var(--mono); margin-bottom:3px; }
-.li-tags { display:flex; gap:4px; flex-wrap:wrap; align-items:center; }
+.li-city { font-size:11px; color:var(--text2); margin-bottom:3px; }
+.li-tags { display:flex; gap:3px; flex-wrap:wrap; align-items:center; }
 
-.tag { font-size:10px; font-weight:700; padding:2px 6px; border-radius:6px; }
+.tag { font-size:10px; font-weight:700; padding:2px 5px; border-radius:5px; }
 .tag-pl  { background:#dbeafe; color:#1d4ed8; }
 .tag-bl  { background:#fef3c7; color:#92400e; }
 .tag-hl  { background:#d1fae5; color:#065f46; }
@@ -125,16 +98,23 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 .tag-direct  { background:#f1f5f9; color:#64748b; }
 .tag-partner { background:#fef9c3; color:#854d0e; }
 
-.status-badge { font-size:10px; font-weight:700; padding:2px 6px; border-radius:6px; }
+.badge { font-size:9px; font-weight:800; padding:2px 5px; border-radius:5px; }
+.badge-new     { background:#f59e0b; color:white; }
+.badge-case    { background:#16a34a; color:white; }
+.badge-callnow { background:#ef4444; color:white; animation:blink 1s infinite; }
+.badge-manual  { background:#f59e0b; color:white; }
+.badge-callback{ background:#7c3aed; color:white; font-size:9px; }
+
+.status-badge { font-size:10px; font-weight:700; padding:2px 5px; border-radius:5px; }
 .s-captured  { background:#f1f5f9; color:#64748b; }
+.s-case      { background:#d1fae5; color:#065f46; }
 .s-pending   { background:#fef3c7; color:#92400e; }
+.s-manual    { background:#fef3c7; color:#92400e; }
 .s-process   { background:#dbeafe; color:#1d4ed8; }
 .s-allocated { background:#ede9fe; color:#5b21b6; }
 .s-approved  { background:#d1fae5; color:#065f46; }
 .s-disbursed { background:#d1fae5; color:#065f46; }
 .s-rejected  { background:#fee2e2; color:#991b1b; }
-.s-case      { background:#d1fae5; color:#065f46; }
-.s-manual    { background:#fef3c7; color:#92400e; }
 
 /* EMPTY STATE */
 .empty-state { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; padding:40px; text-align:center; }
@@ -145,121 +125,122 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 .spinner { width:20px; height:20px; border:2px solid var(--border2); border-top-color:var(--primary); border-radius:50%; animation:spin 0.6s linear infinite; }
 @keyframes spin { to { transform:rotate(360deg); } }
 
-/* RIGHT PANEL */
-.rp-header { background:var(--surface); border-bottom:1px solid var(--border); padding:12px 16px; flex-shrink:0; box-shadow:var(--shadow); }
-.rp-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+/* RIGHT PANEL HEADER */
+.rp-header { background:var(--surface); border-bottom:1px solid var(--border); padding:10px 14px; flex-shrink:0; box-shadow:var(--shadow); }
+.rp-top { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
 .rp-back { font-size:20px; color:var(--text2); cursor:pointer; display:none; padding:2px 8px 2px 0; }
-.rp-avatar { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:800; color:white; flex-shrink:0; }
+.rp-avatar { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:800; color:white; flex-shrink:0; }
 .rp-info { flex:1; min-width:0; }
 .rp-name { font-size:15px; font-weight:800; color:var(--text); }
 .rp-sub  { font-size:11px; color:var(--text2); margin-top:1px; }
-.rp-actions { display:flex; gap:6px; }
 
-.action-btn { height:34px; border-radius:8px; display:flex; align-items:center; gap:5px; padding:0 10px; border:1.5px solid var(--border); background:var(--surface2); cursor:pointer; font-size:12px; font-weight:700; color:var(--text2); text-decoration:none; transition:all 0.15s; font-family:'Plus Jakarta Sans',sans-serif; white-space:nowrap; }
-.action-btn:hover { background:var(--border); }
-.action-btn.call { background:#d1fae5; border-color:#a7f3d0; color:#065f46; }
-.action-btn.wa   { background:#dcfce7; border-color:#86efac; color:#166534; }
-.action-btn.docs { background:#dbeafe; border-color:#93c5fd; color:#1d4ed8; }
-.action-btn.call-now { background:#ef4444; border-color:#dc2626; color:white; animation:blink 1s infinite; }
+/* QUICK ACTION BUTTONS */
+.quick-actions { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+.qa-btn { height:32px; border-radius:8px; display:flex; align-items:center; gap:4px; padding:0 10px; border:1.5px solid var(--border); background:var(--surface2); cursor:pointer; font-size:11px; font-weight:700; color:var(--text2); text-decoration:none; transition:all 0.15s; font-family:'Plus Jakarta Sans',sans-serif; white-space:nowrap; }
+.qa-btn:hover { opacity:0.85; }
+.qa-btn.call     { background:#d1fae5; border-color:#a7f3d0; color:#065f46; }
+.qa-btn.wa       { background:#dcfce7; border-color:#86efac; color:#166534; }
+.qa-btn.missed   { background:#fef3c7; border-color:#fcd34d; color:#92400e; }
+.qa-btn.email    { background:#dbeafe; border-color:#93c5fd; color:#1d4ed8; }
+.qa-btn.callnow  { background:#ef4444; border-color:#dc2626; color:white; animation:blink 1s infinite; }
 
 /* TABS */
-.rp-tabs { display:flex; gap:0; border-bottom:none; }
-.rptab { flex:1; padding:7px; text-align:center; font-size:12px; font-weight:700; cursor:pointer; border-bottom:2px solid transparent; color:var(--text3); transition:all 0.15s; }
+.rp-tabs { display:flex; gap:0; }
+.rptab { flex:1; padding:6px 4px; text-align:center; font-size:11px; font-weight:700; cursor:pointer; border-bottom:2px solid transparent; color:var(--text3); transition:all 0.15s; }
 .rptab.active { color:var(--primary); border-bottom-color:var(--primary); }
 
 /* TAB CONTENT */
 .tab-content { flex:1; overflow:hidden; display:flex; flex-direction:column; }
-.tab-pane    { display:none; flex:1; overflow-y:auto; padding:14px 16px; }
+.tab-pane    { display:none; flex:1; overflow-y:auto; padding:12px 14px; }
 .tab-pane.active { display:block; }
 .tab-pane::-webkit-scrollbar { width:4px; }
 .tab-pane::-webkit-scrollbar-thumb { background:var(--border2); border-radius:2px; }
 
-/* DETAIL CARDS */
+/* CALLBACK BANNER */
+.callback-banner { background:linear-gradient(135deg,#7c3aed,#6d28d9); border-radius:10px; padding:10px 12px; margin-bottom:10px; display:flex; align-items:center; gap:10px; }
+.callback-banner-icon { font-size:20px; }
+.callback-banner-text { flex:1; }
+.callback-banner-title { font-size:12px; font-weight:800; color:white; }
+.callback-banner-sub   { font-size:11px; color:rgba(255,255,255,0.8); margin-top:1px; }
+
+/* CASE BRIEF */
+.case-brief-wrap { background:var(--surface); border-radius:12px; padding:14px; box-shadow:var(--shadow); margin-bottom:10px; }
+.case-brief-title { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
+.case-brief-content { white-space:pre-wrap; font-size:12px; font-family:var(--mono); line-height:1.6; color:var(--text); }
+.case-brief-empty { font-size:13px; color:var(--text3); text-align:center; padding:20px 0; }
+
+/* LENDERS */
+.lender-card { background:var(--surface); border:1.5px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:8px; }
+.lender-bank { font-size:13px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.lender-product { font-size:11px; color:var(--primary); font-weight:600; margin-bottom:4px; }
+.lender-sm { display:flex; align-items:center; justify-content:space-between; }
+.lender-name { font-size:12px; color:var(--text2); }
+.lender-call { display:flex; align-items:center; gap:4px; background:#d1fae5; border:none; border-radius:6px; padding:5px 10px; font-size:11px; font-weight:700; color:#065f46; cursor:pointer; text-decoration:none; }
+
+/* CONVERSATION */
+.conv-wrap { display:flex; flex-direction:column; gap:6px; }
+.conv-bubble { max-width:85%; padding:8px 10px; font-size:12px; line-height:1.5; border-radius:0 10px 10px 10px; background:var(--surface); box-shadow:var(--shadow); align-self:flex-start; }
+.conv-bubble.bot { background:#e8f0fb; align-self:flex-start; }
+.conv-bubble.customer { background:#d1fae5; align-self:flex-end; border-radius:10px 0 10px 10px; }
+.conv-role { font-size:9px; font-weight:700; text-transform:uppercase; margin-bottom:2px; }
+.conv-role.bot { color:#004a99; }
+.conv-role.customer { color:#16a34a; }
+
+/* ACTIONS TAB */
+.action-section { background:var(--surface); border-radius:12px; padding:12px; box-shadow:var(--shadow); margin-bottom:10px; }
+.action-section-title { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; }
+.action-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.action-card { padding:10px; border-radius:10px; border:1.5px solid var(--border); background:var(--surface2); cursor:pointer; text-align:center; transition:all 0.15s; font-family:'Plus Jakarta Sans',sans-serif; }
+.action-card:hover { border-color:var(--primary); background:var(--primary3); }
+.action-card-icon { font-size:20px; margin-bottom:4px; }
+.action-card-label { font-size:11px; font-weight:700; color:var(--text2); }
+
+/* DSA BUTTONS */
+.dsa-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+.dsa-btn { padding:10px; border:1.5px solid #004a99; border-radius:8px; background:white; color:#004a99; font-size:12px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.15s; }
+.dsa-btn:hover { background:#004a99; color:white; }
+.dsa-btn.full { grid-column:1/-1; }
+
+/* STATUS FORM */
+.status-form { background:var(--surface); border-radius:12px; padding:14px; box-shadow:var(--shadow); }
+.status-label { font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; display:block; }
+.status-select { width:100%; border:1.5px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13px; color:var(--text); background:var(--surface2); font-family:'Plus Jakarta Sans',sans-serif; outline:none; margin-bottom:12px; -webkit-appearance:none; }
+.status-select:focus { border-color:var(--primary); }
+.status-input { width:100%; border:1.5px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13px; color:var(--text); background:var(--surface2); font-family:'Plus Jakarta Sans',sans-serif; outline:none; margin-bottom:12px; }
+.status-input:focus { border-color:var(--primary); }
+.btn-save { width:100%; padding:12px; background:var(--primary); border:none; border-radius:10px; font-size:14px; font-weight:800; color:white; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; }
+.btn-save:disabled { opacity:0.6; pointer-events:none; }
+
+/* DETAIL SECTION */
 .detail-section { background:var(--surface); border-radius:12px; padding:12px 14px; margin-bottom:10px; box-shadow:var(--shadow); }
-.detail-section-title { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+.detail-section-title { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:10px; }
 .detail-row { display:flex; justify-content:space-between; align-items:flex-start; padding:5px 0; border-bottom:1px solid var(--border); }
 .detail-row:last-child { border-bottom:none; }
 .detail-label { font-size:12px; color:var(--text2); font-weight:500; flex-shrink:0; }
-.detail-value { font-size:12px; color:var(--text); font-weight:700; text-align:right; max-width:60%; }
+.detail-value { font-size:12px; color:var(--text); font-weight:700; text-align:right; max-width:60%; word-break:break-word; }
 
-/* NEW — Case summary alert box */
-.case-alert {
-  background:#d1fae5; border:1.5px solid #6ee7b7;
-  border-radius:10px; padding:10px 12px; margin-bottom:12px;
-  font-size:12px; color:#065f46; font-weight:600;
-}
-.call-alert {
-  background:#fee2e2; border:1.5px solid #fca5a5;
-  border-radius:10px; padding:10px 12px; margin-bottom:12px;
-  font-size:12px; color:#991b1b; font-weight:600;
-  animation:pulse-red 2s infinite;
-}
-.manual-alert {
-  background:#fef3c7; border:1.5px solid #fcd34d;
-  border-radius:10px; padding:10px 12px; margin-bottom:12px;
-  font-size:12px; color:#92400e; font-weight:600;
-}
+/* FEEDBACK */
+.feedback-wrap { background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:12px; margin-bottom:10px; }
+.feedback-label { font-size:11px; font-weight:700; color:#0c4a6e; text-transform:uppercase; margin-bottom:6px; display:block; }
+.feedback-textarea { width:100%; border:1.5px solid #bae6fd; border-radius:8px; padding:8px 10px; font-size:13px; color:#0f172a; background:white; resize:none; outline:none; font-family:inherit; line-height:1.5; }
+.feedback-actions { display:flex; gap:8px; margin-top:8px; }
+.btn-feedback { flex:1; padding:8px; border:none; border-radius:8px; background:#004a99; color:white; font-size:12px; font-weight:700; cursor:pointer; }
+.btn-delete { padding:8px 12px; border:none; border-radius:8px; background:#fee2e2; color:#dc2626; font-size:12px; font-weight:700; cursor:pointer; border:1px solid #fca5a5; }
 
-/* WA */
-.wa-messages { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
-.wa-bubble { max-width:80%; padding:8px 12px; font-size:13px; line-height:1.6; color:var(--text); border-radius:0 10px 10px 10px; background:var(--surface); box-shadow:var(--shadow); align-self:flex-start; }
-.wa-bubble-label { font-size:9px; font-weight:700; color:var(--text3); text-transform:uppercase; margin-bottom:3px; }
-.wa-bubble-time  { font-size:10px; color:var(--text3); text-align:right; margin-top:3px; font-family:var(--mono); }
-.wa-no-msgs     { background:var(--surface2); border-radius:10px; padding:16px; text-align:center; font-size:13px; color:var(--text3); margin-bottom:12px; }
-.wa-template-sent { background:#d1fae5; border:1px solid #a7f3d0; border-radius:10px; padding:10px 12px; margin-bottom:12px; font-size:12px; color:#065f46; }
-
+/* WA INPUT */
 .wa-input-wrap { background:var(--surface); border-radius:12px; padding:10px 12px; box-shadow:var(--shadow); margin-bottom:10px; }
 .wa-input-row  { display:flex; gap:8px; align-items:flex-end; }
-.wa-textarea { flex:1; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; padding:9px 12px; font-size:13px; color:var(--text); font-family:'Plus Jakarta Sans',sans-serif; outline:none; resize:none; max-height:80px; transition:border-color 0.15s; }
-.wa-textarea:focus { border-color:var(--primary); }
-.wa-textarea::placeholder { color:var(--text3); }
-.wa-send { width:38px; height:38px; border-radius:10px; background:var(--accent); border:none; display:flex; align-items:center; justify-content:center; font-size:16px; cursor:pointer; color:white; flex-shrink:0; transition:background 0.15s; }
-.wa-send:hover { background:var(--accent2); }
-.wa-actions { display:flex; gap:6px; margin-bottom:8px; }
-.wa-action-btn { flex:1; padding:8px; border-radius:8px; border:1.5px solid var(--border); background:var(--surface2); font-size:12px; font-weight:700; cursor:pointer; color:var(--text2); font-family:'Plus Jakarta Sans',sans-serif; transition:all 0.15s; }
-.wa-action-btn:hover { background:var(--primary3); border-color:var(--primary); color:var(--primary); }
+.wa-textarea { flex:1; background:var(--surface2); border:1.5px solid var(--border); border-radius:10px; padding:9px 12px; font-size:13px; color:var(--text); font-family:'Plus Jakarta Sans',sans-serif; outline:none; resize:none; max-height:80px; }
+.wa-send { width:36px; height:36px; border-radius:10px; background:var(--accent); border:none; display:flex; align-items:center; justify-content:center; font-size:16px; cursor:pointer; color:white; flex-shrink:0; }
 
-.qr-option { background:var(--surface); border:1.5px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:6px; cursor:pointer; transition:all 0.15s; }
-.qr-option:hover { border-color:var(--primary); background:var(--primary3); }
-.qr-name { font-size:12px; font-weight:700; color:var(--primary); margin-bottom:2px; }
-.qr-text { font-size:11px; color:var(--text2); line-height:1.4; }
-
-.template-item { background:var(--surface); border:1.5px solid var(--border); border-radius:10px; padding:10px 12px; margin-bottom:6px; cursor:pointer; transition:all 0.15s; }
-.template-item:hover { border-color:var(--primary); background:var(--primary3); }
-.template-name { font-size:12px; font-weight:700; color:var(--text); margin-bottom:2px; display:flex; align-items:center; gap:6px; }
-.template-body { font-size:11px; color:var(--text2); line-height:1.4; }
-.tcat   { font-size:10px; font-weight:700; padding:1px 5px; border-radius:4px; }
-.tcat-m { background:#fef3c7; color:#92400e; }
-.tcat-u { background:#dbeafe; color:#1d4ed8; }
-
-/* PROFILE TAB */
-.profile-wrap { padding:4px 0; }
-.dsa-btn { padding:8px 14px; border:1.5px solid #004a99; border-radius:8px; background:white; color:#004a99; font-size:13px; font-weight:700; cursor:pointer; }
-.dsa-btn:hover { background:#004a99; color:white; }
-
-/* STATUS TAB */
-.status-form { background:var(--surface); border-radius:12px; padding:14px; box-shadow:var(--shadow); }
-.status-label { font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; display:block; }
-.status-select { width:100%; border:1.5px solid var(--border); border-radius:10px; padding:10px 12px; font-size:14px; color:var(--text); background:var(--surface2); font-family:'Plus Jakarta Sans',sans-serif; outline:none; margin-bottom:12px; -webkit-appearance:none; transition:border-color 0.15s; }
-.status-select:focus { border-color:var(--primary); }
-.status-input { width:100%; border:1.5px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13px; color:var(--text); background:var(--surface2); font-family:'Plus Jakarta Sans',sans-serif; outline:none; margin-bottom:12px; transition:border-color 0.15s; }
-.status-input:focus { border-color:var(--primary); }
-.btn-save { width:100%; padding:12px; background:var(--primary); border:none; border-radius:10px; font-size:14px; font-weight:800; color:white; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; box-shadow:0 4px 12px rgba(0,74,153,0.3); transition:opacity 0.15s; }
-.btn-save:hover { opacity:0.9; }
-.btn-save:disabled { opacity:0.6; pointer-events:none; }
-
-/* OVERLAY */
-.overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); z-index:200; display:none; align-items:flex-end; justify-content:center; backdrop-filter:blur(2px); }
-.overlay.show { display:flex; }
-.popup-sheet { background:var(--surface); border-radius:20px 20px 0 0; width:100%; max-width:500px; max-height:75vh; display:flex; flex-direction:column; box-shadow:0 -4px 24px rgba(0,0,0,0.12); }
-.popup-header { padding:14px 18px 10px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-shrink:0; }
-.popup-title { font-size:15px; font-weight:800; color:var(--text); }
-.popup-close { font-size:20px; color:var(--text3); cursor:pointer; padding:4px; }
-.popup-list  { overflow-y:auto; padding:8px; }
-.popup-list::-webkit-scrollbar { display:none; }
+/* ALERT BOXES */
+.alert-box { border-radius:10px; padding:10px 12px; margin-bottom:10px; font-size:12px; font-weight:600; }
+.alert-green  { background:#d1fae5; border:1.5px solid #6ee7b7; color:#065f46; }
+.alert-red    { background:#fee2e2; border:1.5px solid #fca5a5; color:#991b1b; animation:pulse-red 2s infinite; }
+.alert-yellow { background:#fef3c7; border:1.5px solid #fcd34d; color:#92400e; }
 
 /* TOAST */
-.toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(30px); background:#1e293b; color:white; border-radius:10px; padding:9px 18px; font-size:13px; font-weight:600; z-index:1000; opacity:0; transition:all 0.25s; pointer-events:none; white-space:nowrap; box-shadow:var(--shadow3); }
+.toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(30px); background:#1e293b; color:white; border-radius:10px; padding:9px 18px; font-size:13px; font-weight:600; z-index:1000; opacity:0; transition:all 0.25s; pointer-events:none; white-space:nowrap; }
 .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
 .toast.ok  { background:var(--green); }
 .toast.err { background:var(--red); }
@@ -289,27 +270,22 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 
   <!-- Pipeline Stats -->
   <div class="pipeline">
-    <div class="pipeline-title">Pipeline Overview</div>
-    <div class="pipeline-stats" id="pipelineStats">
+    <div class="pipeline-title">Pipeline</div>
+    <div class="pipeline-stats">
       <div class="pstat active" onclick="filterByStatus('')" id="ps-all">
         <div class="pstat-icon">📋</div>
         <div class="pstat-num" id="cnt-all">0</div>
         <div class="pstat-label">All</div>
-      </div>
-      <div class="pstat" onclick="filterByStatus('Lead Captured')" id="ps-captured">
-        <div class="pstat-icon">📱</div>
-        <div class="pstat-num" id="cnt-captured">0</div>
-        <div class="pstat-label">Captured</div>
       </div>
       <div class="pstat" onclick="filterByStatus('Case Ready')" id="ps-case">
         <div class="pstat-icon">✅</div>
         <div class="pstat-num" id="cnt-case">0</div>
         <div class="pstat-label">Case Ready</div>
       </div>
-      <div class="pstat" onclick="filterByStatus('Documents Pending')" id="ps-pending">
-        <div class="pstat-icon">📄</div>
-        <div class="pstat-num" id="cnt-pending">0</div>
-        <div class="pstat-label">Docs Pending</div>
+      <div class="pstat" onclick="filterByStatus('Lead Captured')" id="ps-captured">
+        <div class="pstat-icon">📱</div>
+        <div class="pstat-num" id="cnt-captured">0</div>
+        <div class="pstat-label">New</div>
       </div>
       <div class="pstat" onclick="filterByStatus('Manual Decision')" id="ps-manual">
         <div class="pstat-icon">⚠️</div>
@@ -319,7 +295,7 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
       <div class="pstat" onclick="filterByStatus('In Process')" id="ps-process">
         <div class="pstat-icon">⚙️</div>
         <div class="pstat-num" id="cnt-process">0</div>
-        <div class="pstat-label">In Process</div>
+        <div class="pstat-label">Process</div>
       </div>
       <div class="pstat" onclick="filterByStatus('Allocated')" id="ps-allocated">
         <div class="pstat-icon">🏦</div>
@@ -345,77 +321,50 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
   </div>
 
   <!-- Loan Type Filters -->
-  <div class="pipeline" style="margin-top:0;border-top:1px solid var(--border);">
-    <div class="pipeline-title">Filter by Loan Type</div>
+  <div class="pipeline" style="border-top:1px solid var(--border);">
+    <div class="pipeline-title">Loan Type</div>
     <div class="pipeline-stats">
-      <div class="pstat active" onclick="filterByLoanType('')" id="lt-all">
-        <div class="pstat-icon">📋</div>
-        <div class="pstat-label">All</div>
-      </div>
-      <div class="pstat" onclick="filterByLoanType('Personal')" id="lt-pl">
-        <div class="pstat-icon">💰</div>
-        <div class="pstat-label">PL</div>
-      </div>
-      <div class="pstat" onclick="filterByLoanType('Business')" id="lt-bl">
-        <div class="pstat-icon">💼</div>
-        <div class="pstat-label">BL</div>
-      </div>
-      <div class="pstat" onclick="filterByLoanType('Home')" id="lt-hl">
-        <div class="pstat-icon">🏠</div>
-        <div class="pstat-label">HL</div>
-      </div>
-      <div class="pstat" onclick="filterByLoanType('Property')" id="lt-lap">
-        <div class="pstat-icon">🏢</div>
-        <div class="pstat-label">LAP</div>
-      </div>
-      <div class="pstat" onclick="filterByLoanType('Construction')" id="lt-cf">
-        <div class="pstat-icon">🏗️</div>
-        <div class="pstat-label">CF</div>
-      </div>
-      <div class="pstat" onclick="filterByLoanType('Partner')" id="lt-partner">
-        <div class="pstat-icon">🤝</div>
-        <div class="pstat-label">Partner</div>
-      </div>
+      <div class="pstat active" onclick="filterByLoanType('')" id="lt-all"><div class="pstat-icon">📋</div><div class="pstat-label">All</div></div>
+      <div class="pstat" onclick="filterByLoanType('Personal')" id="lt-pl"><div class="pstat-icon">💰</div><div class="pstat-label">PL</div></div>
+      <div class="pstat" onclick="filterByLoanType('Business')" id="lt-bl"><div class="pstat-icon">💼</div><div class="pstat-label">BL</div></div>
+      <div class="pstat" onclick="filterByLoanType('Home')" id="lt-hl"><div class="pstat-icon">🏠</div><div class="pstat-label">HL</div></div>
+      <div class="pstat" onclick="filterByLoanType('Property')" id="lt-lap"><div class="pstat-icon">🏢</div><div class="pstat-label">LAP</div></div>
+      <div class="pstat" onclick="filterByLoanType('Construction')" id="lt-cf"><div class="pstat-icon">🏗️</div><div class="pstat-label">CF</div></div>
+      <div class="pstat" onclick="filterByLoanType('Partner')" id="lt-partner"><div class="pstat-icon">🤝</div><div class="pstat-label">Partner</div></div>
     </div>
   </div>
 
-  <!-- Search -->
+  <!-- Search + Filter -->
   <div class="search-wrap">
     <div class="search-box">
       <span style="font-size:14px;color:var(--text3)">🔍</span>
-      <input id="searchInput" placeholder="Search name or mobile..." oninput="applyFilters()">
+      <input id="searchInput" placeholder="Search name, mobile..." oninput="applyFilters()">
     </div>
   </div>
-
-  <!-- Filter Tabs -->
   <div class="filter-tabs">
     <div class="ftab active" onclick="setSourceFilter('all',this)">All</div>
     <div class="ftab" onclick="setSourceFilter('direct',this)">📢 Direct</div>
     <div class="ftab" onclick="setSourceFilter('partner',this)">🤝 Partner</div>
     <div class="ftab" onclick="setSourceFilter('callnow',this)">🔴 Call Now</div>
     <div class="ftab" onclick="setSourceFilter('caseready',this)">✅ Case Ready</div>
+    <div class="ftab" onclick="setSourceFilter('callback',this)">📅 Callback</div>
   </div>
 
   <!-- Lead List -->
   <div class="lead-list" id="leadList">
-    <div class="empty-state">
-      <div class="spinner"></div>
-      <div class="empty-title">Loading leads...</div>
-    </div>
+    <div class="empty-state"><div class="spinner"></div><div class="empty-title">Loading leads...</div></div>
   </div>
 </div>
 
 <!-- RIGHT PANEL -->
 <div id="rightPanel">
-
   <div class="empty-state" id="rpEmpty">
     <div class="empty-icon">📊</div>
     <div class="empty-title">Select a lead</div>
-    <div class="empty-sub">Choose from the list to view details,<br>update status and send messages</div>
+    <div class="empty-sub">Choose a lead to view case brief,<br>lenders, conversation and actions</div>
   </div>
 
   <div id="rpActive" style="display:none;flex-direction:column;flex:1;overflow:hidden;height:100%">
-
     <div class="rp-header">
       <div class="rp-top">
         <div class="rp-back" onclick="closeDetail()">←</div>
@@ -424,101 +373,123 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
           <div class="rp-name" id="rpName">—</div>
           <div class="rp-sub" id="rpSub">—</div>
         </div>
-        <div class="rp-actions">
-          <a class="action-btn call" id="rpCallBtn" href="#">📞 Call</a>
-          <a class="action-btn wa"   id="rpWABtn"   href="#" target="_blank">💬 WA</a>
-          <a class="action-btn docs" id="rpDocsBtn" href="#" target="_blank">📁 Docs</a>
-        </div>
       </div>
+      <!-- Quick Actions -->
+      <div class="quick-actions" id="quickActions"></div>
+      <!-- Tabs -->
       <div class="rp-tabs">
-        <div class="rptab active" onclick="showTab('details',this)">📋 Details</div>
-        <div class="rptab"        onclick="showTab('whatsapp',this)">💬 WhatsApp</div>
-        <div class="rptab"        onclick="showTab('profile',this)">📄 Profile</div>
-        <div class="rptab"        onclick="showTab('status',this)">🔄 Status</div>
+        <div class="rptab active" onclick="showTab('brief',this)">📋 Case Brief</div>
+        <div class="rptab" onclick="showTab('lenders',this)">🏦 Lenders</div>
+        <div class="rptab" onclick="showTab('conversation',this)">💬 Chat</div>
+        <div class="rptab" onclick="showTab('actions',this)">⚡ Actions</div>
+        <div class="rptab" onclick="showTab('details',this)">📊 Details</div>
       </div>
     </div>
 
     <div class="tab-content">
 
-      <!-- DETAILS TAB -->
-      <div class="tab-pane active" id="tab-details">
-        <div id="detailAlerts"></div>
-        <div class="detail-section" id="detailPersonal"></div>
-        <div class="detail-section" id="detailLoan"></div>
-        <div class="detail-section" id="detailAllocation"></div>
+      <!-- CASE BRIEF TAB -->
+      <div class="tab-pane active" id="tab-brief">
+        <div id="briefAlerts"></div>
+        <div id="callbackBanner"></div>
+        <div class="case-brief-wrap">
+          <div class="case-brief-title">
+            <span>📋 Case Summary</span>
+            <button onclick="copyBrief()" style="background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;font-size:10px;cursor:pointer;color:var(--text2)">📋 Copy</button>
+          </div>
+          <div class="case-brief-content" id="caseBriefContent">
+            <span class="case-brief-empty">No case summary yet.\nCase will appear here after Rahul completes qualification.</span>
+          </div>
+        </div>
       </div>
 
-      <!-- WHATSAPP TAB -->
-      <div class="tab-pane" id="tab-whatsapp">
+      <!-- LENDERS TAB -->
+      <div class="tab-pane" id="tab-lenders">
+        <div id="lendersContent">
+          <div class="empty-state"><div class="spinner"></div><div class="empty-title">Loading lenders...</div></div>
+        </div>
+      </div>
+
+      <!-- CONVERSATION TAB -->
+      <div class="tab-pane" id="tab-conversation">
         <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:10px;padding:8px 12px;font-size:11px;color:#856404;margin-bottom:12px">
-          ℹ️ Messages shown are from Meta API number only
+          💬 Rahul bot conversation with customer
         </div>
-        <div class="wa-messages" id="waMessages"></div>
-        <div class="wa-actions">
-          <button class="wa-action-btn" onclick="showTemplateList()">📋 Send Template</button>
-          <button class="wa-action-btn" onclick="showQuickReplies()">⚡ Quick Reply</button>
-        </div>
-        <div id="waSubPanel"></div>
-
-        <div class="feedback-wrap">
-          <label class="feedback-label">📝 Feedback / Notes</label>
-          <textarea class="feedback-textarea" id="feedbackInput" rows="3" placeholder="e.g. Interested — will apply next week. Follow up Monday."></textarea>
-          <div class="feedback-actions">
-            <button class="btn-save-feedback" onclick="saveFeedback()">💾 Save Feedback</button>
-            <button class="btn-delete-lead" onclick="deleteLead()">🗑️ Delete Lead</button>
-          </div>
-        </div>
-
-        <div class="wa-input-wrap">
-          <div class="wa-input-row">
-            <textarea class="wa-textarea" id="waInput" placeholder="Type a message (24hr window only)..." rows="1" oninput="autoResize(this)" onkeydown="handleWAKey(event)"></textarea>
-            <button class="wa-send" onclick="sendWAMessage()">➤</button>
-          </div>
+        <div class="conv-wrap" id="convContent">
+          <div class="empty-state"><div class="spinner"></div><div class="empty-title">Loading conversation...</div></div>
         </div>
       </div>
 
-      <!-- PROFILE TAB -->
-      <div class="tab-pane" id="tab-profile">
-        <div class="profile-wrap">
-          <div id="profileContent" style="white-space:pre-wrap;font-size:12px;font-family:'JetBrains Mono',monospace;background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;margin-bottom:12px;min-height:100px;">
-            <span style="color:#94a3b8;">No case summary generated yet.\nRahul will generate case summary after collecting all details.</span>
-          </div>
-
-          <div class="feedback-wrap" style="background:#f0fdf4;border-color:#86efac;">
-            <label class="feedback-label" style="color:#166534;">✏️ Corrections / Additional Info</label>
-            <textarea id="profileCorrections" class="feedback-textarea" rows="3" placeholder="e.g. Income is 95000 not 85000&#10;Additional strength: Government employee, pension after retirement"></textarea>
-            <div class="feedback-actions">
-              <button class="btn-save-feedback" onclick="regenerateProfile()" style="background:#16a34a;">🔄 Regenerate Profile</button>
-            </div>
-          </div>
-
-          <div style="margin-top:12px;">
-            <label class="feedback-label">🏦 Allocate DSA</label>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
-              <button class="dsa-btn" onclick="allocateDSA('My Mudra')">My Mudra</button>
-              <button class="dsa-btn" onclick="allocateDSA('RU Loans')">RU Loans</button>
-              <button class="dsa-btn" onclick="allocateDSA('Andromeda')">Andromeda</button>
-              <button class="dsa-btn" onclick="allocateDSA('Manual Decision')">⚙️ Manual</button>
-            </div>
-          </div>
-
-          <div style="margin-top:12px;">
-            <button class="btn-save-feedback" onclick="openGmailDSA()" style="width:100%;background:#004a99;">
-              📧 Open Gmail with Case Summary
+      <!-- ACTIONS TAB -->
+      <div class="tab-pane" id="tab-actions">
+        <!-- Communication -->
+        <div class="action-section">
+          <div class="action-section-title">📞 Communication</div>
+          <div class="action-grid">
+            <button class="action-card" id="callCardBtn" onclick="callCustomer()">
+              <div class="action-card-icon">📞</div>
+              <div class="action-card-label">Call Customer</div>
+            </button>
+            <button class="action-card" onclick="openWhatsApp()">
+              <div class="action-card-icon">💬</div>
+              <div class="action-card-label">WhatsApp</div>
+            </button>
+            <button class="action-card" onclick="sendMissedCall()">
+              <div class="action-card-icon">📋</div>
+              <div class="action-card-label">Missed Call Msg</div>
+            </button>
+            <button class="action-card" onclick="openEmail()">
+              <div class="action-card-icon">📧</div>
+              <div class="action-card-label">Email Case</div>
             </button>
           </div>
         </div>
+
+        <!-- DSA Allocation -->
+        <div class="action-section">
+          <div class="action-section-title">🏦 Allocate DSA</div>
+          <div class="dsa-grid">
+            <button class="dsa-btn" onclick="allocateDSA('My Mudra')">My Mudra</button>
+            <button class="dsa-btn" onclick="allocateDSA('RU Loans')">RU Loans</button>
+            <button class="dsa-btn" onclick="allocateDSA('Andromeda')">Andromeda</button>
+            <button class="dsa-btn" onclick="allocateDSA('Urban Money')">Urban Money</button>
+            <button class="dsa-btn full" onclick="allocateDSA('Manual Decision')">⚙️ Manual Decision</button>
+          </div>
+        </div>
+
+        <!-- Send WA Message -->
+        <div class="action-section">
+          <div class="action-section-title">📤 Send WhatsApp Message</div>
+          <div class="wa-input-wrap" style="margin-bottom:0;box-shadow:none;padding:0">
+            <div class="wa-input-row">
+              <textarea class="wa-textarea" id="waInput" placeholder="Type message (24hr window)..." rows="2" oninput="autoResize(this)" onkeydown="handleWAKey(event)"></textarea>
+              <button class="wa-send" onclick="sendWAMessage()">➤</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Feedback -->
+        <div class="feedback-wrap">
+          <label class="feedback-label">📝 Notes / Feedback</label>
+          <textarea class="feedback-textarea" id="feedbackInput" rows="3" placeholder="Notes about this lead..."></textarea>
+          <div class="feedback-actions">
+            <button class="btn-feedback" onclick="saveFeedback()">💾 Save Notes</button>
+            <button class="btn-delete" onclick="deleteLead()">🗑️ Delete</button>
+          </div>
+        </div>
       </div>
 
-      <!-- STATUS TAB -->
-      <div class="tab-pane" id="tab-status">
+      <!-- DETAILS TAB -->
+      <div class="tab-pane" id="tab-details">
+        <div class="detail-section" id="detailPersonal"></div>
+        <div class="detail-section" id="detailLoan"></div>
+        <div class="detail-section" id="detailAllocation"></div>
+
+        <!-- Status Update -->
         <div class="status-form">
-          <label class="status-label">Update Lead Status</label>
-          <select class="status-select" id="statusSelect">
+          <label class="status-label">Update Status</label>
+          <select class="status-select" id="statusSelect" onchange="toggleStatusFields(this.value)">
             <option value="">Select status...</option>
-            <option value="🔴 Hot Lead">🔴 Hot Lead</option>
-            <option value="🟡 Warm Lead">🟡 Warm Lead</option>
-            <option value="🟠 Cold Lead">🟠 Cold Lead</option>
             <option value="Lead Captured">📱 Lead Captured</option>
             <option value="Case Ready">✅ Case Ready</option>
             <option value="Documents Pending">📄 Documents Pending</option>
@@ -529,23 +500,16 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
             <option value="Rejected">❌ Rejected</option>
             <option value="Disbursed">💰 Disbursed</option>
           </select>
-
           <div id="rejectionWrap" style="display:none">
-            <label class="status-label">Rejection Reason</label>
-            <input type="text" class="status-input" id="rejectionReason" placeholder="Enter rejection reason...">
+            <input type="text" class="status-input" id="rejectionReason" placeholder="Rejection reason...">
           </div>
-
           <div id="disbursedWrap" style="display:none">
-            <label class="status-label">Disbursed Amount (₹)</label>
-            <input type="number" class="status-input" id="disbursedAmount" placeholder="Enter disbursed amount...">
+            <input type="number" class="status-input" id="disbursedAmount" placeholder="Disbursed amount (₹)...">
           </div>
-
           <button class="btn-save" id="saveStatusBtn" onclick="saveStatus()">💾 Save Status</button>
-
-          <div style="margin-top:10px;padding:10px;background:var(--surface2);border-radius:8px;font-size:11px;color:var(--text2)">
-            <strong>Current Status:</strong> <span id="currentStatusDisplay">—</span><br>
-            <strong>DSA:</strong> <span id="currentDSADisplay">—</span><br>
-            <strong>Allocated On:</strong> <span id="currentAllocDisplay">—</span>
+          <div style="margin-top:8px;padding:8px;background:var(--surface2);border-radius:8px;font-size:11px;color:var(--text2)">
+            <strong>Status:</strong> <span id="currentStatusDisplay">—</span> &nbsp;
+            <strong>DSA:</strong> <span id="currentDSADisplay">—</span>
           </div>
         </div>
       </div>
@@ -553,17 +517,6 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
     </div>
   </div>
 </div>
-</div>
-
-<!-- TEMPLATE OVERLAY -->
-<div class="overlay" id="templateOverlay" onclick="closeOverlay(event,'templateOverlay')">
-  <div class="popup-sheet">
-    <div class="popup-header">
-      <div class="popup-title">📋 Send Template</div>
-      <div class="popup-close" onclick="closeAllOverlays()">✕</div>
-    </div>
-    <div class="popup-list" id="templateListPopup"></div>
-  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -575,26 +528,20 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytDsEm2Z1_JD1Gpn-faYSdF1lVMIXxotMQ3qcB4P_7QIZC3juK8PZuhSTinkdlhASdEA/exec";
 var RM_MOBILE       = "9594592020";
 var RM_NAME         = "Manoj";
-
-var QUICK_REPLIES = [
-  { name:"Please Pick Up Call", text:"Hi! 📞 I tried reaching you regarding your loan application!\n\nPlease pick up my call or call me back:\n📱 " + RM_MOBILE + " (" + RM_NAME + ")\n\nThis will help us get you the best loan deal faster! 🏆" },
-  { name:"Need More Details",   text:"Hi! 😊 Thank you for reaching out to VastMyWealth!\n\nCould you please share:\n→ Loan type required?\n→ Loan amount needed?\n→ City?\n\nThis helps us match you with the best lender! ✅" }
-];
+var ADMIN_EMAIL     = "venkateshmanojp@gmail.com";
 
 // ============================================================
 // STATE
 // ============================================================
-var allLeads      = [];
-var filteredLeads = [];
-var selectedLead  = null;
-var templates     = [];
-var statusFilter  = "";
-var sourceFilter  = "all";
-var loanTypeFilter= "";
-var isMobile      = window.innerWidth < 769;
+var allLeads       = [];
+var filteredLeads  = [];
+var selectedLead   = null;
+var statusFilter   = "";
+var sourceFilter   = "all";
+var loanTypeFilter = "";
+var isMobile       = window.innerWidth < 769;
 
-var INACTIVE_DAYS     = 30;
-var INACTIVE_STATUSES = ["Lead Captured", "Documents Pending"];
+var INACTIVE_DAYS = 30;
 var COLORS = ["#004a99","#0891b2","#7c3aed","#b45309","#dc2626","#047857","#9333ea"];
 
 window.addEventListener("resize", function(){ isMobile = window.innerWidth < 769; });
@@ -604,7 +551,6 @@ window.addEventListener("resize", function(){ isMobile = window.innerWidth < 769
 // ============================================================
 window.addEventListener("load", function() {
   loadLeads();
-  loadTemplates();
 });
 
 // ============================================================
@@ -626,131 +572,138 @@ function loadLeads() {
     .catch(function() {
       document.querySelector('.crm-refresh').textContent = "🔄";
       loadDemoLeads();
-      toast("❌ Connection error — demo mode", "err");
+      toast("❌ Demo mode", "err");
     });
 }
 
-function loadTemplates() {
-  fetch(APPS_SCRIPT_URL + "?action=getTemplates")
-    .then(function(r){ return r.json(); })
-    .then(function(d){ if(d.success && d.templates) templates = d.templates; })
-    .catch(function(){});
-}
-
 // ============================================================
-// PIPELINE STATS
+// PIPELINE
 // ============================================================
 function updatePipeline() {
-  var counts = { all:0, captured:0, caseready:0, pending:0, manual:0, process:0, allocated:0, approved:0, disbursed:0, rejected:0 };
-
+  var c = {all:0,case:0,captured:0,manual:0,process:0,allocated:0,approved:0,disbursed:0,rejected:0};
   allLeads.forEach(function(l) {
     if (isInactive(l)) return;
-    counts.all++;
+    c.all++;
     var s = (l.status||"").toLowerCase();
-    if (s.indexOf("captured")      !== -1) counts.captured++;
-    if (s.indexOf("case ready")    !== -1) counts.caseready++;
-    if (s.indexOf("pending")       !== -1) counts.pending++;
-    if (s.indexOf("manual")        !== -1) counts.manual++;
-    if (s.indexOf("process")       !== -1) counts.process++;
-    if (s.indexOf("allocat")       !== -1) counts.allocated++;
-    if (s.indexOf("approv")        !== -1) counts.approved++;
-    if (s.indexOf("disburse")      !== -1) counts.disbursed++;
-    if (s.indexOf("reject")        !== -1) counts.rejected++;
+    if (s.includes("case ready"))   c.case++;
+    if (s.includes("captured"))     c.captured++;
+    if (s.includes("manual"))       c.manual++;
+    if (s.includes("process"))      c.process++;
+    if (s.includes("allocat"))      c.allocated++;
+    if (s.includes("approv"))       c.approved++;
+    if (s.includes("disburse"))     c.disbursed++;
+    if (s.includes("reject"))       c.rejected++;
   });
-
-  document.getElementById("cnt-all").textContent      = counts.all;
-  document.getElementById("cnt-captured").textContent  = counts.captured;
-  document.getElementById("cnt-case").textContent      = counts.caseready;
-  document.getElementById("cnt-pending").textContent   = counts.pending;
-  document.getElementById("cnt-manual").textContent    = counts.manual;
-  document.getElementById("cnt-process").textContent   = counts.process;
-  document.getElementById("cnt-allocated").textContent = counts.allocated;
-  document.getElementById("cnt-approved").textContent  = counts.approved;
-  document.getElementById("cnt-disbursed").textContent = counts.disbursed;
-  document.getElementById("cnt-rejected").textContent  = counts.rejected;
-  document.getElementById("crmSub").textContent        = counts.all + " active leads";
+  document.getElementById("cnt-all").textContent       = c.all;
+  document.getElementById("cnt-case").textContent      = c.case;
+  document.getElementById("cnt-captured").textContent  = c.captured;
+  document.getElementById("cnt-manual").textContent    = c.manual;
+  document.getElementById("cnt-process").textContent   = c.process;
+  document.getElementById("cnt-allocated").textContent = c.allocated;
+  document.getElementById("cnt-approved").textContent  = c.approved;
+  document.getElementById("cnt-disbursed").textContent = c.disbursed;
+  document.getElementById("cnt-rejected").textContent  = c.rejected;
+  document.getElementById("crmSub").textContent        = c.all + " active leads";
 }
 
 // ============================================================
-// INACTIVE CHECK
+// HELPERS
 // ============================================================
 function isInactive(lead) {
   if (!lead.timestamp) return false;
-  var status = (lead.status || "").toLowerCase();
-  var isStuck = INACTIVE_STATUSES.some(function(s) { return status.indexOf(s.toLowerCase()) !== -1; });
-  if (!isStuck) return false;
+  var s = (lead.status||"").toLowerCase();
+  if (s.includes("allocat")||s.includes("approv")||s.includes("disburse")||s.includes("reject")) return false;
   try {
-    var created = new Date(lead.timestamp);
-    var days    = (new Date() - created) / (1000 * 60 * 60 * 24);
-    return days > INACTIVE_DAYS;
+    var days = (new Date() - new Date(lead.timestamp)) / (1000*60*60*24);
+    return days > INACTIVE_DAYS && s.includes("captured");
   } catch(e) { return false; }
 }
 
-// ============================================================
-// NEW — CHECK IF CALL NOW (24hr no response)
-// ============================================================
 function isCallNow(lead) {
   if (!lead.timestamp) return false;
-  var status = (lead.status || "").toLowerCase();
-  // Only flag active leads that haven't been allocated
-  if (status.indexOf("allocat") !== -1 || status.indexOf("approv") !== -1 ||
-      status.indexOf("disburse") !== -1 || status.indexOf("reject") !== -1) return false;
+  var s = (lead.status||"").toLowerCase();
+  if (s.includes("allocat")||s.includes("approv")||s.includes("disburse")||s.includes("reject")||s.includes("case ready")) return false;
   try {
-    var created = new Date(lead.timestamp);
-    var hours   = (new Date() - created) / (1000 * 60 * 60);
-    return hours >= 24 && hours <= INACTIVE_DAYS * 24;
+    var hours = (new Date() - new Date(lead.timestamp)) / (1000*60*60);
+    return hours >= 24 && hours <= INACTIVE_DAYS*24;
   } catch(e) { return false; }
 }
 
-// ============================================================
-// NEW — CHECK IF CASE READY
-// ============================================================
 function isCaseReady(lead) {
-  var status = (lead.status || "").toLowerCase();
-  return status.indexOf("case ready") !== -1 ||
-         (lead.aiProfile && lead.aiProfile.length > 50);
+  var s = (lead.status||"").toLowerCase();
+  return s.includes("case ready") || (lead.aiProfile && lead.aiProfile.length > 50);
 }
 
-// ============================================================
-// NEW — CHECK IF MANUAL DECISION (CIBIL 650-700)
-// ============================================================
 function isManualDecision(lead) {
-  var status = (lead.status || "").toLowerCase();
-  return status.indexOf("manual") !== -1;
+  return (lead.status||"").toLowerCase().includes("manual");
+}
+
+function hasCallback(lead) {
+  return lead.callbackDate && lead.callbackDate.length > 2;
+}
+
+function getLoanTag(loanType) {
+  var lt = (loanType||"").toUpperCase();
+  if (lt.includes("PERSONAL"))    return {cls:"tag-pl",  lbl:"PL"};
+  if (lt.includes("BUSINESS"))    return {cls:"tag-bl",  lbl:"BL"};
+  if (lt.includes("HOME"))        return {cls:"tag-hl",  lbl:"HL"};
+  if (lt.includes("PROPERTY")||lt.includes("AGAINST")||lt.includes("LAP")) return {cls:"tag-lap",lbl:"LAP"};
+  if (lt.includes("CONSTRUCTION"))return {cls:"tag-cf",  lbl:"CF"};
+  if (lt.includes("PARTNER"))     return {cls:"tag-partner",lbl:"Partner"};
+  return {cls:"tag-direct", lbl:"Loan"};
+}
+
+function getStatusClass(status) {
+  var s = (status||"").toLowerCase();
+  if (s.includes("case ready"))  return "s-case";
+  if (s.includes("captured"))    return "s-captured";
+  if (s.includes("pending"))     return "s-pending";
+  if (s.includes("manual"))      return "s-manual";
+  if (s.includes("process"))     return "s-process";
+  if (s.includes("allocat"))     return "s-allocated";
+  if (s.includes("approv"))      return "s-approved";
+  if (s.includes("disburse"))    return "s-disbursed";
+  if (s.includes("reject"))      return "s-rejected";
+  return "s-captured";
+}
+
+function esc(s) {
+  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, 80) + "px";
 }
 
 // ============================================================
 // FILTERS
 // ============================================================
-function filterByLoanType(loanType) {
-  loanTypeFilter = loanType;
-  document.querySelectorAll("[id^='lt-']").forEach(function(p){ p.classList.remove("active"); });
-  var key = loanType === "" ? "lt-all" :
-    loanType === "Personal"     ? "lt-pl"     :
-    loanType === "Business"     ? "lt-bl"     :
-    loanType === "Home"         ? "lt-hl"     :
-    loanType === "Property"     ? "lt-lap"    :
-    loanType === "Construction" ? "lt-cf"     :
-    loanType === "Partner"      ? "lt-partner": "lt-all";
-  var el = document.getElementById(key);
+function filterByStatus(status) {
+  statusFilter = status;
+  document.querySelectorAll(".pstat").forEach(function(p){ p.classList.remove("active"); });
+  var key = !status ? "all" :
+    status.toLowerCase().includes("case ready") ? "case" :
+    status.toLowerCase().includes("captured")   ? "captured" :
+    status.toLowerCase().includes("manual")     ? "manual" :
+    status.toLowerCase().includes("process")    ? "process" :
+    status.toLowerCase().includes("allocat")    ? "allocated" :
+    status.toLowerCase().includes("approv")     ? "approved" :
+    status.toLowerCase().includes("disburse")   ? "disbursed" :
+    status.toLowerCase().includes("reject")     ? "rejected" : "all";
+  var el = document.getElementById("ps-" + key);
   if (el) el.classList.add("active");
   applyFilters();
 }
 
-function filterByStatus(status) {
-  statusFilter = status;
-  document.querySelectorAll(".pstat").forEach(function(p){ p.classList.remove("active"); });
-  var key = status === "" ? "all" :
-    status.toLowerCase().indexOf("captured")  !== -1 ? "captured" :
-    status.toLowerCase().indexOf("case ready")!== -1 ? "case"     :
-    status.toLowerCase().indexOf("pending")   !== -1 ? "pending"  :
-    status.toLowerCase().indexOf("manual")    !== -1 ? "manual"   :
-    status.toLowerCase().indexOf("process")   !== -1 ? "process"  :
-    status.toLowerCase().indexOf("allocat")   !== -1 ? "allocated":
-    status.toLowerCase().indexOf("approv")    !== -1 ? "approved" :
-    status.toLowerCase().indexOf("disburse")  !== -1 ? "disbursed":
-    status.toLowerCase().indexOf("reject")    !== -1 ? "rejected" : "all";
-  var el = document.getElementById("ps-" + key);
+function filterByLoanType(loanType) {
+  loanTypeFilter = loanType;
+  document.querySelectorAll("[id^='lt-']").forEach(function(p){ p.classList.remove("active"); });
+  var key = !loanType ? "lt-all" :
+    loanType==="Personal"?"lt-pl":loanType==="Business"?"lt-bl":
+    loanType==="Home"?"lt-hl":loanType==="Property"?"lt-lap":
+    loanType==="Construction"?"lt-cf":loanType==="Partner"?"lt-partner":"lt-all";
+  var el = document.getElementById(key);
   if (el) el.classList.add("active");
   applyFilters();
 }
@@ -767,61 +720,40 @@ function applyFilters() {
 
   filteredLeads = allLeads.filter(function(l) {
     if (isInactive(l)) return false;
-
     if (s) {
-      var nameMatch   = l.fullName && l.fullName.toLowerCase().indexOf(s) !== -1;
-      var mobileMatch = l.mobile && l.mobile.indexOf(s) !== -1;
-      var refMatch    = l.refId && l.refId.toLowerCase().indexOf(s) !== -1;
-      if (!nameMatch && !mobileMatch && !refMatch) return false;
+      var nm = (l.fullName||"").toLowerCase().includes(s);
+      var mm = (l.mobile||"").includes(s);
+      var rm = (l.refId||"").toLowerCase().includes(s);
+      if (!nm && !mm && !rm) return false;
     }
-
-    if (statusFilter) {
-      var st = (l.status||"").toLowerCase();
-      if (st.indexOf(statusFilter.toLowerCase()) === -1) return false;
-    }
-
+    if (statusFilter && !(l.status||"").toLowerCase().includes(statusFilter.toLowerCase())) return false;
     if (loanTypeFilter) {
-  var lt = (l.loanType||"").toLowerCase();
-  if (loanTypeFilter === "Property") {
-    if (!lt.includes("property") && !lt.includes("against") && !lt.includes("lap")) return false;
-  } else {
-    if (lt.indexOf(loanTypeFilter.toLowerCase()) === -1) return false;
-  }
-}
-
-
-    if (sourceFilter === "direct") {
-      var src = String(l.source||"").replace(/\D/g,"");
-      if (src.length >= 10) return false;
+      var lt = (l.loanType||"").toLowerCase();
+      if (loanTypeFilter === "Property") {
+        if (!lt.includes("property") && !lt.includes("against") && !lt.includes("lap")) return false;
+      } else {
+        if (!lt.includes(loanTypeFilter.toLowerCase())) return false;
+      }
     }
-    if (sourceFilter === "partner") {
-      var src2 = String(l.source||"").replace(/\D/g,"");
-      if (src2.length < 10) return false;
-    }
-    if (sourceFilter === "callnow") {
-      if (!isCallNow(l)) return false;
-    }
-    if (sourceFilter === "caseready") {
-      if (!isCaseReady(l)) return false;
-    }
-
+    if (sourceFilter === "direct")   { if (String(l.source||"").replace(/\D/g,"").length >= 10) return false; }
+    if (sourceFilter === "partner")  { if (String(l.source||"").replace(/\D/g,"").length < 10)  return false; }
+    if (sourceFilter === "callnow")  { if (!isCallNow(l))   return false; }
+    if (sourceFilter === "caseready"){ if (!isCaseReady(l)) return false; }
+    if (sourceFilter === "callback") { if (!hasCallback(l)) return false; }
     return true;
   });
 
-  // Sort: Call Now first, then Case Ready, then New, then by date
-filteredLeads.sort(function(a, b) {
-  var aCall = isCallNow(a) ? 1 : 0;
-  var bCall = isCallNow(b) ? 1 : 0;
-  if (bCall !== aCall) return bCall - aCall;
-  var aCase = isCaseReady(a) ? 1 : 0;
-  var bCase = isCaseReady(b) ? 1 : 0;
-  if (bCase !== aCase) return bCase - aCase;
-  var aNew = (a.seen === "No" || !a.seen) ? 1 : 0;
-  var bNew = (b.seen === "No" || !b.seen) ? 1 : 0;
-  if (bNew !== aNew) return bNew - aNew;
-  return new Date(b.timestamp) - new Date(a.timestamp);
-});
-
+  // Sort: Call Now → Case Ready → New → Callback → by date
+  filteredLeads.sort(function(a, b) {
+    var aCall = isCallNow(a)?4:0, bCall = isCallNow(b)?4:0;
+    var aCase = isCaseReady(a)?3:0, bCase = isCaseReady(b)?3:0;
+    var aNew  = (!a.seen||a.seen==="No")?2:0, bNew = (!b.seen||b.seen==="No")?2:0;
+    var aCB   = hasCallback(a)?1:0, bCB = hasCallback(b)?1:0;
+    var aScore = Math.max(aCall,aCase,aNew,aCB);
+    var bScore = Math.max(bCall,bCase,bNew,bCB);
+    if (bScore !== aScore) return bScore - aScore;
+    return new Date(b.timestamp) - new Date(a.timestamp);
+  });
 
   renderLeadList();
 }
@@ -831,78 +763,49 @@ filteredLeads.sort(function(a, b) {
 // ============================================================
 function renderLeadList() {
   var list = document.getElementById("leadList");
-
   if (filteredLeads.length === 0) {
-    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">No leads found</div><div class="empty-sub">Try a different filter</div></div>';
+    list.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">No leads found</div></div>';
     return;
   }
 
   var html = "";
   filteredLeads.forEach(function(l, i) {
     var color    = COLORS[l.mobile.charCodeAt(l.mobile.length-1) % COLORS.length];
-    var lt       = (l.loanType||"").toUpperCase();
-    var tagCls   = "tag-pl"; var tagLbl = "PL";
-    if      (lt.indexOf("PERSONAL")    !== -1) { tagCls="tag-pl";  tagLbl="PL"; }
-    else if (lt.indexOf("BUSINESS")    !== -1) { tagCls="tag-bl";  tagLbl="BL"; }
-    else if (lt.indexOf("HOME")        !== -1) { tagCls="tag-hl";  tagLbl="HL"; }
-    else if (lt.indexOf("PROPERTY")    !== -1 || lt.indexOf("AGAINST") !== -1) { tagCls="tag-lap"; tagLbl="LAP"; }
-    else if (lt.indexOf("CONSTRUCTION")!== -1) { tagCls="tag-cf";  tagLbl="CF"; }
-
-    var sCls = getStatusClass(l.status||"");
-    var src  = String(l.source||"").replace(/\D/g,"");
-    var srcTag = src.length >= 10 ? "tag-partner" : "tag-direct";
-    var srcLbl = src.length >= 10 ? "🤝 Partner" : "📢 Direct";
-
-    var initials    = l.fullName && l.fullName !== "—" ? l.fullName.charAt(0).toUpperCase() : "?";
-    var activeClass = selectedLead && selectedLead.row === l.row ? " active" : "";
+    var initials = l.fullName && l.fullName !== "—" ? l.fullName.charAt(0).toUpperCase() : "?";
+    var tag      = getLoanTag(l.loanType);
+    var sCls     = getStatusClass(l.status||"");
+    var src      = String(l.source||"").replace(/\D/g,"");
+    var srcTag   = src.length >= 10 ? "tag-partner" : "tag-direct";
+    var srcLbl   = src.length >= 10 ? "🤝" : "📢";
+    var activeClass = selectedLead && selectedLead.mobile === l.mobile ? " active" : "";
     var dt = "";
     try { var d=new Date(l.timestamp); if(!isNaN(d)) dt=d.toLocaleDateString("en-IN",{day:"2-digit",month:"short"}); } catch(e){}
 
-    // Priority indicators
-    var priorityClass = "";
-    var priorityBadge = "";
-    var priorityStyle = "";
+    // Priority class and badge
+    var pClass = "", pBadge = "";
+    if      (isCallNow(l))       { pClass=" is-callnow"; pBadge='<span class="badge badge-callnow">📞 Call Now</span>'; }
+    else if (isCaseReady(l))     { pClass=" is-case";    pBadge='<span class="badge badge-case">✅ Case Ready</span>'; }
+    else if (isManualDecision(l)){ pClass=" is-manual";  pBadge='<span class="badge badge-manual">⚠️ Manual</span>'; }
+    else if (!l.seen||l.seen==="No"){ pClass=" is-new";  pBadge='<span class="badge badge-new">New</span>'; }
 
-    var callNow   = isCallNow(l);
-    var caseReady = isCaseReady(l);
-    var manualDec = isManualDecision(l);
-    var isNew     = (l.seen === "No" || !l.seen) && l.source !== undefined;
+    // Hot/Warm/Cold
+    var s = (l.status||"").toLowerCase();
+    if (s.includes("hot"))  pClass += " is-hot";
+    if (s.includes("warm")) pClass += " is-warm";
+    if (s.includes("cold")) pClass += " is-cold";
 
-    if (callNow) {
-      priorityClass = " call-now";
-      priorityBadge = '<span class="call-badge">📞 Call Now</span>';
-    } else if (caseReady) {
-      priorityClass = " case-ready";
-      priorityBadge = '<span class="case-badge">✅ Case Ready</span>';
-    } else if (manualDec) {
-      priorityClass = " manual-decision";
-      priorityBadge = '<span class="manual-badge">⚠️ Manual</span>';
-    } else if (isNew) {
-      priorityClass = " new-lead";
-      priorityBadge = '<span class="new-badge">New</span>';
-    }
+    // City + callback line
+    var cityLine = l.city && l.city !== "—" ? esc(l.city) : "";
+    var cbLine   = l.callbackDate ? "📅 " + esc(l.callbackDate) + (l.callbackTime ? " " + esc(l.callbackTime) : "") : "";
+    var subLine  = [cityLine, cbLine].filter(Boolean).join(" · ");
 
-    // Hot/Warm/Cold color coding
-    var status = l.status || "";
-    if (status.indexOf("Hot") !== -1)  priorityStyle = "border-left:4px solid #dc2626;";
-    if (status.indexOf("Warm") !== -1) priorityStyle = "border-left:4px solid #f59e0b;";
-    if (status.indexOf("Cold") !== -1) priorityStyle = "border-left:4px solid #6c757d;";
-
-    html += '<div class="lead-item'+activeClass+priorityClass+'" onclick="openLead('+i+')" style="'+priorityStyle+'">' +
+    html += '<div class="lead-item'+activeClass+pClass+'" onclick="openLead('+i+')">' +
       '<div class="li-avatar" style="background:'+color+'">'+initials+'</div>' +
       '<div class="li-body">' +
-        '<div class="li-row1">' +
-          '<div class="li-name">'+esc(l.fullName||"Unknown")+priorityBadge+'</div>' +
-          '<div class="li-time">'+dt+'</div>' +
-        '</div>' +
-        '<div class="li-mobile">'+esc(l.refId)+'  •  '+esc(l.mobile)+'</div>' +
-        '<div class="li-tags">' +
-          '<span class="tag '+tagCls+'">'+tagLbl+'</span>' +
-          '<span class="tag '+srcTag+'">'+srcLbl+'</span>' +
-          '<span class="status-badge '+sCls+'">'+esc(l.status||"Pending")+'</span>' +
-        '</div>' +
-      '</div>' +
-    '</div>';
+        '<div class="li-row1"><div class="li-name">'+esc(l.fullName||"Unknown")+pBadge+'</div><div class="li-time">'+dt+'</div></div>' +
+        (subLine ? '<div class="li-city">'+subLine+'</div>' : '') +
+        '<div class="li-tags"><span class="tag '+tag.cls+'">'+tag.lbl+'</span><span class="tag '+srcTag+'">'+srcLbl+'</span><span class="status-badge '+sCls+'">'+esc(l.status||"New")+'</span></div>' +
+      '</div></div>';
   });
   list.innerHTML = html;
 }
@@ -913,237 +816,288 @@ function renderLeadList() {
 function openLead(idx) {
   selectedLead = filteredLeads[idx];
   if (!selectedLead) return;
-
   var l     = selectedLead;
   var color = COLORS[l.mobile.charCodeAt(l.mobile.length-1) % COLORS.length];
-  var initials = l.fullName && l.fullName !== "—" ? l.fullName.charAt(0).toUpperCase() : "?";
+  var init  = l.fullName && l.fullName !== "—" ? l.fullName.charAt(0).toUpperCase() : "?";
+  var tag   = getLoanTag(l.loanType);
 
-  document.getElementById("rpAvatar").textContent      = initials;
+  document.getElementById("rpAvatar").textContent      = init;
   document.getElementById("rpAvatar").style.background = color;
   document.getElementById("rpName").textContent        = l.fullName || "Unknown";
-  document.getElementById("rpSub").textContent         = (l.loanType||"—") + " • " + l.refId;
+  document.getElementById("rpSub").textContent         = tag.lbl + " · " + (l.city||"—") + (l.state ? ", "+l.state : "") + " · " + l.refId;
 
+  // Quick action buttons
   var cleanMob = l.mobile.replace(/\D/g,"");
-  var callBtn  = document.getElementById("rpCallBtn");
-  callBtn.href = "tel:+" + cleanMob;
+  var callClass = isCallNow(l) ? "qa-btn callnow" : "qa-btn call";
+  var callText  = isCallNow(l) ? "📞 CALL NOW!" : "📞 Call";
+  document.getElementById("quickActions").innerHTML =
+    '<a class="'+callClass+'" href="tel:+'+cleanMob+'">'+callText+'</a>' +
+    '<a class="qa-btn wa" href="https://wa.me/'+cleanMob+'" target="_blank">💬 WhatsApp</a>' +
+    '<button class="qa-btn missed" onclick="sendMissedCall()">📋 Missed Call</button>' +
+    '<button class="qa-btn email" onclick="openEmail()">📧 Email</button>';
 
-  // Call Now — make button red
-  if (isCallNow(l)) {
-    callBtn.className = "action-btn call-now";
-    callBtn.textContent = "📞 CALL NOW!";
-  } else {
-    callBtn.className = "action-btn call";
-    callBtn.textContent = "📞 Call";
-  }
-
-  document.getElementById("rpWABtn").href   = "https://wa.me/" + cleanMob;
-  document.getElementById("rpDocsBtn").href = l.driveFolderUrl || "#";
-  document.getElementById("rpDocsBtn").style.opacity = l.driveFolderUrl ? "1" : "0.4";
-
-  buildDetails(l);
-  loadWAMessages(l.mobile);
-
-  document.getElementById("statusSelect").value              = l.vendorStatus || l.status || "";
-  document.getElementById("currentStatusDisplay").textContent= l.vendorStatus || l.status || "—";
-  document.getElementById("currentDSADisplay").textContent   = l.vendorAllocation || "—";
-  document.getElementById("currentAllocDisplay").textContent = l.allocationStamp || "—";
+  // Status tab
+  document.getElementById("statusSelect").value               = l.vendorStatus || l.status || "";
+  document.getElementById("currentStatusDisplay").textContent = l.vendorStatus || l.status || "—";
+  document.getElementById("currentDSADisplay").textContent    = l.vendorAllocation || "—";
   toggleStatusFields(l.vendorStatus || l.status || "");
 
+  // Show panel
   document.getElementById("rpEmpty").style.display  = "none";
   document.getElementById("rpActive").style.display = "flex";
   if (isMobile) document.getElementById("rightPanel").classList.add("open");
 
-  showTab("details", document.querySelector(".rptab"));
+  // Default to Case Brief tab
+  showTab("brief", document.querySelectorAll(".rptab")[0]);
   renderLeadList();
 
-  if (l.seen === "No" || !l.seen) {
+  // Mark as seen
+  if (!l.seen || l.seen === "No") {
     l.seen = "Yes";
     fetch(APPS_SCRIPT_URL + "?action=markSeen&mobile=" + encodeURIComponent(l.mobile)).catch(function(){});
     renderLeadList();
   }
 }
 
+// ============================================================
+// BUILD CASE BRIEF TAB
+// ============================================================
+function buildBriefTab(l) {
+  // Alerts
+  var alerts = "";
+  if (isCallNow(l)) {
+    var hrs = Math.round((new Date() - new Date(l.timestamp)) / (1000*60*60));
+    alerts += '<div class="alert-box alert-red">📞 CALL NOW! Customer inactive for ' + hrs + ' hours. Call: ' + l.mobile + '</div>';
+  }
+  if (isCaseReady(l)) alerts += '<div class="alert-box alert-green">✅ Case ready! Review and forward to lender.</div>';
+  if (isManualDecision(l)) alerts += '<div class="alert-box alert-yellow">⚠️ Manual Decision — Review carefully before allocating.</div>';
+  document.getElementById("briefAlerts").innerHTML = alerts;
+
+  // Callback banner
+  var cb = "";
+  if (l.callbackDate) {
+    cb = '<div class="callback-banner">' +
+      '<div class="callback-banner-icon">📅</div>' +
+      '<div class="callback-banner-text">' +
+        '<div class="callback-banner-title">Callback Scheduled</div>' +
+        '<div class="callback-banner-sub">' + esc(l.callbackDate) + (l.callbackTime ? " at " + esc(l.callbackTime) : "") + ' · Manoj: ' + RM_MOBILE + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+  document.getElementById("callbackBanner").innerHTML = cb;
+
+  // Case brief
+  var briefEl = document.getElementById("caseBriefContent");
+  if (l.aiProfile && l.aiProfile.length > 20) {
+    briefEl.textContent = l.aiProfile;
+  } else {
+    briefEl.innerHTML = '<span class="case-brief-empty">No case summary yet.\nWill appear after Rahul completes qualification.</span>';
+  }
+}
+
+// ============================================================
+// LOAD LENDERS
+// ============================================================
+function loadLenders(city) {
+  var container = document.getElementById("lendersContent");
+  if (!city || city === "—") {
+    container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏦</div><div class="empty-title">City not available</div><div class="empty-sub">City required to find lenders</div></div>';
+    return;
+  }
+
+  container.innerHTML = '<div class="empty-state"><div class="spinner"></div><div class="empty-title">Finding lenders in '+esc(city)+'...</div></div>';
+
+  fetch(APPS_SCRIPT_URL + "?action=getLendersByCity&city=" + encodeURIComponent(city))
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (!d.success || !d.lenders || d.lenders.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">🏦</div><div class="empty-title">No lenders found in '+esc(city)+'</div></div>';
+        return;
+      }
+
+      // Deduplicate by mobile
+      var seen = {}; var lenders = [];
+      d.lenders.forEach(function(l) {
+        var key = l.smMobile || l.bank;
+        if (!seen[key] && l.smMobile && l.smMobile.indexOf("@") === -1) {
+          seen[key] = true; lenders.push(l);
+        }
+      });
+
+      var html = '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:10px">🏦 '+lenders.length+' Lenders in '+esc(city)+'</div>';
+      lenders.forEach(function(l) {
+        html += '<div class="lender-card">' +
+          '<div class="lender-bank">'+esc(l.bank||"—")+'</div>' +
+          '<div class="lender-product">'+esc(l.product||"—")+'</div>' +
+          '<div class="lender-sm">' +
+            '<div class="lender-name">'+esc(l.smName||"—")+'</div>' +
+            (l.smMobile ? '<a class="lender-call" href="tel:'+esc(l.smMobile)+'">📞 '+esc(l.smMobile)+'</a>' : '') +
+          '</div>' +
+        '</div>';
+      });
+      container.innerHTML = html;
+    })
+    .catch(function() {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><div class="empty-title">Could not load lenders</div></div>';
+    });
+}
+
+// ============================================================
+// LOAD CONVERSATION
+// ============================================================
+function loadConversation(mobile) {
+  var container = document.getElementById("convContent");
+  container.innerHTML = '<div class="empty-state"><div class="spinner"></div><div class="empty-title">Loading...</div></div>';
+
+  fetch(APPS_SCRIPT_URL + "?action=getConversation&mobile=" + encodeURIComponent(mobile))
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      var conv = d.conversation || [];
+      if (conv.length === 0) {
+        container.innerHTML = '<div class="empty-state"><div class="empty-icon">💬</div><div class="empty-title">No conversation yet</div></div>';
+        return;
+      }
+      var html = "";
+      conv.slice(-20).forEach(function(msg) {
+        var isBot = msg.role === "bot";
+        html += '<div class="conv-bubble '+(isBot?"bot":"customer")+'">' +
+          '<div class="conv-role '+(isBot?"bot":"customer")+'">'+(isBot?"🤖 Rahul":"👤 Customer")+'</div>' +
+          esc(msg.message||"").replace(/\n/g,"<br>") +
+        '</div>';
+      });
+      container.innerHTML = html;
+    })
+    .catch(function() {
+      container.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><div class="empty-title">Could not load conversation</div></div>';
+    });
+}
+
+// ============================================================
+// BUILD DETAILS TAB
+// ============================================================
 function buildDetails(l) {
-  var lt = (l.loanType||"").toUpperCase();
-
-  var amount = l.plAmount !== "—" ? l.plAmount :
-               l.blAmount !== "—" ? l.blAmount :
-               l.hlAmount !== "—" ? l.hlAmount :
-               l.lapAmount!== "—" ? l.lapAmount : "—";
-
   var src    = String(l.source||"").replace(/\D/g,"");
   var srcLbl = src.length >= 10 ? "🤝 Partner +" + src : "📢 Direct";
-
-  // Build alert boxes
-  var alertHtml = "";
-  if (isCallNow(l)) {
-    var hours = Math.round((new Date() - new Date(l.timestamp)) / (1000 * 60 * 60));
-    alertHtml += '<div class="call-alert">📞 CALL NOW! Customer has been inactive for ' + hours + ' hours. Call immediately: ' + l.mobile + '</div>';
-  }
-  if (isCaseReady(l)) {
-    alertHtml += '<div class="case-alert">✅ Case summary generated! Check Profile tab to review and forward to lender.</div>';
-  }
-  if (isManualDecision(l)) {
-    alertHtml += '<div class="manual-alert">⚠️ Manual Decision Required — CIBIL 650-700. Review profile before allocating.</div>';
-  }
-  document.getElementById("detailAlerts").innerHTML = alertHtml;
+  var amount = l.plAmount !== "—" ? l.plAmount : l.blAmount !== "—" ? l.blAmount : l.hlAmount !== "—" ? l.hlAmount : l.lapAmount !== "—" ? l.lapAmount : "—";
 
   document.getElementById("detailPersonal").innerHTML =
     '<div class="detail-section-title">👤 Applicant</div>' +
-    row("Name",   l.fullName) + row("Mobile", l.mobile) + row("City", l.city) +
-    row("Type",   l.applicantType) + row("CIBIL", l.appCibil) +
-    row("Source", srcLbl) + row("Ref ID", l.refId);
-
-  var loanRows = row("Loan Type", l.loanType) + row("Amount", amount) + row("CIBIL", l.appCibil);
-  if (lt.indexOf("PERSONAL") !== -1) loanRows += row("Salary", l.plSalary||"—");
-  if (lt.indexOf("BUSINESS") !== -1) loanRows += row("Vintage", l.blVintage||"—");
+    drow("Name", l.fullName) + drow("Mobile", l.mobile) +
+    drow("City", (l.city||"—") + (l.state ? ", "+l.state : "")) +
+    drow("Employment", l.applicantType) + drow("CIBIL", l.appCibil) +
+    drow("Source", srcLbl) + drow("Ref ID", l.refId) +
+    (l.callbackDate ? drow("📅 Callback", l.callbackDate + (l.callbackTime?" at "+l.callbackTime:"")) : "");
 
   document.getElementById("detailLoan").innerHTML =
-    '<div class="detail-section-title">💼 Loan Details</div>' + loanRows;
+    '<div class="detail-section-title">💼 Loan Details</div>' +
+    drow("Loan Type", l.loanType) + drow("Amount", amount) +
+    (l.plSalary && l.plSalary !== "—" ? drow("Salary", l.plSalary) : "") +
+    (l.blVintage && l.blVintage !== "—" ? drow("Vintage", l.blVintage) : "");
 
   document.getElementById("detailAllocation").innerHTML =
     '<div class="detail-section-title">🏦 Allocation</div>' +
-    row("DSA",          l.vendorAllocation||"Not Allocated") +
-    row("Suggested",    l.vendorSuggestion||"—") +
-    row("Allocated On", l.allocationStamp||"—") +
-    row("WA Sent",      l.whatsappSent||"—") +
-    (l.callbackDate ? row("📅 Callback", l.callbackDate + " at " + (l.callbackTime||"")) : "") +
-
-    row("Status",       l.vendorStatus||l.status||"—") +
-    (l.disbursedAmount && l.disbursedAmount !== "—" ? row("Disbursed", "₹"+l.disbursedAmount) : "") +
-    (l.rejectionReason && l.rejectionReason !== "—" ? row("Rejection", l.rejectionReason) : "");
+    drow("DSA", l.vendorAllocation||"Not Allocated") +
+    drow("Suggested", l.vendorSuggestion||"—") +
+    drow("Allocated On", l.allocationStamp||"—") +
+    drow("Status", l.vendorStatus||l.status||"—") +
+    (l.disbursedAmount && l.disbursedAmount !== "—" ? drow("Disbursed", "₹"+l.disbursedAmount) : "") +
+    (l.rejectionReason && l.rejectionReason !== "—" ? drow("Rejection", l.rejectionReason) : "");
 }
 
-function row(label, value) {
+function drow(label, value) {
   return '<div class="detail-row"><div class="detail-label">'+esc(label)+'</div><div class="detail-value">'+esc(value||"—")+'</div></div>';
 }
 
 // ============================================================
-// LOAD WA MESSAGES
+// SHOW TAB
 // ============================================================
-function loadWAMessages(mobile) {
-  var container = document.getElementById("waMessages");
-  container.innerHTML = '<div style="text-align:center;padding:16px"><div class="spinner" style="margin:0 auto"></div></div>';
+function showTab(name, el) {
+  document.querySelectorAll(".rptab").forEach(function(t){ t.classList.remove("active"); });
+  document.querySelectorAll(".tab-pane").forEach(function(p){ p.classList.remove("active"); });
+  if (el) el.classList.add("active");
+  document.getElementById("tab-" + name).classList.add("active");
 
-  var p1 = fetch(APPS_SCRIPT_URL + "?action=getMessages")
-    .then(function(r){ return r.json(); }).catch(function(){ return {success:false}; });
-
-  var p2 = fetch(APPS_SCRIPT_URL + "?action=getConversation&mobile=" + encodeURIComponent(mobile))
-    .then(function(r){ return r.json(); }).catch(function(){ return {success:false, conversation:[]}; });
-
-  Promise.all([p1, p2]).then(function(results) {
-    var d    = results[0];
-    var conv = results[1];
-    var found = null;
-    if (d.success && d.messages) {
-      var cleanMob = mobile.replace(/\D/g,"");
-      d.messages.forEach(function(m) {
-        var cm = m.mobile.replace(/\D/g,"");
-        if (cm === cleanMob || cm === "91"+cleanMob || "91"+cm === cleanMob) found = m;
-      });
-    }
-    var conversation = (conv.conversation || []).slice(-6);
-    renderWAMessages(found, conversation);
-    if (selectedLead) {
-      var fb = document.getElementById("feedbackInput");
-      if (fb) fb.value = selectedLead.feedback || "";
-    }
-  }).catch(function() {
-    container.innerHTML = '<div class="wa-no-msgs">Could not load messages</div>';
-  });
-}
-
-function renderWAMessages(m, conversation) {
-  var container = document.getElementById("waMessages");
-  var html = "";
-
-  if (conversation && conversation.length > 0) {
-    html += '<div style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;margin-bottom:8px;padding:0 4px">💬 Rahul Bot Conversation</div>';
-    conversation.forEach(function(msg) {
-      var isBot      = msg.role === "bot";
-      var label      = isBot ? "🤖 Rahul" : "👤 Customer";
-      var labelColor = isBot ? "color:#004a99" : "color:#16a34a";
-      html += '<div class="wa-bubble"><div class="wa-bubble-label" style="'+labelColor+'">'+label+'</div>' +
-        esc(msg.message || "").replace(/\n/g,"<br>") + '</div>';
-    });
-    html += '<hr style="border:none;border-top:1px dashed #e2e8f0;margin:10px 0">';
-  }
-
-  if (m) {
-    if (m.message3 && m.message3.trim()) html += '<div class="wa-bubble"><div class="wa-bubble-label" style="color:#16a34a">👤 Earlier</div>'+esc(m.message3).replace(/\n/g,"<br>")+'</div>';
-    if (m.message2 && m.message2.trim()) html += '<div class="wa-bubble"><div class="wa-bubble-label" style="color:#16a34a">👤 Previous</div>'+esc(m.message2).replace(/\n/g,"<br>")+'</div>';
-    if (m.message1 && m.message1.trim()) {
-      html += '<div class="wa-bubble"><div class="wa-bubble-label" style="color:#16a34a">👤 Latest — 📱 '+esc(m.mobile)+'</div>'+esc(m.message1).replace(/\n/g,"<br>")+'<div class="wa-bubble-time">'+(m.timestamp ? new Date(m.timestamp).toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit"}) : "")+'</div></div>';
-    }
-    if (m.templateSent === "Yes" && m.templateName) {
-      html += '<div class="wa-template-sent">✅ Template sent: <strong>'+esc(m.templateName)+'</strong>'+(m.autoSentAt ? ' · '+esc(m.autoSentAt) : '')+'</div>';
-    }
-  }
-
-  if (!html) html = '<div class="wa-no-msgs">📭 No WhatsApp messages yet for this customer</div>';
-  container.innerHTML = html;
-}
-
-// ============================================================
-// WHATSAPP ACTIONS
-// ============================================================
-function showTemplateList() {
-  document.getElementById("waSubPanel").innerHTML = "";
-  if (templates.length === 0) {
-    fetch(APPS_SCRIPT_URL + "?action=getTemplates")
-      .then(function(r){ return r.json(); })
-      .then(function(d) { if (d.success) { templates = d.templates || []; renderTemplateInline(); } });
-  } else { renderTemplateInline(); }
-}
-
-function renderTemplateInline() {
-  var html = '<div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase">Select Template:</div>';
-  templates.forEach(function(t, i) {
-    var catCls = t.category === "MARKETING" ? "tcat-m" : "tcat-u";
-    html += '<div class="template-item" onclick="sendTemplate('+i+')"><div class="template-name">'+esc(t.name)+'<span class="tcat '+catCls+'">'+esc(t.category)+'</span></div><div class="template-body">'+esc(t.body||"—")+'</div></div>';
-  });
-  document.getElementById("waSubPanel").innerHTML = html;
-}
-
-function sendTemplate(idx) {
   if (!selectedLead) return;
-  var t = templates[idx];
-  if (!t) return;
+  var l = selectedLead;
 
-  var bannerUrl = "";
-  if (t.name === "welcome_hl")           bannerUrl = "https://drive.google.com/uc?export=download&id=151p69azxUf_tcJH9uwueGtigbyqMscFk";
-  else if (t.name === "welcome_lap")     bannerUrl = "https://drive.google.com/uc?export=download&id=1WUkhuqRbtAm5hHq3dnZ8JLzYHz4E2AHq";
-  else if (t.name === "welcome_unsecured") bannerUrl = "https://drive.google.com/uc?export=download&id=1llb-yxEyzSR1JVEqdM4TmI7_ICDOFSrD";
-  else if (t.name === "partner_recruitment") bannerUrl = "https://drive.google.com/uc?export=download&id=18WCgSkS9sLmeI8YNgaLPKbBw-QJ90xPv";
-  else if (t.name === "construction_finance") bannerUrl = "https://drive.google.com/uc?export=download&id=1la4AWXmwlpwqXWC9cZsvUnwxgyq92Bxz";
+  if (name === "brief")        { buildBriefTab(l); }
+  if (name === "lenders")      { loadLenders(l.city); }
+  if (name === "conversation") { loadConversation(l.mobile); }
+  if (name === "actions")      { document.getElementById("feedbackInput").value = l.feedback || ""; }
+  if (name === "details")      { buildDetails(l); }
+}
 
-  document.getElementById("waSubPanel").innerHTML = "";
-  toast("📤 Sending " + t.name + "...", "ok");
-  fetch(APPS_SCRIPT_URL + "?action=sendTemplate&mobile=" + encodeURIComponent(selectedLead.mobile) +
-    "&templateName=" + encodeURIComponent(t.name) + "&params=[]&imageUrl=" + encodeURIComponent(bannerUrl))
+// ============================================================
+// ACTIONS
+// ============================================================
+function callCustomer() {
+  if (!selectedLead) return;
+  var cleanMob = selectedLead.mobile.replace(/\D/g,"");
+  window.location.href = "tel:+" + cleanMob;
+}
+
+function openWhatsApp() {
+  if (!selectedLead) return;
+  var cleanMob = selectedLead.mobile.replace(/\D/g,"");
+  window.open("https://wa.me/" + cleanMob, "_blank");
+}
+
+function sendMissedCall() {
+  if (!selectedLead) return;
+  var l        = selectedLead;
+  var name     = (l.fullName||"there").split(" ")[0];
+  var loanType = l.loanType || "loan";
+  var amount   = l.plAmount !== "—" ? l.plAmount : l.blAmount !== "—" ? l.blAmount : l.hlAmount !== "—" ? l.hlAmount : l.lapAmount !== "—" ? l.lapAmount : "";
+  var amtText  = amount && amount !== "—" ? " of " + amount : "";
+
+  var msg = "Hi " + name + "! 😊\n\n" +
+    "I tried calling you just now regarding your " + loanType + " requirement" + amtText + ".\n\n" +
+    "Please call me back or share a convenient time!\n\n" +
+    "📱 " + RM_NAME + ": " + RM_MOBILE + "\n" +
+    "VastMyWealth Advisory";
+
+  toast("📤 Sending missed call message...", "ok");
+  fetch(APPS_SCRIPT_URL + "?action=sendText&mobile=" + encodeURIComponent(l.mobile) + "&message=" + encodeURIComponent(msg))
     .then(function(r){ return r.json(); })
     .then(function(d) {
-      if (d.success) { toast("✅ Template sent!", "ok"); loadWAMessages(selectedLead.mobile); }
-      else toast("❌ Failed — check Meta token", "err");
+      if (d.success) toast("✅ Missed call message sent!", "ok");
+      else toast("❌ Failed — 24hr window expired", "err");
     })
     .catch(function(){ toast("❌ Connection error", "err"); });
 }
 
-function showQuickReplies() {
-  var html = '<div style="margin-bottom:8px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase">Quick Replies:</div>';
-  QUICK_REPLIES.forEach(function(qr, i) {
-    html += '<div class="qr-option" onclick="useQuickReply('+i+')"><div class="qr-name">'+esc(qr.name)+'</div><div class="qr-text">'+esc(qr.text.substring(0,100))+(qr.text.length>100?"...":"")+'</div></div>';
-  });
-  document.getElementById("waSubPanel").innerHTML = html;
+function openEmail() {
+  if (!selectedLead) return;
+  var l       = selectedLead;
+  var brief   = document.getElementById("caseBriefContent").textContent || "";
+  var subject = encodeURIComponent(l.fullName + " | " + l.loanType + " | " + (l.vendorAllocation||"VastMyWealth"));
+  var body    = encodeURIComponent(brief + "\n\nRM: " + RM_NAME + " — " + RM_MOBILE + "\nVastMyWealth Advisory");
+  window.open("mailto:" + ADMIN_EMAIL + "?subject=" + subject + "&body=" + body);
 }
 
-function useQuickReply(idx) {
-  var qr = QUICK_REPLIES[idx];
-  if (!qr) return;
-  document.getElementById("waSubPanel").innerHTML = "";
-  document.getElementById("waInput").value = qr.text;
-  autoResize(document.getElementById("waInput"));
-  toast("✅ Quick reply loaded!", "ok");
+function copyBrief() {
+  var text = document.getElementById("caseBriefContent").textContent || "";
+  if (!text || text.includes("No case summary")) { toast("No case brief to copy!", "err"); return; }
+  navigator.clipboard.writeText(text).then(function(){ toast("✅ Case brief copied!", "ok"); }).catch(function(){ toast("❌ Copy failed", "err"); });
+}
+
+function allocateDSA(dsa) {
+  if (!selectedLead) return;
+  if (!confirm("Allocate to " + dsa + "?")) return;
+  toast("⏳ Allocating to " + dsa + "...", "ok");
+  fetch(APPS_SCRIPT_URL + "?action=updateStatus&row=" + encodeURIComponent(selectedLead.row||0) +
+    "&status=Allocated&vendor=" + encodeURIComponent(dsa))
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.success) {
+        toast("✅ Allocated to " + dsa + "!", "ok");
+        selectedLead.vendorAllocation = dsa;
+        selectedLead.status = "Allocated";
+        updatePipeline();
+        renderLeadList();
+      } else toast("❌ Failed!", "err");
+    })
+    .catch(function(){ toast("❌ Connection error", "err"); });
 }
 
 function sendWAMessage() {
@@ -1156,7 +1110,7 @@ function sendWAMessage() {
     .then(function(r){ return r.json(); })
     .then(function(d) {
       if (d.success) toast("✅ Message sent!", "ok");
-      else toast("❌ Failed — 24hr window may have expired", "err");
+      else toast("❌ Failed — 24hr window expired", "err");
     })
     .catch(function(){ toast("❌ Connection error", "err"); });
 }
@@ -1165,113 +1119,47 @@ function handleWAKey(e) {
   if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendWAMessage(); }
 }
 
-// ============================================================
-// PROFILE TAB
-// ============================================================
-function loadProfile(lead) {
-  var profileEl = document.getElementById("profileContent");
-  if (!profileEl) return;
-  if (lead && lead.aiProfile && lead.aiProfile.length > 10) {
-    profileEl.textContent = lead.aiProfile;
-  } else {
-    profileEl.innerHTML = '<span style="color:#94a3b8;">No case summary generated yet.\nRahul will generate case summary after collecting all details.</span>';
-  }
-}
-
-function regenerateProfile() {
-  if (!selectedLead) return;
-  var corrections = document.getElementById("profileCorrections").value.trim();
-  if (!corrections) { toast("Please enter corrections first!", "err"); return; }
-  toast("🔄 Regenerating profile...", "ok");
-  fetch(APPS_SCRIPT_URL + "?action=regenerateProfile&mobile=" + encodeURIComponent(selectedLead.mobile) + "&corrections=" + encodeURIComponent(corrections))
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if (d.success) { toast("✅ Regeneration triggered! Check Telegram.", "ok"); document.getElementById("profileCorrections").value = ""; }
-      else toast("❌ Failed!", "err");
-    })
-    .catch(function(){ toast("❌ Connection error", "err"); });
-}
-
-function allocateDSA(dsa) {
-  if (!selectedLead || !selectedLead.row) { toast("❌ Cannot allocate — lead not in Master Sheet yet!", "err"); return; }
-  if (!confirm("Allocate to " + dsa + "?")) return;
-  toast("⏳ Allocating to " + dsa + "...", "ok");
-  fetch(APPS_SCRIPT_URL + "?action=updateStatus&row=" + encodeURIComponent(selectedLead.row) + "&status=Allocated&vendor=" + encodeURIComponent(dsa))
-    .then(function(r){ return r.json(); })
-    .then(function(d) {
-      if (d.success) { toast("✅ Allocated to " + dsa + "!", "ok"); selectedLead.vendorAllocation = dsa; }
-      else toast("❌ Allocation failed!", "err");
-    })
-    .catch(function(){ toast("❌ Connection error", "err"); });
-}
-
-function openGmailDSA() {
-  if (!selectedLead) return;
-  var profile  = document.getElementById("profileContent").textContent || "";
-  var dsa      = selectedLead.vendorAllocation || "";
-  var name     = selectedLead.fullName || "";
-  var loanType = selectedLead.loanType || "";
-  var subject  = encodeURIComponent(name + " | " + loanType + " | " + dsa);
-  var body     = encodeURIComponent(profile + "\n\nDrive: " + (selectedLead.driveFolderUrl || "N/A"));
-  window.open("mailto:?subject=" + subject + "&body=" + body);
-}
-
-// ============================================================
-// FEEDBACK
-// ============================================================
 function saveFeedback() {
   if (!selectedLead) return;
   var feedback = document.getElementById("feedbackInput").value.trim();
-  toast("💾 Saving feedback...", "ok");
+  toast("💾 Saving...", "ok");
   fetch(APPS_SCRIPT_URL + "?action=saveFeedback&mobile=" + encodeURIComponent(selectedLead.mobile) + "&feedback=" + encodeURIComponent(feedback))
     .then(function(r){ return r.json(); })
     .then(function(d) {
-      if (d.success) { selectedLead.feedback = feedback; toast("✅ Feedback saved!", "ok"); }
+      if (d.success) { selectedLead.feedback = feedback; toast("✅ Notes saved!", "ok"); }
       else toast("❌ Save failed!", "err");
     })
     .catch(function(){ toast("❌ Connection error", "err"); });
 }
 
-// ============================================================
-// DELETE LEAD
-// ============================================================
 function deleteLead() {
   if (!selectedLead) return;
-  var name = selectedLead.fullName || selectedLead.mobile;
-  if (!confirm("Delete " + name + "'s lead?\n\nThis will remove:\n• WA Leads record\n• Conversation history\n\nThis cannot be undone!")) return;
-  toast("🗑️ Deleting lead...", "ok");
+  if (!confirm("Delete " + (selectedLead.fullName||selectedLead.mobile) + "?\n\nThis cannot be undone!")) return;
+  toast("🗑️ Deleting...", "ok");
   fetch(APPS_SCRIPT_URL + "?action=deleteLead&mobile=" + encodeURIComponent(selectedLead.mobile))
     .then(function(r){ return r.json(); })
     .then(function(d) {
       if (d.success) {
         toast("✅ Lead deleted!", "ok");
-        allLeads      = allLeads.filter(function(l) { return l.mobile !== selectedLead.mobile; });
-        filteredLeads = filteredLeads.filter(function(l) { return l.mobile !== selectedLead.mobile; });
+        allLeads      = allLeads.filter(function(l){ return l.mobile !== selectedLead.mobile; });
+        filteredLeads = filteredLeads.filter(function(l){ return l.mobile !== selectedLead.mobile; });
         selectedLead  = null;
         document.getElementById("rpEmpty").style.display  = "flex";
         document.getElementById("rpActive").style.display = "none";
+        updatePipeline();
         renderLeadList();
       } else toast("❌ Delete failed!", "err");
     })
     .catch(function(){ toast("❌ Connection error", "err"); });
 }
 
-function autoResize(el) {
-  el.style.height = "auto";
-  el.style.height = Math.min(el.scrollHeight, 80) + "px";
-}
-
 // ============================================================
 // STATUS UPDATE
 // ============================================================
-document.getElementById("statusSelect").addEventListener("change", function() {
-  toggleStatusFields(this.value);
-});
-
 function toggleStatusFields(status) {
   var s = (status||"").toLowerCase();
-  document.getElementById("rejectionWrap").style.display = s.indexOf("reject")   !== -1 ? "block" : "none";
-  document.getElementById("disbursedWrap").style.display = s.indexOf("disburse") !== -1 ? "block" : "none";
+  document.getElementById("rejectionWrap").style.display = s.includes("reject")   ? "block" : "none";
+  document.getElementById("disbursedWrap").style.display = s.includes("disburse") ? "block" : "none";
 }
 
 function saveStatus() {
@@ -1280,87 +1168,40 @@ function saveStatus() {
   var reason    = document.getElementById("rejectionReason").value || "";
   var disbursed = document.getElementById("disbursedAmount").value || "";
   var vendor    = selectedLead.vendorAllocation || "";
-
-  if (!status) { toast("Please select a status!", "err"); return; }
+  if (!status) { toast("Select a status!", "err"); return; }
 
   var btn = document.getElementById("saveStatusBtn");
-  btn.textContent = "⏳ Saving...";
-  btn.disabled    = true;
+  btn.textContent = "⏳ Saving..."; btn.disabled = true;
 
-  fetch(APPS_SCRIPT_URL + "?action=updateStatus&row=" + selectedLead.row +
+  fetch(APPS_SCRIPT_URL + "?action=updateStatus&row=" + (selectedLead.row||0) +
     "&status=" + encodeURIComponent(status) + "&reason=" + encodeURIComponent(reason) +
     "&vendor=" + encodeURIComponent(vendor) + "&disbursed=" + encodeURIComponent(disbursed))
     .then(function(r){ return r.json(); })
     .then(function(d) {
-      btn.textContent = "💾 Save Status";
-      btn.disabled    = false;
+      btn.textContent = "💾 Save Status"; btn.disabled = false;
       if (d.success) {
         toast("✅ Status updated!", "ok");
         selectedLead.vendorStatus = status;
-        selectedLead.status       = status;
+        selectedLead.status = status;
         document.getElementById("currentStatusDisplay").textContent = status;
-        updatePipeline();
-        renderLeadList();
+        updatePipeline(); renderLeadList();
       } else toast("❌ Update failed!", "err");
     })
-    .catch(function() {
-      btn.textContent = "💾 Save Status";
-      btn.disabled    = false;
-      toast("❌ Connection error", "err");
-    });
+    .catch(function() { btn.textContent = "💾 Save Status"; btn.disabled = false; toast("❌ Connection error", "err"); });
 }
 
 // ============================================================
-// TABS
+// CLOSE / TOAST / UTILS
 // ============================================================
-function showTab(name, el) {
-  document.querySelectorAll(".rptab").forEach(function(t){ t.classList.remove("active"); });
-  document.querySelectorAll(".tab-pane").forEach(function(p){ p.classList.remove("active"); });
-  if (el) el.classList.add("active");
-  else document.querySelectorAll(".rptab")[name==="details"?0:name==="whatsapp"?1:name==="profile"?2:3].classList.add("active");
-  document.getElementById("tab-" + name).classList.add("active");
-  if (name === "whatsapp" && selectedLead) loadWAMessages(selectedLead.mobile);
-  if (name === "profile"  && selectedLead) loadProfile(selectedLead);
-}
-
 function closeDetail() {
   document.getElementById("rightPanel").classList.remove("open");
   selectedLead = null;
   renderLeadList();
 }
 
-// ============================================================
-// OVERLAYS
-// ============================================================
-function closeOverlay(e, id) { if (e.target === document.getElementById(id)) closeAllOverlays(); }
-function closeAllOverlays()  { document.getElementById("templateOverlay").classList.remove("show"); }
-
-// ============================================================
-// UTILS
-// ============================================================
-function getStatusClass(status) {
-  var s = (status||"").toLowerCase();
-  if (s.indexOf("case ready")   !== -1) return "s-case";
-  if (s.indexOf("captured")     !== -1) return "s-captured";
-  if (s.indexOf("pending")      !== -1) return "s-pending";
-  if (s.indexOf("manual")       !== -1) return "s-manual";
-  if (s.indexOf("process")      !== -1) return "s-process";
-  if (s.indexOf("allocat")      !== -1) return "s-allocated";
-  if (s.indexOf("approv")       !== -1) return "s-approved";
-  if (s.indexOf("disburse")     !== -1) return "s-disbursed";
-  if (s.indexOf("reject")       !== -1) return "s-rejected";
-  return "s-captured";
-}
-
-function esc(s) {
-  return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-}
-
 function toast(msg, type) {
   var t = document.getElementById("toast");
-  t.textContent = msg;
-  t.className   = "toast " + (type||"");
-  t.classList.add("show");
+  t.textContent = msg; t.className = "toast "+(type||""); t.classList.add("show");
   clearTimeout(t._t);
   t._t = setTimeout(function(){ t.classList.remove("show"); }, 3000);
 }
@@ -1370,24 +1211,26 @@ function toast(msg, type) {
 // ============================================================
 function loadDemoLeads() {
   allLeads = [
-    {row:2,refId:"VMW-0002",timestamp:new Date(Date.now()-26*3600000).toISOString(),source:"",
-     fullName:"Rajesh Kumar",mobile:"919876543210",city:"Mumbai",applicantType:"Salaried",
-     loanType:"Personal Loan",appCibil:"Above 700",plAmount:"2-5 Lacs",plSalary:"50K-1L",
-     vendorSuggestion:"My Mudra",vendorAllocation:"",status:"Lead Captured",
-     allocationStamp:"",whatsappSent:"No",vendorStatus:"",rejectionReason:"",disbursedAmount:"",
-     driveFolderUrl:"",seen:"No",feedback:"",aiProfile:""},
-    {row:3,refId:"VMW-0003",timestamp:new Date(Date.now()-2*3600000).toISOString(),source:"9594594567",
-     fullName:"Priya Desai",mobile:"918765432109",city:"Pune",applicantType:"Self-Employed",
-     loanType:"Home Loan",appCibil:"700-750",hlAmount:"25-50 Lacs",
-     vendorSuggestion:"Andromeda",vendorAllocation:"",status:"Case Ready",
-     allocationStamp:"",whatsappSent:"Yes",vendorStatus:"",rejectionReason:"",disbursedAmount:"",
-     driveFolderUrl:"",seen:"Yes",feedback:"",aiProfile:"Strong case — BARC employee. Salary 85000/month. CIBIL 750+."},
-    {row:4,refId:"VMW-0004",timestamp:new Date(Date.now()-3*3600000).toISOString(),source:"",
-     fullName:"Amit Shah",mobile:"917654321098",city:"Delhi",applicantType:"Salaried",
-     loanType:"Business Loan",appCibil:"680",hlAmount:"",blAmount:"10-15 Lacs",blVintage:"2-5 years",
-     vendorSuggestion:"My Mudra",vendorAllocation:"",status:"Manual Decision",
-     allocationStamp:"",whatsappSent:"Yes",vendorStatus:"",rejectionReason:"",disbursedAmount:"",
-     driveFolderUrl:"",seen:"Yes",feedback:"",aiProfile:""}
+    {row:2,refId:"WA-0001",timestamp:new Date(Date.now()-26*3600000).toISOString(),source:"",
+     fullName:"Rajesh Kumar",mobile:"919876543210",city:"Mumbai",state:"Maharashtra",applicantType:"Salaried",
+     loanType:"Home Loan",appCibil:"750+",hlAmount:"50 Lacs",plAmount:"—",blAmount:"—",lapAmount:"—",plSalary:"—",blVintage:"—",
+     vendorAllocation:"",status:"Lead Captured",allocationStamp:"",whatsappSent:"No",
+     vendorStatus:"",rejectionReason:"",disbursedAmount:"",driveFolderUrl:"",
+     seen:"No",feedback:"",aiProfile:"",callbackDate:"12 May 2026",callbackTime:"3:00 PM"},
+    {row:3,refId:"WA-0002",timestamp:new Date(Date.now()-2*3600000).toISOString(),source:"9594594567",
+     fullName:"Priya Desai",mobile:"918765432109",city:"Pune",state:"Maharashtra",applicantType:"Self-Employed",
+     loanType:"Loan Against Property",appCibil:"700",hlAmount:"—",plAmount:"—",blAmount:"—",lapAmount:"40 Lacs",plSalary:"—",blVintage:"—",
+     vendorAllocation:"",status:"Case Ready",allocationStamp:"",whatsappSent:"Yes",
+     vendorStatus:"",rejectionReason:"",disbursedAmount:"",driveFolderUrl:"",
+     seen:"Yes",feedback:"",
+     aiProfile:"━━━━━━━━━━━━━━━━━━━━━━━━━\nVASTMYWEALTH ADVISORY — CASE NOTE\n━━━━━━━━━━━━━━━━━━━━━━━━━\n\n1. APPLICANT DETAILS\nName    : Priya Desai\nMobile  : 918765432109\nCity    : Pune, Maharashtra\nAge     : 38\nEmployment: Self-Employed\nBusiness: Trading Business\nVintage : 5 Years\n\n2. LOAN REQUIREMENT\nLoan Type: LAP\nAmount   : 40 Lacs\nPurpose  : Business Expansion\n\n7. CASE OBSERVATIONS\nStrong profile with 5 year business vintage. CIBIL 700 is acceptable for LAP. Property in Pune is marketable. Recommend proceed with cautious underwriting.",
+     callbackDate:"11 May 2026",callbackTime:"11:00 AM"},
+    {row:4,refId:"WA-0003",timestamp:new Date(Date.now()-3*3600000).toISOString(),source:"",
+     fullName:"Amit Shah",mobile:"917654321098",city:"Delhi",state:"Delhi",applicantType:"Salaried",
+     loanType:"Personal Loan",appCibil:"680",hlAmount:"—",plAmount:"5 Lacs",blAmount:"—",lapAmount:"—",plSalary:"45K",blVintage:"—",
+     vendorAllocation:"",status:"Manual Decision",allocationStamp:"",whatsappSent:"Yes",
+     vendorStatus:"",rejectionReason:"",disbursedAmount:"",driveFolderUrl:"",
+     seen:"Yes",feedback:"",aiProfile:"",callbackDate:"",callbackTime:""}
   ];
   updatePipeline();
   applyFilters();
