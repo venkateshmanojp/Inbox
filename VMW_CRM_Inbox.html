@@ -808,16 +808,20 @@ function applyFilters() {
     return true;
   });
 
-  // Sort: Call Now first, then Case Ready, then by date
-  filteredLeads.sort(function(a, b) {
-    var aCall = isCallNow(a) ? 1 : 0;
-    var bCall = isCallNow(b) ? 1 : 0;
-    if (bCall !== aCall) return bCall - aCall;
-    var aCase = isCaseReady(a) ? 1 : 0;
-    var bCase = isCaseReady(b) ? 1 : 0;
-    if (bCase !== aCase) return bCase - aCase;
-    return b.row - a.row;
-  });
+  // Sort: Call Now first, then Case Ready, then New, then by date
+filteredLeads.sort(function(a, b) {
+  var aCall = isCallNow(a) ? 1 : 0;
+  var bCall = isCallNow(b) ? 1 : 0;
+  if (bCall !== aCall) return bCall - aCall;
+  var aCase = isCaseReady(a) ? 1 : 0;
+  var bCase = isCaseReady(b) ? 1 : 0;
+  if (bCase !== aCase) return bCase - aCase;
+  var aNew = (a.seen === "No" || !a.seen) ? 1 : 0;
+  var bNew = (b.seen === "No" || !b.seen) ? 1 : 0;
+  if (bNew !== aNew) return bNew - aNew;
+  return new Date(b.timestamp) - new Date(a.timestamp);
+});
+
 
   renderLeadList();
 }
