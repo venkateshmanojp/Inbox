@@ -927,17 +927,37 @@ fetch(APPS_SCRIPT_URL + "?action=getLendersByCity&city=" + encodeURIComponent(ci
       });
 
       var html = '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:10px">🏦 '+lenders.length+' Lenders in '+esc(city)+'</div>';
-      lenders.forEach(function(l) {
-        html += '<div class="lender-card">' +
-          '<div class="lender-bank">'+esc(l.bank||"—")+'</div>' +
-          '<div class="lender-product">'+esc(l.product||"—")+'</div>' +
-          '<div class="lender-sm">' +
-            '<div class="lender-name">'+esc(l.smName||"—")+'</div>' +
-            (l.smMobile ? '<a class="lender-call" href="tel:'+esc(l.smMobile)+'">📞 '+esc(l.smMobile)+'</a>' : '') +
-          '</div>' +
-        '</div>';
-      });
-      container.innerHTML = html;
+      var stateLenders = lenders.filter(function(l){ return !l.isAndromeda; });
+var androLenders = lenders.filter(function(l){ return l.isAndromeda; });
+
+if (stateLenders.length > 0) {
+  html += '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:8px">🏦 ' + esc(state) + ' Lenders</div>';
+  stateLenders.forEach(function(l) {
+    var cityMatch = l.hasCustomerCity;
+    var uniqueCities = l.cities.filter(function(c,i,a){ return a.indexOf(c)===i; });
+    html += '<div class="lender-card" style="'+(cityMatch?"border-color:#16a34a;":"")+'">' +
+      '<div class="lender-bank">'+esc(l.bank||"—")+
+      (cityMatch?' <span style="background:#d1fae5;color:#065f46;font-size:9px;padding:2px 5px;border-radius:4px;font-weight:700">✅ In '+esc(city)+'</span>':'')+'</div>' +
+      '<div class="lender-product">'+esc(l.product||"—")+'</div>' +
+      '<div style="font-size:10px;color:var(--text3);margin:3px 0">📍 '+esc(uniqueCities.slice(0,5).join(", "))+'</div>' +
+      '<div class="lender-sm"><div class="lender-name">'+esc(l.smName||"—")+'</div>' +
+      (l.smMobile ? '<a class="lender-call" href="tel:'+esc(l.smMobile)+'">📞 '+esc(l.smMobile)+'</a>' : '') +
+      '</div></div>';
+  });
+}
+
+if (androLenders.length > 0) {
+  html += '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;margin:12px 0 8px">🌐 Andromeda (Pan India)</div>';
+  androLenders.forEach(function(l) {
+    html += '<div class="lender-card">' +
+      '<div class="lender-bank">'+esc(l.bank||"—")+'</div>' +
+      '<div class="lender-product">'+esc(l.product||"—")+'</div>' +
+      '<div class="lender-sm"><div class="lender-name">'+esc(l.smName||"—")+'</div>' +
+      (l.smMobile ? '<a class="lender-call" href="tel:'+esc(l.smMobile)+'">📞 '+esc(l.smMobile)+'</a>' : '') +
+      '</div></div>';
+  });
+}
+container.innerHTML = html;
     })
     .catch(function() {
       container.innerHTML = '<div class="empty-state"><div class="empty-icon">❌</div><div class="empty-title">Could not load lenders</div></div>';
