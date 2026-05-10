@@ -781,8 +781,14 @@ function applyFilters() {
     }
 
     if (loanTypeFilter) {
-      if ((l.loanType||"").toLowerCase().indexOf(loanTypeFilter.toLowerCase()) === -1) return false;
-    }
+  var lt = (l.loanType||"").toLowerCase();
+  if (loanTypeFilter === "Property") {
+    if (!lt.includes("property") && !lt.includes("against") && !lt.includes("lap")) return false;
+  } else {
+    if (lt.indexOf(loanTypeFilter.toLowerCase()) === -1) return false;
+  }
+}
+
 
     if (sourceFilter === "direct") {
       var src = String(l.source||"").replace(/\D/g,"");
