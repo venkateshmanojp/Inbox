@@ -997,6 +997,8 @@ function buildDetails(l) {
     row("Suggested",    l.vendorSuggestion||"—") +
     row("Allocated On", l.allocationStamp||"—") +
     row("WA Sent",      l.whatsappSent||"—") +
+    (l.callbackDate ? row("📅 Callback", l.callbackDate + " at " + (l.callbackTime||"")) : "") +
+
     row("Status",       l.vendorStatus||l.status||"—") +
     (l.disbursedAmount && l.disbursedAmount !== "—" ? row("Disbursed", "₹"+l.disbursedAmount) : "") +
     (l.rejectionReason && l.rejectionReason !== "—" ? row("Rejection", l.rejectionReason) : "");
