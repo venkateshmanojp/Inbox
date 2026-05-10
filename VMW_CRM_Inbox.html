@@ -880,11 +880,12 @@ function buildBriefTab(l) {
 
   // Case brief
   var briefEl = document.getElementById("caseBriefContent");
-  if (l.aiProfile && l.aiProfile.length > 20) {
-    briefEl.textContent = l.aiProfile;
-  } else {
-    briefEl.innerHTML = '<span class="case-brief-empty">No case summary yet.\nWill appear after Rahul completes qualification.</span>';
-  }
+ if (l.aiProfile && l.aiProfile.length > 20) {
+  briefEl.textContent = l.aiProfile;
+} else {
+  briefEl.innerHTML = '<span class="case-brief-empty">No case summary yet. Profile length: ' + (l.aiProfile||"").length + '</span>';
+}
+
 }
 
 // ============================================================
