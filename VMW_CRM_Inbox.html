@@ -907,7 +907,9 @@ function loadLenders(city) {
 
   container.innerHTML = '<div class="empty-state"><div class="spinner"></div><div class="empty-title">Finding lenders in '+esc(city)+'...</div></div>';
 
-  fetch(APPS_SCRIPT_URL + "?action=getLendersByCity&city=" + encodeURIComponent(city))
+  var state = selectedLead ? (selectedLead.state || "") : "";
+fetch(APPS_SCRIPT_URL + "?action=getLendersByCity&city=" + encodeURIComponent(city) + "&state=" + encodeURIComponent(state))
+
     .then(function(r){ return r.json(); })
     .then(function(d) {
       if (!d.success || !d.lenders || d.lenders.length === 0) {
