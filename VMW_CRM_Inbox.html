@@ -1094,6 +1094,18 @@ function allocateDSA(dsa) {
   if (!selectedLead) return;
   if (!confirm("Allocate to " + dsa + "?")) return;
   toast("⏳ Allocating to " + dsa + "...", "ok");
+
+  var today = new Date().toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"});
+
+  // Update WA Leads — partner portal + CRM sync
+  fetch(APPS_SCRIPT_URL + "?action=updateWALeadStatus" +
+    "&mobile="      + encodeURIComponent(selectedLead.mobile) +
+    "&status="      + encodeURIComponent("Allocated") +
+    "&dsa="         + encodeURIComponent(dsa) +
+    "&allocatedOn=" + encodeURIComponent(today)
+  ).catch(function(){});
+
+  // Update Master Sheet
   fetch(APPS_SCRIPT_URL + "?action=updateStatus&row=" + encodeURIComponent(selectedLead.row||0) +
     "&status=Allocated&vendor=" + encodeURIComponent(dsa))
     .then(function(r){ return r.json(); })
@@ -1101,7 +1113,9 @@ function allocateDSA(dsa) {
       if (d.success) {
         toast("✅ Allocated to " + dsa + "!", "ok");
         selectedLead.vendorAllocation = dsa;
-        selectedLead.status = "Allocated";
+        selectedLead.dsaAllocated     = dsa;
+        selectedLead.dsaAllocatedOn   = today;
+        selectedLead.status           = "Allocated";
         updatePipeline();
         renderLeadList();
       } else toast("❌ Failed!", "err");
@@ -1284,6 +1298,15 @@ function sendDocumentRequest() {
   var waUrl    = "https://wa.me/" + cleanMob + "?text=" + encodeURIComponent(msg);
   window.open(waUrl, "_blank");
   toast("📋 WhatsApp opened with document checklist!", "ok");
+
+  // Auto update status to Documents Pending
+  fetch(APPS_SCRIPT_URL + "?action=updateWALeadStatus" +
+    "&mobile="  + encodeURIComponent(selectedLead.mobile) +
+    "&status="  + encodeURIComponent("Documents Pending")
+  ).catch(function(){});
+  selectedLead.status = "Documents Pending";
+  updatePipeline();
+  renderLeadList();
 }
 
 // Auto refresh every 3 mins
