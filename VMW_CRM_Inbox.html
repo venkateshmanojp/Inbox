@@ -456,6 +456,14 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
             <button class="dsa-btn full" onclick="allocateDSA('Manual Decision')">⚙️ Manual Decision</button>
           </div>
         </div>
+<!-- Generate Case Brief -->
+<div class="action-section">
+  <div class="action-section-title">🔄 Generate Case Brief</div>
+  <button class="action-card" onclick="generateCaseBrief()" style="width:100%;text-align:left;display:flex;gap:10px;align-items:center">
+    <div style="font-size:20px">📋</div>
+    <div><div style="font-size:12px;font-weight:700;color:var(--text)">Generate Case Brief</div><div style="font-size:11px;color:var(--text2)">Generate case brief from collected details</div></div>
+  </button>
+</div>
 
         <!-- Document Request -->
         <div class="action-section">
@@ -1259,6 +1267,34 @@ function loadDemoLeads() {
   applyFilters();
 }
 
+function generateCaseBrief() {
+  if (!selectedLead) return;
+  var l = selectedLead;
+  toast("⏳ Generating case brief...", "");
+
+  fetch(APPS_SCRIPT_URL +
+    "?action=triggerCaseSummary" +
+    "&mobile="   + encodeURIComponent(l.mobile) +
+    "&name="     + encodeURIComponent(l.fullName     || "") +
+    "&loanType=" + encodeURIComponent(l.loanType     || "") +
+    "&city="     + encodeURIComponent(l.city         || "") +
+    "&state="    + encodeURIComponent(l.state        || "") +
+    "&income="   + encodeURIComponent(l.monthlyIncome|| "") +
+    "&cibil="    + encodeURIComponent(l.cibilScore   || "") +
+    "&emi="      + encodeURIComponent(l.existingEMI  || "") +
+    "&bounces="  + encodeURIComponent(l.bounces      || "") +
+    "&amount="   + encodeURIComponent(l.loanAmount   || "")
+  )
+  .then(function(r){ return r.json(); })
+  .then(function(d) {
+    if (d.success) {
+      toast("✅ Case brief generated! Check Case Brief tab!", "ok");
+    } else {
+      toast("❌ Failed! " + (d.error||""), "err");
+    }
+  })
+  .catch(function(){ toast("❌ Connection error!", "err"); });
+}
 
 // ============================================================
 // SEND DOCUMENT REQUEST
