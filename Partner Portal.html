@@ -950,24 +950,25 @@ function generateQR() {
     var waUrl    = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
 
 
-    // Generate QR using Google Charts API
-    var qrUrl = "https://chart.googleapis.com/chart" +
-      "?chs=300x300" +
-      "&cht=qr" +
-      "&chl=" + encodeURIComponent(waUrl) +
-      "&choe=UTF-8";
+    // Generate QR using QRServer API (free, reliable)
+var qrUrl = "https://api.qrserver.com/v1/create-qr-code/" +
+  "?size=300x300" +
+  "&data=" + encodeURIComponent(waUrl) +
+  "&format=png" +
+  "&margin=10";
 
 
-    var img    = document.createElement("img");
-    img.src    = qrUrl;
-    img.width  = 200;
-    img.height = 200;
-    img.style.borderRadius = "12px";
+var img       = document.createElement("img");
+img.src       = qrUrl;
+img.width     = 200;
+img.height    = 200;
+img.crossOrigin = "anonymous";
+img.style.borderRadius = "12px";
 
 
-    var qrBox = document.getElementById("qrBox");
-    qrBox.innerHTML = "";
-    qrBox.appendChild(img);
+var qrBox = document.getElementById("qrBox");
+qrBox.innerHTML = "";
+qrBox.appendChild(img);
 
 
     var title = document.createElement("div");
@@ -992,11 +993,20 @@ function generateQR() {
     dlBtn.style = "background:linear-gradient(135deg,#16a34a,#15803d)";
     dlBtn.innerHTML = "📥 Download QR";
     dlBtn.onclick = function() {
-      var a    = document.createElement("a");
-      a.href   = qrUrl;
-      a.download = name + "_QR.png";
-      a.target = "_blank";
-      a.click();
+      // Download QR image
+fetch(qrUrl)
+  .then(function(r){ return r.blob(); })
+  .then(function(blob) {
+    var a      = document.createElement("a");
+    a.href     = URL.createObjectURL(blob);
+    a.download = name + "_QR.png";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  })
+  .catch(function() {
+    window.open(qrUrl, "_blank");
+  });
+
     };
 
 
