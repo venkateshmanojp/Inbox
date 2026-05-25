@@ -1253,6 +1253,9 @@ function submitOrder() {
   document.getElementById("orderBtn").disabled             = true;
 
 
+  var notes = (document.getElementById("orderNotes").value || "").trim();
+
+
   fetch(APPS_SCRIPT_URL +
     "?action=submitGroceryOrder" +
     "&partnerMobile=" + encodeURIComponent(partnerMobile) +
@@ -1260,8 +1263,10 @@ function submitOrder() {
     "&outletName="    + encodeURIComponent(outName) +
     "&items="         + encodeURIComponent(JSON.stringify(items)) +
     "&total="         + encodeURIComponent(total.toFixed(2)) +
-    "&paymentType="   + encodeURIComponent(payment)
+    "&paymentType="   + encodeURIComponent(payment) +
+    "&notes="         + encodeURIComponent(notes)
   )
+
   .then(function(r){ return r.json(); })
   .then(function(d) {
     document.getElementById("orderBtnText").style.display    = "inline";
