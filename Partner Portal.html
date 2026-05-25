@@ -235,6 +235,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
     <!-- GROCERY SUB TABS -->
     <div id="groceryTabs" class="tab-bar" style="display:none">
       <button class="tab active" id="tabOutlets" onclick="showGroceryTab('outlets')">🏪 Outlets</button>
+      <button class="tab" id="tabCatalogue" onclick="showGroceryTab('catalogue')">🛍️ Catalogue</button>
       <button class="tab" id="tabOrder" onclick="showGroceryTab('order')">🛒 Order</button>
       <button class="tab" id="tabOrders" onclick="showGroceryTab('orders')">📦 History</button>
     </div>
@@ -433,6 +434,33 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
         </div>
       </div>
 
+<!-- CATALOGUE TAB -->
+      <div id="panelCatalogue" style="display:none">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-icon">🛍️</div>
+            <div>
+              <div class="card-title">KuickKart Catalogue</div>
+              <div class="card-sub">Browse all available products</div>
+            </div>
+          </div>
+        </div>
+        <div style="border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.1)">
+          <iframe 
+            src="https://www.kuickkart.in" 
+            width="100%" 
+            height="600px"
+            style="border:none;display:block"
+            title="KuickKart Catalogue">
+          </iframe>
+        </div>
+        <div style="text-align:center;margin-top:10px">
+          <a href="https://www.kuickkart.in" target="_blank" 
+            style="font-size:12px;color:var(--primary);font-weight:600;text-decoration:none">
+            🔗 Open in browser
+          </a>
+        </div>
+      </div>
 
       <!-- PLACE ORDER TAB -->
       <div id="panelOrder" style="display:none">
@@ -886,22 +914,23 @@ function showTab(tab) {
 // TAB SWITCHING — GROCERY
 // ============================================================
 function showGroceryTab(tab) {
-  ["tabOutlets","tabOrder","tabOrders"].forEach(function(id) {
+  ["tabOutlets","tabCatalogue","tabOrder","tabOrders"].forEach(function(id) {
     document.getElementById(id).classList.remove("active");
   });
-  document.getElementById("tabOutlets").classList.toggle("active", tab==="outlets");
-  document.getElementById("tabOrder").classList.toggle("active",   tab==="order");
-  document.getElementById("tabOrders").classList.toggle("active",  tab==="orders");
+  document.getElementById("tabOutlets").classList.toggle("active",   tab==="outlets");
+  document.getElementById("tabCatalogue").classList.toggle("active", tab==="catalogue");
+  document.getElementById("tabOrder").classList.toggle("active",     tab==="order");
+  document.getElementById("tabOrders").classList.toggle("active",    tab==="orders");
 
 
-  document.getElementById("panelOutlets").style.display = tab==="outlets" ? "block" : "none";
-  document.getElementById("panelOrder").style.display   = tab==="order"   ? "block" : "none";
-  document.getElementById("panelOrders").style.display  = tab==="orders"  ? "block" : "none";
+  document.getElementById("panelOutlets").style.display   = tab==="outlets"   ? "block" : "none";
+  document.getElementById("panelCatalogue").style.display = tab==="catalogue" ? "block" : "none";
+  document.getElementById("panelOrder").style.display     = tab==="order"     ? "block" : "none";
+  document.getElementById("panelOrders").style.display    = tab==="orders"    ? "block" : "none";
 
 
   if (tab==="orders") loadMyOrders();
 }
-
 
 // ============================================================
 // QR CODE GENERATOR
