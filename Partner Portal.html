@@ -233,11 +233,11 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 
 
     <!-- LOANS SUB TABS -->
-    <div id="loansTabs" class="tab-bar">
-      <button class="tab active" id="tabSubmit" onclick="showTab('submit')">➕ Submit</button>
+    <div class="tab-bar">
+      <button class="tab active" id="tabQR" onclick="showTab('qr')">🔗 QR Code</button>
       <button class="tab" id="tabLeads" onclick="showTab('leads')">📋 My Leads</button>
-      <button class="tab" id="tabQR" onclick="showTab('qr')">🔗 QR Code</button>
     </div>
+
 
 
     <!-- GROCERY SUB TABS -->
@@ -248,8 +248,9 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
       <button class="tab" id="tabOrders" onclick="showGroceryTab('orders')">📦 History</button>
     </div>
 
-    <!-- SUBMIT LEAD TAB -->
-    <div id="panelSubmit">
+   <!-- SUBMIT LEAD TAB -->
+    <div id="panelSubmit" style="display:none">
+
 
       <div class="success-banner" id="successBanner">
         <div class="success-icon">🎉</div>
@@ -267,6 +268,27 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
             <div class="card-sub">Fill in your customer's information</div>
           </div>
         </div>
+        <!-- UNIVERSAL QR -->
+          <div style="background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px;padding:16px;margin-bottom:16px;text-align:center">
+            <div style="font-size:13px;font-weight:700;color:#065f46;margin-bottom:4px">🔗 My Universal QR</div>
+            <div style="font-size:11px;color:#047857;margin-bottom:12px">Share this QR anywhere — print on card, share on WhatsApp!</div>
+            <div id="universalQRBox" style="margin:0 auto 12px"></div>
+            <div style="font-size:11px;color:#047857;margin-bottom:10px">Customer scans → WhatsApp opens → Bot starts!</div>
+            <div style="display:flex;gap:8px">
+              <button onclick="downloadUniversalQR()" class="btn-primary" style="background:linear-gradient(135deg,#16a34a,#15803d);font-size:13px;padding:10px">
+                📥 Download
+              </button>
+              <button onclick="shareUniversalQR()" class="btn-primary" style="background:linear-gradient(135deg,#25d366,#128c7e);font-size:13px;padding:10px">
+                📱 Share
+              </button>
+            </div>
+          </div>
+
+
+          <div style="border-top:2px dashed var(--border);margin:16px 0;position:relative;text-align:center">
+            <span style="background:white;padding:0 10px;color:var(--text2);font-size:12px;font-weight:600;position:relative;top:-10px">OR GENERATE CUSTOM QR</span>
+          </div>
+
         <div class="card-body">
 
           <div class="info-box">
@@ -324,7 +346,8 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
       </div>
     </div>
 <!-- QR CODE TAB -->
-    <div id="panelQR" style="display:none">
+    <div id="panelQR">
+
       <div class="card">
         <div class="card-head">
           <div class="card-icon">🔗</div>
@@ -663,7 +686,9 @@ function proceedToApp() {
   document.getElementById("mainApp").style.display     = "block";
   document.getElementById("headerUser").textContent    = "👤 " + partnerName;
   window.scrollTo(0, 0);
+  generateUniversalQR();
 }
+
 
 function doLogout() {
   partnerMobile = ""; partnerName = ""; allLeads = [];
@@ -915,17 +940,16 @@ function showSection(section) {
 // TAB SWITCHING — LOANS
 // ============================================================
 function showTab(tab) {
-  ["tabSubmit","tabLeads","tabQR"].forEach(function(id) {
+  ["tabQR","tabLeads"].forEach(function(id) {
     document.getElementById(id).classList.remove("active");
   });
-  document.getElementById("tabSubmit").classList.toggle("active", tab==="submit");
-  document.getElementById("tabLeads").classList.toggle("active",  tab==="leads");
-  document.getElementById("tabQR").classList.toggle("active",     tab==="qr");
+  document.getElementById("tabQR").classList.toggle("active",    tab==="qr");
+  document.getElementById("tabLeads").classList.toggle("active", tab==="leads");
 
 
-  document.getElementById("panelSubmit").style.display = tab==="submit" ? "block" : "none";
-  document.getElementById("panelLeads").style.display  = tab==="leads"  ? "block" : "none";
-  document.getElementById("panelQR").style.display     = tab==="qr"     ? "block" : "none";
+  document.getElementById("panelSubmit").style.display = "none";
+  document.getElementById("panelLeads").style.display  = tab==="leads" ? "block" : "none";
+  document.getElementById("panelQR").style.display     = tab==="qr"    ? "block" : "none";
 
 
   if (tab==="leads") loadLeads();
@@ -959,7 +983,65 @@ if (tab==="catalogue") loadCatalogue();
 // ============================================================
 // QR CODE GENERATOR
 // ============================================================
-function generateQR() {
+var universalQRUrl = "";
+
+
+function generateUniversalQR() {
+  var waNumber = "918976899400";
+  var message  = "VMWREF:Walk-in|Unknown|Unknown|" + partnerMobile;
+  var waUrl    = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
+  universalQRUrl = "https://api.qrserver.com/v1/create-qr-code/" +
+    "?size=200x200" +
+    "&data=" + encodeURIComponent(waUrl) +
+    "&format=png&margin=10";
+
+
+  var box = document.getElementById("universalQRBox");
+  var img = document.createElement("img");
+  img.src    = universalQRUrl;
+  img.width  = 160;
+  img.height = 160;
+  img.style.borderRadius = "12px";
+  img.style.border       = "3px solid #a7f3d0";
+  box.innerHTML = "";
+  box.appendChild(img);
+}
+
+
+function downloadUniversalQR() {
+  if (!universalQRUrl) return;
+  fetch(universalQRUrl)
+    .then(function(r){ return r.blob(); })
+    .then(function(blob) {
+      var a      = document.createElement("a");
+      a.href     = URL.createObjectURL(blob);
+      a.download = "VastMyWealth_" + partnerMobile + "_QR.png";
+      a.click();
+      URL.revokeObjectURL(a.href);
+    })
+    .catch(function() { window.open(universalQRUrl, "_blank"); });
+}
+
+
+function shareUniversalQR() {
+  var waNumber = "918976899400";
+  var message  = "VMWREF:Walk-in|Unknown|Unknown|" + partnerMobile;
+  var waUrl    = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
+  if (navigator.share) {
+    navigator.share({
+      title: "VastMyWealth — Apply for Loan",
+      text : "Scan QR or click to apply for loan via VastMyWealth!",
+      url  : waUrl
+    });
+  } else {
+    navigator.clipboard.writeText(waUrl);
+    toast("✅ Link copied to clipboard!", "ok");
+  }
+}
+
+  
+  
+  function generateQR() {
   var name  = (document.getElementById("qrName").value  || "").trim();
   var mobile= (document.getElementById("qrMobile").value|| "").trim();
   var loan  = (document.getElementById("qrLoan").value  || "").trim();
