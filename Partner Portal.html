@@ -9,6 +9,7 @@
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; background:#f0f4f8; color:#1a1a2e; }
 
+
 :root {
   --primary:#004a99; --primary2:#0062cc; --primary3:#e8f0fb;
   --accent:#f59e0b; --green:#16a34a; --green2:#d1fae5;
@@ -17,6 +18,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
   --surface:#ffffff; --mono:'DM Mono', monospace;
 }
 
+
 /* HEADER */
 .header { background:linear-gradient(135deg,#004a99,#0062cc); color:white; padding:16px; text-align:center; position:sticky; top:0; z-index:100; box-shadow:0 2px 12px rgba(0,74,153,0.3); }
 .header-logo { width:48px; height:48px; background:rgba(255,255,255,0.15); border-radius:14px; display:inline-flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:8px; border:2px solid rgba(255,255,255,0.3); }
@@ -24,8 +26,10 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .header-sub   { font-size:12px; opacity:0.8; }
 .header-user  { display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.15); border-radius:20px; padding:4px 12px; font-size:12px; font-weight:600; margin-top:8px; border:1px solid rgba(255,255,255,0.2); }
 
+
 /* MAIN */
 .main-wrap { max-width:560px; margin:0 auto; padding:16px 14px 80px; }
+
 
 /* CARD */
 .card { background:var(--surface); border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.07); overflow:hidden; margin-bottom:14px; }
@@ -34,6 +38,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .card-title { font-size:15px; font-weight:700; }
 .card-sub   { font-size:11px; opacity:0.8; margin-top:1px; }
 .card-body  { padding:16px; }
+
 
 /* FORM */
 .field-label    { font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; display:block; }
@@ -44,11 +49,13 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .field-wrap { margin-bottom:14px; }
 .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
 
+
 /* BUTTONS */
 .btn-primary { width:100%; padding:14px; background:linear-gradient(135deg,#004a99,#0062cc); border:none; border-radius:12px; font-size:15px; font-weight:700; color:white; cursor:pointer; font-family:'Outfit',sans-serif; box-shadow:0 4px 12px rgba(0,74,153,0.3); transition:opacity 0.15s; display:flex; align-items:center; justify-content:center; gap:8px; }
 .btn-primary:active  { opacity:0.85; }
 .btn-primary:disabled{ opacity:0.6; pointer-events:none; }
 .btn-secondary { width:100%; padding:12px; background:white; border:2px solid var(--border); border-radius:12px; font-size:14px; font-weight:600; color:var(--text2); cursor:pointer; font-family:'Outfit',sans-serif; transition:all 0.15s; }
+
 
 /* LOGIN */
 #loginScreen { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; background:#f0f4f8; }
@@ -58,10 +65,12 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .login-sub   { font-size:13px; color:var(--text2); text-align:center; margin-bottom:24px; }
 .login-err   { font-size:12px; color:var(--red); text-align:center; margin-top:10px; display:none; }
 
+
 /* TABS */
 .tab-bar { display:flex; background:white; border-radius:14px; padding:4px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,0.07); }
 .tab { flex:1; padding:10px; border:none; border-radius:10px; font-size:13px; font-weight:600; color:var(--text2); cursor:pointer; background:transparent; font-family:'Outfit',sans-serif; transition:all 0.15s; text-align:center; }
 .tab.active { background:linear-gradient(135deg,#004a99,#0062cc); color:white; box-shadow:0 2px 8px rgba(0,74,153,0.3); }
+
 
 /* SUCCESS BANNER */
 .success-banner { background:var(--green2); border:1px solid #a7f3d0; border-radius:12px; padding:14px; margin-bottom:14px; display:none; }
@@ -69,6 +78,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .success-icon  { font-size:24px; flex-shrink:0; }
 .success-title { font-size:14px; font-weight:700; color:var(--green); margin-bottom:2px; }
 .success-sub   { font-size:12px; color:#065f46; }
+
 
 /* LEAD CARDS */
 .leads-list { display:flex; flex-direction:column; gap:10px; }
@@ -80,6 +90,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .lead-name  { font-size:15px; font-weight:700; color:var(--text); margin-bottom:2px; }
 .lead-city  { font-size:12px; color:var(--text2); margin-bottom:6px; }
 .lead-tags  { display:flex; gap:6px; flex-wrap:wrap; align-items:center; }
+
 
 /* STATUS TIMELINE */
 .status-timeline { padding:12px 14px; background:#f8fafc; border-top:1px solid var(--border); }
@@ -95,6 +106,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .tstep.active .tstep-dot { background:#004a99; color:white; }
 .tstep.active .tstep-label { color:#004a99; font-weight:700; }
 .tstep.done::before { background:#16a34a; }
+
 
 /* TAGS */
 .tag { font-size:10px; font-weight:700; padding:3px 8px; border-radius:6px; }
@@ -112,11 +124,13 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .status-disbursed { background:#d1fae5; color:#16a34a; }
 .status-rejected  { background:#fee2e2; color:#991b1b; }
 
+
 /* STATS */
 .stats-row { display:flex; gap:10px; margin-bottom:14px; }
 .stat-card { flex:1; background:white; border-radius:12px; padding:12px; text-align:center; box-shadow:0 2px 8px rgba(0,0,0,0.06); border:1px solid var(--border); }
 .stat-num  { font-size:22px; font-weight:800; font-family:var(--mono); line-height:1; color:var(--primary); }
 .stat-lbl  { font-size:10px; color:var(--text3); font-weight:600; margin-top:3px; text-transform:uppercase; }
+
 
 /* EMPTY STATE */
 .empty-state { text-align:center; padding:40px 20px; }
@@ -124,13 +138,16 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .empty-title { font-size:14px; font-weight:600; color:var(--text2); }
 .empty-sub   { font-size:12px; color:var(--text3); margin-top:4px; }
 
+
 /* SPINNER */
 .spinner { width:20px; height:20px; border:2px solid rgba(255,255,255,0.3); border-top-color:white; border-radius:50%; animation:spin 0.6s linear infinite; display:inline-block; }
 @keyframes spin { to { transform:rotate(360deg); } }
 .spinner-dark { border:2px solid var(--border); border-top-color:var(--primary); }
 
+
 /* INFO BOX */
 .info-box { background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:10px 13px; font-size:12px; color:#92400e; display:flex; align-items:flex-start; gap:8px; line-height:1.5; margin-bottom:14px; }
+
 
 /* TOAST */
 .toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(60px); background:#1f2937; color:white; border-radius:12px; padding:10px 20px; font-size:13px; font-weight:600; z-index:1000; opacity:0; transition:all 0.3s; white-space:nowrap; pointer-events:none; }
@@ -145,11 +162,15 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .section-tab.inactive { background:white; color:var(--text2); border:2px solid var(--border); box-shadow:none; }
 
 
+
+
 /* QR CARD */
 .qr-box { background:#f8fafc; border:2px dashed var(--border); border-radius:16px; padding:24px; text-align:center; margin:14px 0; }
 .qr-box img { width:200px; height:200px; margin:0 auto; display:block; }
 .qr-title { font-size:14px; font-weight:700; color:var(--text); margin-top:12px; }
 .qr-sub { font-size:12px; color:var(--text2); margin-top:4px; }
+
+
 
 
 /* OUTLET CARD */
@@ -158,6 +179,8 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .outlet-area { font-size:12px; color:var(--text2); margin-top:2px; }
 .outlet-id   { font-size:11px; color:var(--primary); font-family:var(--mono); font-weight:700; margin-top:4px; }
 .btn-order   { padding:8px 16px; background:linear-gradient(135deg,#16a34a,#15803d); border:none; border-radius:8px; font-size:12px; font-weight:700; color:white; cursor:pointer; font-family:'Outfit',sans-serif; margin-top:8px; }
+
+
 
 
 /* PRODUCT TABLE */
@@ -169,6 +192,8 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .order-total { background:#f0fdf4; border:1.5px solid #a7f3d0; border-radius:10px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; margin:14px 0; }
 .order-total-label { font-size:13px; font-weight:600; color:#065f46; }
 .order-total-amount { font-size:20px; font-weight:800; color:#16a34a; font-family:var(--mono); }
+
+
 
 
 /* ORDER HISTORY CARD */
@@ -188,9 +213,11 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .cat-product-name { font-size:13px; font-weight:700; color:var(--text); line-height:1.3; margin-bottom:2px; }
 .cat-product-unit { font-size:11px; color:var(--text2); }
 
+
 </style>
 </head>
 <body>
+
 
 <!-- LOGIN -->
 <div id="loginScreen">
@@ -210,8 +237,10 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
   </div>
 </div>
 
+
 <!-- MAIN APP -->
 <div id="mainApp" style="display:none">
+
 
   <div class="header">
     <div class="header-logo">💰</div>
@@ -223,7 +252,9 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
     </div>
   </div>
 
+
   <div class="main-wrap">
+
 
     <!-- SECTION TABS -->
     <div class="section-tabs">
@@ -232,11 +263,15 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
     </div>
 
 
+
+
     <!-- LOANS SUB TABS -->
-    <div class="tab-bar">
-      <button class="tab active" id="tabQR" onclick="showTab('qr')">🔗 QR Code</button>
+    <div id="loansTabs" class="tab-bar">
+      <button class="tab active" id="tabSubmit" onclick="showTab('submit')">➕ Submit</button>
       <button class="tab" id="tabLeads" onclick="showTab('leads')">📋 My Leads</button>
+      <button class="tab" id="tabQR" onclick="showTab('qr')">🔗 QR Code</button>
     </div>
+
 
 
 
@@ -248,8 +283,9 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
       <button class="tab" id="tabOrders" onclick="showGroceryTab('orders')">📦 History</button>
     </div>
 
-   <!-- SUBMIT LEAD TAB -->
-    <div id="panelSubmit" style="display:none">
+
+    <!-- SUBMIT LEAD TAB -->
+    <div id="panelSubmit">
 
 
       <div class="success-banner" id="successBanner">
@@ -260,6 +296,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
         </div>
       </div>
 
+
       <div class="card">
         <div class="card-head">
           <div class="card-icon">👤</div>
@@ -268,43 +305,26 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
             <div class="card-sub">Fill in your customer's information</div>
           </div>
         </div>
-        <!-- UNIVERSAL QR -->
-          <div style="background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px;padding:16px;margin-bottom:16px;text-align:center">
-            <div style="font-size:13px;font-weight:700;color:#065f46;margin-bottom:4px">🔗 My Universal QR</div>
-            <div style="font-size:11px;color:#047857;margin-bottom:12px">Share this QR anywhere — print on card, share on WhatsApp!</div>
-            <div id="universalQRBox" style="margin:0 auto 12px"></div>
-            <div style="font-size:11px;color:#047857;margin-bottom:10px">Customer scans → WhatsApp opens → Bot starts!</div>
-            <div style="display:flex;gap:8px">
-              <button onclick="downloadUniversalQR()" class="btn-primary" style="background:linear-gradient(135deg,#16a34a,#15803d);font-size:13px;padding:10px">
-                📥 Download
-              </button>
-              <button onclick="shareUniversalQR()" class="btn-primary" style="background:linear-gradient(135deg,#25d366,#128c7e);font-size:13px;padding:10px">
-                📱 Share
-              </button>
-            </div>
-          </div>
-
-
-          <div style="border-top:2px dashed var(--border);margin:16px 0;position:relative;text-align:center">
-            <span style="background:white;padding:0 10px;color:var(--text2);font-size:12px;font-weight:600;position:relative;top:-10px">OR GENERATE CUSTOM QR</span>
-          </div>
-
         <div class="card-body">
+
 
           <div class="info-box">
             <span>ℹ️</span>
             <span>Once submitted, your customer will receive a WhatsApp message from VastMyWealth to proceed with their application.</span>
           </div>
 
+
           <div class="field-wrap">
             <label class="field-label field-required">Customer Full Name</label>
             <input class="form-control" id="custName" type="text" placeholder="Enter customer's full name" />
           </div>
 
+
           <div class="field-wrap">
             <label class="field-label field-required">Customer Mobile Number</label>
             <input class="form-control" id="custMobile" type="tel" placeholder="10-digit mobile number" maxlength="10" />
           </div>
+
 
           <div class="field-wrap">
             <label class="field-label field-required">Loan Type Required</label>
@@ -319,12 +339,15 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
             </select>
           </div>
 
+
           <div class="field-wrap">
             <label class="field-label">Loan Amount Required</label>
             <input class="form-control" id="custAmount" type="text" 
   placeholder="e.g. 25 Lakhs or 1 Crore" />
 
+
           </div>
+
 
           <div class="form-row">
             <div class="field-wrap">
@@ -337,17 +360,18 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
             </div>
           </div>
 
+
           <button class="btn-primary" onclick="submitLead()" id="submitBtn">
             <span id="submitText">🚀 Submit Lead</span>
             <span id="submitSpinner" style="display:none"><span class="spinner"></span> Submitting...</span>
           </button>
 
+
         </div>
       </div>
     </div>
 <!-- QR CODE TAB -->
-    <div id="panelQR">
-
+    <div id="panelQR" style="display:none">
       <div class="card">
         <div class="card-head">
           <div class="card-icon">🔗</div>
@@ -412,8 +436,12 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
     </div>
 
 
+
+
     <!-- GROCERY PANELS -->
     <div id="groceryPanels" style="display:none">
+
+
 
 
       <!-- OUTLETS TAB -->
@@ -457,6 +485,8 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
         </div>
 
 
+
+
         <div id="outletsList">
           <div class="empty-state">
             <div class="spinner spinner-dark" style="margin:0 auto 12px"></div>
@@ -464,6 +494,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
           </div>
         </div>
       </div>
+
 
 <!-- CATALOGUE TAB -->
       <div id="panelCatalogue" style="display:none">
@@ -490,6 +521,8 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
       </div>
 
 
+
+
       <!-- PRODUCT POPUP -->
       <div id="productPopup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;overflow-y:auto;padding:20px">
         <div style="background:white;border-radius:20px;max-width:400px;margin:0 auto;overflow:hidden;position:relative">
@@ -506,6 +539,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
           </div>
         </div>
       </div>
+
 
       <!-- PLACE ORDER TAB -->
       <div id="panelOrder" style="display:none">
@@ -554,6 +588,8 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
       </div>
 
 
+
+
       <!-- ORDER HISTORY TAB -->
       <div id="panelOrders" style="display:none">
         <div id="ordersContainer">
@@ -565,10 +601,14 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
       </div>
 
 
+
+
     </div>
+
 
     <!-- MY LEADS TAB -->
     <div id="panelLeads" style="display:none">
+
 
       <div class="stats-row" id="statsRow" style="display:none">
         <div class="stat-card">
@@ -589,6 +629,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
         </div>
       </div>
 
+
       <div id="leadsContainer">
         <div class="empty-state">
           <div class="spinner spinner-dark" style="margin:0 auto 12px"></div>
@@ -596,12 +637,16 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
         </div>
       </div>
 
+
     </div>
+
 
   </div>
 </div>
 
+
 <div class="toast" id="toast"></div>
+
 
 <script>
 // ============================================================
@@ -609,12 +654,14 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 // ============================================================
 var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytDsEm2Z1_JD1Gpn-faYSdF1lVMIXxotMQ3qcB4P_7QIZC3juK8PZuhSTinkdlhASdEA/exec";
 
+
 // ============================================================
 // STATE
 // ============================================================
 var partnerMobile = "";
 var partnerName   = "";
 var allLeads      = [];
+
 
 // ============================================================
 // STATUS STAGES
@@ -627,6 +674,7 @@ var STATUS_STAGES = [
   {key:"disbursed", label:"Disbursed",   icon:"💰"}
 ];
 
+
 function getStageIndex(status) {
   var s = (status||"").toLowerCase();
   if (s.includes("disburse"))                        return 4;
@@ -637,6 +685,7 @@ function getStageIndex(status) {
   return 0; // submitted/captured
 }
 
+
 // ============================================================
 // LOGIN
 // ============================================================
@@ -645,6 +694,7 @@ function doLogin() {
   var err    = document.getElementById("loginErr");
   var btn    = document.getElementById("loginBtn");
 
+
   err.style.display = "none";
   if (!mobile || mobile.length !== 10) {
     err.textContent   = "Please enter a valid 10-digit mobile number";
@@ -652,14 +702,17 @@ function doLogin() {
     return;
   }
 
+
   btn.innerHTML = '<span class="spinner"></span> Verifying...';
   btn.disabled  = true;
+
 
   fetch(APPS_SCRIPT_URL + "?action=checkPartner&mobile=" + encodeURIComponent(mobile))
     .then(function(r){ return r.json(); })
     .then(function(d) {
       btn.innerHTML = "Enter Portal →";
       btn.disabled  = false;
+
 
       if (d.isPartner) {
         partnerMobile = mobile;
@@ -681,12 +734,12 @@ function doLogin() {
     });
 }
 
+
 function proceedToApp() {
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("mainApp").style.display     = "block";
   document.getElementById("headerUser").textContent    = "👤 " + partnerName;
   window.scrollTo(0, 0);
-  generateUniversalQR();
 }
 
 
@@ -697,6 +750,7 @@ function doLogout() {
   document.getElementById("loginMobile").value         = "";
   document.getElementById("loginErr").style.display    = "none";
 }
+
 
 // ============================================================
 // TABS
@@ -709,6 +763,7 @@ function showTab(tab) {
   if (tab === "leads") loadLeads();
 }
 
+
 // ============================================================
 // SUBMIT LEAD
 // ============================================================
@@ -720,6 +775,7 @@ function submitLead() {
   var city   = (document.getElementById("custCity").value   || "").trim();
   var state  = (document.getElementById("custState").value  || "").trim();
 
+
   // Validate required
   var valid = true;
   ["custName","custMobile","custLoan","custCity","custState"].forEach(function(id) {
@@ -728,12 +784,15 @@ function submitLead() {
     else el.classList.remove("error");
   });
 
+
   if (!valid)               { toast("Please fill all required fields!", "err"); return; }
   if (mobile.length !== 10) { toast("Enter valid 10-digit mobile!", "err"); return; }
+
 
   document.getElementById("submitText").style.display    = "none";
   document.getElementById("submitSpinner").style.display = "inline-flex";
   document.getElementById("submitBtn").disabled          = true;
+
 
   var url = APPS_SCRIPT_URL +
     "?action=submitPartnerLead" +
@@ -745,12 +804,14 @@ function submitLead() {
     "&city="           + encodeURIComponent(city) +
     "&state="          + encodeURIComponent(state);
 
+
   fetch(url)
     .then(function(r){ return r.json(); })
     .then(function(d) {
       document.getElementById("submitText").style.display    = "inline";
       document.getElementById("submitSpinner").style.display = "none";
       document.getElementById("submitBtn").disabled          = false;
+
 
       if (d.success) {
         document.getElementById("custName").value   = "";
@@ -759,6 +820,7 @@ function submitLead() {
         document.getElementById("custAmount").value = "";
         document.getElementById("custCity").value   = "";
         document.getElementById("custState").value  = "";
+
 
         var banner = document.getElementById("successBanner");
         document.getElementById("successRefId").textContent =
@@ -778,12 +840,14 @@ function submitLead() {
     });
 }
 
+
 // ============================================================
 // LOAD LEADS
 // ============================================================
 function loadLeads() {
   document.getElementById("leadsContainer").innerHTML =
     '<div class="empty-state"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading your leads...</div></div>';
+
 
   fetch(APPS_SCRIPT_URL + "?action=getLeads&role=partner&source=" + encodeURIComponent(partnerMobile))
     .then(function(r){ return r.json(); })
@@ -794,19 +858,23 @@ function loadLeads() {
     .catch(function() { showEmptyLeads("Connection error. Please try again."); });
 }
 
+
 function showEmptyLeads(msg) {
   document.getElementById("leadsContainer").innerHTML =
     '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">' + msg + '</div></div>';
 }
 
+
 function renderLeads() {
   var container = document.getElementById("leadsContainer");
+
 
   if (allLeads.length === 0) {
     document.getElementById("statsRow").style.display = "none";
     container.innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">No leads submitted yet</div><div class="empty-sub">Submit your first lead using the Submit Lead tab!</div></div>';
     return;
   }
+
 
   // Stats
   document.getElementById("statsRow").style.display  = "flex";
@@ -822,7 +890,9 @@ function renderLeads() {
     return (l.vendorStatus||l.status||"").toLowerCase().includes("disburse");
   }).length;
 
+
   var html = '<div class="leads-list">';
+
 
   allLeads.forEach(function(l) {
     var lt     = (l.loanType || "").toUpperCase();
@@ -833,15 +903,19 @@ function renderLeads() {
     else if (lt.includes("PROPERTY")||lt.includes("AGAINST")) { tagCls="tag-lap"; tagLbl="LAP"; }
     else if (lt.includes("CONSTRUCTION")) { tagCls="tag-cf"; tagLbl="CF"; }
 
+
     var status    = l.vendorStatus && l.vendorStatus !== "—" ? l.vendorStatus : (l.status || "In Review");
     var statusCls = getStatusBadgeClass(status);
     var stageIdx  = getStageIndex(status);
     var isRejected= stageIdx === -1;
 
+
     var dt = "";
     try { var d = new Date(l.timestamp); if(!isNaN(d)) dt = d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}); } catch(e){}
 
+
     var statusLabel = getStatusLabel(status);
+
 
     html += '<div class="lead-card">' +
       '<div class="lead-card-head">' +
@@ -858,11 +932,13 @@ function renderLeads() {
         (l.disbursedAmount && l.disbursedAmount !== "—" ? '<div style="margin-top:6px;font-size:12px;color:#16a34a;font-weight:600">💰 Disbursed: ₹' + esc(l.disbursedAmount) + '</div>' : '') +
       '</div>';
 
+
     // Status timeline (not for rejected)
     if (!isRejected) {
       html += '<div class="status-timeline">' +
         '<div class="timeline-title">Case Progress</div>' +
         '<div class="timeline-steps">';
+
 
       STATUS_STAGES.forEach(function(stage, i) {
         var cls = i < stageIdx ? "done" : i === stageIdx ? "active" : "";
@@ -873,17 +949,21 @@ function renderLeads() {
         '</div>';
       });
 
+
       html += '</div></div>';
     } else {
       html += '<div class="status-timeline"><div style="font-size:12px;color:#dc2626;font-weight:600">❌ Case could not be processed. Please contact VastMyWealth for details.</div></div>';
     }
 
+
     html += '</div>';
   });
+
 
   html += '</div>';
   container.innerHTML = html;
 }
+
 
 function getStatusLabel(status) {
   var s = (status||"").toLowerCase();
@@ -897,6 +977,7 @@ function getStatusLabel(status) {
   return "📝 In Review";
 }
 
+
 function getStatusBadgeClass(status) {
   var s = (status||"").toLowerCase();
   if (s.includes("disburse"))   return "status-disbursed";
@@ -906,6 +987,7 @@ function getStatusBadgeClass(status) {
   if (s.includes("reject"))     return "status-rejected";
   return "status-review";
 }
+
 
 // ============================================================
 // UTILS
@@ -928,6 +1010,8 @@ function showSection(section) {
   document.getElementById("groceryPanels").style.display= isLoans ? "none" : "block";
 
 
+
+
   if (!isLoans) {
     showGroceryTab("outlets");
     loadOutlets();
@@ -936,24 +1020,33 @@ function showSection(section) {
 }
 
 
+
+
 // ============================================================
 // TAB SWITCHING — LOANS
 // ============================================================
 function showTab(tab) {
-  ["tabQR","tabLeads"].forEach(function(id) {
+  ["tabSubmit","tabLeads","tabQR"].forEach(function(id) {
     document.getElementById(id).classList.remove("active");
   });
-  document.getElementById("tabQR").classList.toggle("active",    tab==="qr");
-  document.getElementById("tabLeads").classList.toggle("active", tab==="leads");
+  document.getElementById("tabSubmit").classList.toggle("active", tab==="submit");
+  document.getElementById("tabLeads").classList.toggle("active",  tab==="leads");
+  document.getElementById("tabQR").classList.toggle("active",     tab==="qr");
 
 
-  document.getElementById("panelSubmit").style.display = "none";
-  document.getElementById("panelLeads").style.display  = tab==="leads" ? "block" : "none";
-  document.getElementById("panelQR").style.display     = tab==="qr"    ? "block" : "none";
+
+
+  document.getElementById("panelSubmit").style.display = tab==="submit" ? "block" : "none";
+  document.getElementById("panelLeads").style.display  = tab==="leads"  ? "block" : "none";
+  document.getElementById("panelQR").style.display     = tab==="qr"     ? "block" : "none";
+
+
 
 
   if (tab==="leads") loadLeads();
 }
+
+
 
 
 // ============================================================
@@ -969,84 +1062,34 @@ function showGroceryTab(tab) {
   document.getElementById("tabOrders").classList.toggle("active",    tab==="orders");
 
 
+
+
   document.getElementById("panelOutlets").style.display   = tab==="outlets"   ? "block" : "none";
   document.getElementById("panelCatalogue").style.display = tab==="catalogue" ? "block" : "none";
   document.getElementById("panelOrder").style.display     = tab==="order"     ? "block" : "none";
   document.getElementById("panelOrders").style.display    = tab==="orders"    ? "block" : "none";
 
 
+
+
   if (tab==="orders")    loadMyOrders();
 if (tab==="catalogue") loadCatalogue();
 
+
 }
+
 
 // ============================================================
 // QR CODE GENERATOR
 // ============================================================
-var universalQRUrl = "";
-
-
-function generateUniversalQR() {
-  var waNumber = "918976899400";
-  var message  = "VMWREF:Walk-in|Unknown|Unknown|" + partnerMobile;
-  var waUrl    = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
-  universalQRUrl = "https://api.qrserver.com/v1/create-qr-code/" +
-    "?size=200x200" +
-    "&data=" + encodeURIComponent(waUrl) +
-    "&format=png&margin=10";
-
-
-  var box = document.getElementById("universalQRBox");
-  var img = document.createElement("img");
-  img.src    = universalQRUrl;
-  img.width  = 160;
-  img.height = 160;
-  img.style.borderRadius = "12px";
-  img.style.border       = "3px solid #a7f3d0";
-  box.innerHTML = "";
-  box.appendChild(img);
-}
-
-
-function downloadUniversalQR() {
-  if (!universalQRUrl) return;
-  fetch(universalQRUrl)
-    .then(function(r){ return r.blob(); })
-    .then(function(blob) {
-      var a      = document.createElement("a");
-      a.href     = URL.createObjectURL(blob);
-      a.download = "VastMyWealth_" + partnerMobile + "_QR.png";
-      a.click();
-      URL.revokeObjectURL(a.href);
-    })
-    .catch(function() { window.open(universalQRUrl, "_blank"); });
-}
-
-
-function shareUniversalQR() {
-  var waNumber = "918976899400";
-  var message  = "VMWREF:Walk-in|Unknown|Unknown|" + partnerMobile;
-  var waUrl    = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
-  if (navigator.share) {
-    navigator.share({
-      title: "VastMyWealth — Apply for Loan",
-      text : "Scan QR or click to apply for loan via VastMyWealth!",
-      url  : waUrl
-    });
-  } else {
-    navigator.clipboard.writeText(waUrl);
-    toast("✅ Link copied to clipboard!", "ok");
-  }
-}
-
-  
-  
-  function generateQR() {
+function generateQR() {
   var name  = (document.getElementById("qrName").value  || "").trim();
   var mobile= (document.getElementById("qrMobile").value|| "").trim();
   var loan  = (document.getElementById("qrLoan").value  || "").trim();
   var city  = (document.getElementById("qrCity").value  || "").trim();
   var state = (document.getElementById("qrState").value || "").trim();
+
+
 
 
   if (!name || !mobile || !loan || !city) {
@@ -1057,9 +1100,13 @@ function shareUniversalQR() {
   }
 
 
+
+
   document.getElementById("qrBtnText").style.display    = "none";
   document.getElementById("qrBtnSpinner").style.display = "inline-flex";
   document.getElementById("qrBtn").disabled             = true;
+
+
 
 
   // Save to WA Leads first
@@ -1079,10 +1126,14 @@ function shareUniversalQR() {
     document.getElementById("qrBtn").disabled             = false;
 
 
+
+
     // Build WhatsApp link
     var waNumber = "918976899400";
     var message  = "VMWREF:" + name + "|" + loan + "|" + city + "|" + partnerMobile;
     var waUrl    = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
+
+
 
 
     // Generate QR using QRServer API (free, reliable)
@@ -1093,6 +1144,8 @@ var qrUrl = "https://api.qrserver.com/v1/create-qr-code/" +
   "&margin=10";
 
 
+
+
 var img       = document.createElement("img");
 img.src       = qrUrl;
 img.width     = 200;
@@ -1101,9 +1154,13 @@ img.crossOrigin = "anonymous";
 img.style.borderRadius = "12px";
 
 
+
+
 var qrBox = document.getElementById("qrBox");
 qrBox.innerHTML = "";
 qrBox.appendChild(img);
+
+
 
 
     var title = document.createElement("div");
@@ -1112,15 +1169,21 @@ qrBox.appendChild(img);
     qrBox.appendChild(title);
 
 
+
+
     var sub = document.createElement("div");
     sub.className = "qr-sub";
     sub.textContent = "📍 " + city + " | 🤝 Partner: " + partnerMobile;
     qrBox.appendChild(sub);
 
 
+
+
     // Download button
     var btnRow = document.createElement("div");
     btnRow.style = "display:flex;gap:8px;margin-top:14px";
+
+
 
 
     var dlBtn = document.createElement("button");
@@ -1142,7 +1205,10 @@ fetch(qrUrl)
     window.open(qrUrl, "_blank");
   });
 
+
     };
+
+
 
 
     var shareBtn = document.createElement("button");
@@ -1163,10 +1229,14 @@ fetch(qrUrl)
     };
 
 
+
+
     btnRow.appendChild(dlBtn);
     btnRow.appendChild(shareBtn);
     qrBox.appendChild(btnRow);
     qrBox.style.display = "block";
+
+
 
 
     toast("✅ QR generated successfully!", "ok");
@@ -1180,11 +1250,15 @@ fetch(qrUrl)
 }
 
 
+
+
 // ============================================================
 // OUTLETS
 // ============================================================
 var myOutlets  = [];
 var myProducts = [];
+
+
 
 
 function registerOutlet() {
@@ -1195,12 +1269,18 @@ function registerOutlet() {
   var address = (document.getElementById("outletAddress").value|| "").trim();
 
 
+
+
   if (!name || !area) { toast("Outlet name and area required!", "err"); return; }
+
+
 
 
   document.getElementById("outletBtnText").style.display    = "none";
   document.getElementById("outletBtnSpinner").style.display = "inline-flex";
   document.getElementById("outletBtn").disabled             = true;
+
+
 
 
   fetch(APPS_SCRIPT_URL +
@@ -1217,6 +1297,8 @@ function registerOutlet() {
     document.getElementById("outletBtnText").style.display    = "inline";
     document.getElementById("outletBtnSpinner").style.display = "none";
     document.getElementById("outletBtn").disabled             = false;
+
+
 
 
     if (d.success) {
@@ -1240,9 +1322,13 @@ function registerOutlet() {
 }
 
 
+
+
 function loadOutlets() {
   document.getElementById("outletsList").innerHTML =
     '<div class="empty-state"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading outlets...</div></div>';
+
+
 
 
   fetch(APPS_SCRIPT_URL +
@@ -1259,6 +1345,8 @@ function loadOutlets() {
       '<div class="empty-state"><div class="empty-icon">🏪</div><div class="empty-title">Could not load outlets</div></div>';
   });
 }
+
+
 
 
 function renderOutlets() {
@@ -1281,6 +1369,8 @@ function renderOutlets() {
 }
 
 
+
+
 function populateOutletDropdown() {
   var sel = document.getElementById("orderOutlet");
   sel.innerHTML = '<option value="">Select outlet...</option>';
@@ -1290,11 +1380,15 @@ function populateOutletDropdown() {
 }
 
 
+
+
 function goToOrder(outletId) {
   showGroceryTab("order");
   document.getElementById("orderOutlet").value = outletId;
   outletSelected();
 }
+
+
 
 
 function outletSelected() {
@@ -1314,6 +1408,8 @@ function loadProductsForOrder() {
   })
   .catch(function() {});
 }
+
+
 
 
 function renderProductList() {
@@ -1336,6 +1432,8 @@ function renderProductList() {
 }
 
 
+
+
 function calculateTotal() {
   var total = 0;
   myProducts.forEach(function(p) {
@@ -1349,9 +1447,13 @@ function calculateTotal() {
 }
 
 
+
+
 function submitOrder() {
   var outletId = document.getElementById("orderOutlet").value;
   if (!outletId) { toast("Please select an outlet!", "err"); return; }
+
+
 
 
   // Build items array
@@ -1375,7 +1477,11 @@ function submitOrder() {
   });
 
 
+
+
   if (items.length === 0) { toast("Please add at least one item!", "err"); return; }
+
+
 
 
   var outlet  = myOutlets.find(function(o){ return o.outletId === outletId; });
@@ -1383,12 +1489,18 @@ function submitOrder() {
   var payment = document.getElementById("orderPayment").value;
 
 
+
+
   document.getElementById("orderBtnText").style.display    = "none";
   document.getElementById("orderBtnSpinner").style.display = "inline-flex";
   document.getElementById("orderBtn").disabled             = true;
 
 
+
+
   var notes = (document.getElementById("orderNotes").value || "").trim();
+
+
 
 
   fetch(APPS_SCRIPT_URL +
@@ -1402,11 +1514,14 @@ function submitOrder() {
     "&notes="         + encodeURIComponent(notes)
   )
 
+
   .then(function(r){ return r.json(); })
   .then(function(d) {
     document.getElementById("orderBtnText").style.display    = "inline";
     document.getElementById("orderBtnSpinner").style.display = "none";
     document.getElementById("orderBtn").disabled             = false;
+
+
 
 
     if (d.success) {
@@ -1432,6 +1547,7 @@ function submitOrder() {
   });
 }
 
+
 // ============================================================
 // CATALOGUE
 // ============================================================
@@ -1439,9 +1555,13 @@ var allProducts    = [];
 var selectedProduct = null;
 
 
+
+
 function loadCatalogue() {
   document.getElementById("catalogueGrid").innerHTML =
     '<div class="empty-state" style="grid-column:1/-1"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading catalogue...</div></div>';
+
+
 
 
   fetch(APPS_SCRIPT_URL + "?action=getCatalogue")
@@ -1455,6 +1575,8 @@ function loadCatalogue() {
       '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🛍️</div><div class="empty-title">Could not load catalogue</div></div>';
   });
 }
+
+
 
 
 function renderCatalogue(products) {
@@ -1481,6 +1603,8 @@ function renderCatalogue(products) {
 }
 
 
+
+
 function filterCatalogue() {
   var search = (document.getElementById("catalogueSearch").value || "").toLowerCase().trim();
   if (!search) { renderCatalogue(allProducts); return; }
@@ -1492,10 +1616,14 @@ function filterCatalogue() {
 }
 
 
+
+
 function openPopup(productId) {
   var p = allProducts.find(function(x){ return x.productId === productId; });
   if (!p) return;
   selectedProduct = p;
+
+
 
 
   document.getElementById("popupImage").src   = p.image || "";
@@ -1509,11 +1637,15 @@ function openPopup(productId) {
 }
 
 
+
+
 function closePopup() {
   document.getElementById("productPopup").style.display = "none";
   document.body.style.overflow = "";
   selectedProduct = null;
 }
+
+
 
 
 function addToOrder() {
@@ -1537,12 +1669,15 @@ function addToOrder() {
   }
 }
 
+
 // ============================================================
 // ORDER HISTORY
 // ============================================================
 function loadMyOrders() {
   document.getElementById("ordersContainer").innerHTML =
     '<div class="empty-state"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading orders...</div></div>';
+
+
 
 
   fetch(APPS_SCRIPT_URL +
@@ -1565,8 +1700,12 @@ function loadMyOrders() {
       if (s === "rejected")  statusCls = "order-status-rejected";
 
 
+
+
       var dt = "";
       try { var d2 = new Date(o.date); if(!isNaN(d2)) dt = d2.toLocaleDateString("en-IN",{day:"2-digit",month:"short"}); } catch(e){}
+
+
 
 
       // Parse items
@@ -1577,6 +1716,8 @@ function loadMyOrders() {
           itemsHtml += '<div style="font-size:12px;color:var(--text2)">→ ' + esc(item.name) + ': ' + item.qty + ' ' + esc(item.unit) + '</div>';
         });
       } catch(e) { itemsHtml = '<div style="font-size:12px;color:var(--text2)">' + esc(o.items) + '</div>'; }
+
+
 
 
       html += '<div class="order-hist-card">' +
@@ -1602,6 +1743,9 @@ function loadMyOrders() {
 
 
 
+
+
+
 function toast(msg, type) {
   var t = document.getElementById("toast");
   t.textContent = msg; t.className = "toast "+(type||""); t.classList.add("show");
@@ -1610,4 +1754,5 @@ function toast(msg, type) {
 </script>
 </body>
 </html>
+
 
