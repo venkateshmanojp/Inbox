@@ -179,6 +179,14 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .order-status-confirmed { background:#dbeafe; color:#1d4ed8; }
 .order-status-delivered { background:#d1fae5; color:#065f46; }
 .order-status-rejected  { background:#fee2e2; color:#991b1b; }
+/* CATALOGUE */
+.cat-product-card { background:white; border-radius:14px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.08); cursor:pointer; transition:transform 0.15s; border:1.5px solid var(--border); }
+.cat-product-card:active { transform:scale(0.97); }
+.cat-product-img { width:100%; height:130px; object-fit:cover; background:#f8fafc; }
+.cat-product-img-placeholder { width:100%; height:130px; background:linear-gradient(135deg,#e8f0fb,#f0f4f8); display:flex; align-items:center; justify-content:center; font-size:40px; }
+.cat-product-info { padding:10px; }
+.cat-product-name { font-size:13px; font-weight:700; color:var(--text); line-height:1.3; margin-bottom:2px; }
+.cat-product-unit { font-size:11px; color:var(--text2); }
 
 </style>
 </head>
@@ -441,24 +449,38 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
             <div class="card-icon">🛍️</div>
             <div>
               <div class="card-title">KuickKart Catalogue</div>
-              <div class="card-sub">Browse all available products</div>
+              <div class="card-sub">Tap product to view details</div>
             </div>
           </div>
+          <div class="card-body" style="padding-bottom:8px">
+            <input class="form-control" id="catalogueSearch" 
+              placeholder="🔍 Search products..." 
+              oninput="filterCatalogue()" />
+          </div>
         </div>
-        <div style="border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.1)">
-          <iframe 
-            src="https://www.kuickkart.in" 
-            width="100%" 
-            height="600px"
-            style="border:none;display:block"
-            title="KuickKart Catalogue">
-          </iframe>
+        <div id="catalogueGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+          <div class="empty-state" style="grid-column:1/-1">
+            <div class="spinner spinner-dark" style="margin:0 auto 12px"></div>
+            <div class="empty-title">Loading catalogue...</div>
+          </div>
         </div>
-        <div style="text-align:center;margin-top:10px">
-          <a href="https://www.kuickkart.in" target="_blank" 
-            style="font-size:12px;color:var(--primary);font-weight:600;text-decoration:none">
-            🔗 Open in browser
-          </a>
+      </div>
+
+
+      <!-- PRODUCT POPUP -->
+      <div id="productPopup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:999;overflow-y:auto;padding:20px">
+        <div style="background:white;border-radius:20px;max-width:400px;margin:0 auto;overflow:hidden;position:relative">
+          <button onclick="closePopup()" style="position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.5);border:none;color:white;font-size:18px;cursor:pointer;z-index:1;display:flex;align-items:center;justify-content:center">×</button>
+          <img id="popupImage" src="" alt="" style="width:100%;height:240px;object-fit:cover" />
+          <div style="padding:16px">
+            <div id="popupCategory" style="font-size:11px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px"></div>
+            <div id="popupName" style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px"></div>
+            <div id="popupUnit" style="font-size:12px;color:var(--text2);margin-bottom:10px"></div>
+            <div id="popupDesc" style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px"></div>
+            <button onclick="addToOrder()" class="btn-primary" style="background:linear-gradient(135deg,#16a34a,#15803d)">
+              🛒 Add to Order
+            </button>
+          </div>
         </div>
       </div>
 
@@ -929,7 +951,9 @@ function showGroceryTab(tab) {
   document.getElementById("panelOrders").style.display    = tab==="orders"    ? "block" : "none";
 
 
-  if (tab==="orders") loadMyOrders();
+  if (tab==="orders")    loadMyOrders();
+if (tab==="catalogue") loadCatalogue();
+
 }
 
 // ============================================================
@@ -1326,6 +1350,110 @@ function submitOrder() {
   });
 }
 
+// ============================================================
+// CATALOGUE
+// ============================================================
+var allProducts    = [];
+var selectedProduct = null;
+
+
+function loadCatalogue() {
+  document.getElementById("catalogueGrid").innerHTML =
+    '<div class="empty-state" style="grid-column:1/-1"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading catalogue...</div></div>';
+
+
+  fetch(APPS_SCRIPT_URL + "?action=getCatalogue")
+  .then(function(r){ return r.json(); })
+  .then(function(d) {
+    allProducts = d.products || [];
+    renderCatalogue(allProducts);
+  })
+  .catch(function() {
+    document.getElementById("catalogueGrid").innerHTML =
+      '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🛍️</div><div class="empty-title">Could not load catalogue</div></div>';
+  });
+}
+
+
+function renderCatalogue(products) {
+  var grid = document.getElementById("catalogueGrid");
+  if (products.length === 0) {
+    grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🛍️</div><div class="empty-title">No products found</div></div>';
+    return;
+  }
+  var html = "";
+  products.forEach(function(p) {
+    html += '<div class="cat-product-card" onclick="openPopup(' + "'" + esc(p.productId) + "'" + ')">';
+    if (p.image) {
+      html += '<img class="cat-product-img" src="' + esc(p.image) + '" alt="' + esc(p.productName) + '" onerror="this.parentElement.querySelector(\'.cat-product-img\').style.display=\'none\';this.parentElement.querySelector(\'.cat-product-img-placeholder\').style.display=\'flex\'" />';
+      html += '<div class="cat-product-img-placeholder" style="display:none">📦</div>';
+    } else {
+      html += '<div class="cat-product-img-placeholder">📦</div>';
+    }
+    html += '<div class="cat-product-info">';
+    html += '<div class="cat-product-name">' + esc(p.productName) + '</div>';
+    html += '<div class="cat-product-unit">Per ' + esc(p.unit) + '</div>';
+    html += '</div></div>';
+  });
+  grid.innerHTML = html;
+}
+
+
+function filterCatalogue() {
+  var search = (document.getElementById("catalogueSearch").value || "").toLowerCase().trim();
+  if (!search) { renderCatalogue(allProducts); return; }
+  var filtered = allProducts.filter(function(p) {
+    return p.productName.toLowerCase().includes(search) ||
+           p.category.toLowerCase().includes(search);
+  });
+  renderCatalogue(filtered);
+}
+
+
+function openPopup(productId) {
+  var p = allProducts.find(function(x){ return x.productId === productId; });
+  if (!p) return;
+  selectedProduct = p;
+
+
+  document.getElementById("popupImage").src   = p.image || "";
+  document.getElementById("popupImage").style.display = p.image ? "block" : "none";
+  document.getElementById("popupCategory").textContent = p.category || "";
+  document.getElementById("popupName").textContent     = p.productName;
+  document.getElementById("popupUnit").textContent     = "Unit: " + p.unit;
+  document.getElementById("popupDesc").textContent     = p.description || "Premium quality product.";
+  document.getElementById("productPopup").style.display = "block";
+  document.body.style.overflow = "hidden";
+}
+
+
+function closePopup() {
+  document.getElementById("productPopup").style.display = "none";
+  document.body.style.overflow = "";
+  selectedProduct = null;
+}
+
+
+function addToOrder() {
+  closePopup();
+  showGroceryTab("order");
+  // Highlight product in order form
+  if (selectedProduct) {
+    setTimeout(function() {
+      var inp = document.getElementById("qty_" + selectedProduct.productId);
+      if (inp) {
+        inp.focus();
+        inp.style.borderColor = "#16a34a";
+        inp.style.background  = "#f0fdf4";
+        inp.scrollIntoView({behavior:"smooth", block:"center"});
+        setTimeout(function(){ 
+          inp.style.borderColor = "";
+          inp.style.background  = "";
+        }, 3000);
+      }
+    }, 300);
+  }
+}
 
 // ============================================================
 // ORDER HISTORY
