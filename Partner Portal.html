@@ -344,10 +344,55 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
               <select class="form-select" id="orderPayment"><option value="Cash">Cash on Delivery</option><option value="Credit">Credit</option></select>
             </div>
             <div id="catalogueSection" style="display:none">
-              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">📦 Select Items:</div>
-              <div id="productList"></div>
-              <div class="order-total"><div class="order-total-label">Total Amount</div><div class="order-total-amount" id="orderTotal">₹0</div></div>
-              <div class="field-wrap"><label class="field-label">Notes (optional)</label><input class="form-control" id="orderNotes" type="text" placeholder="Any special instructions" /></div>
+
+              <!-- ORDER TYPE TABS -->
+              <div class="tab-bar" style="margin-bottom:10px">
+                <button class="tab active" id="tabBranded" onclick="showOrderTab('branded')">🏷️ Branded</button>
+                <button class="tab" id="tabBulk" onclick="showOrderTab('bulk')">📦 Bulk</button>
+              </div>
+
+              <!-- BRANDED PRODUCTS -->
+              <div id="orderPanelBranded">
+                <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">🏷️ Branded Items:</div>
+                <div id="productListBranded"></div>
+                <div class="order-total" style="background:#e8f0fb;border-color:#004a99">
+                  <div>
+                    <div class="order-total-label" style="color:#004a99">Branded Total</div>
+                    <div style="font-size:11px;color:#16a34a;font-weight:600">Your Earning: <span id="brandedEarn">₹0</span></div>
+                  </div>
+                  <div class="order-total-amount" style="color:#004a99" id="brandedTotal">₹0</div>
+                </div>
+              </div>
+
+              <!-- BULK PRODUCTS -->
+              <div id="orderPanelBulk" style="display:none">
+                <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">📦 Bulk Items:</div>
+                <div id="productListBulk"></div>
+                <div class="order-total" style="background:#f0fdf4;border-color:#16a34a">
+                  <div>
+                    <div class="order-total-label">Bulk Total</div>
+                    <div style="font-size:11px;color:#16a34a;font-weight:600">Your Earning: <span id="bulkEarn">₹0</span></div>
+                  </div>
+                  <div class="order-total-amount" id="bulkTotal">₹0</div>
+                </div>
+              </div>
+
+              <!-- COMBINED SUMMARY -->
+              <div style="background:#1a1a2e;border-radius:12px;padding:14px;margin:14px 0">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                  <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7)">Combined Total</div>
+                  <div style="font-size:18px;font-weight:800;color:white;font-family:var(--mono)" id="orderTotal">₹0</div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center">
+                  <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7)">💰 Your Total Earning</div>
+                  <div style="font-size:18px;font-weight:800;color:#4ade80;font-family:var(--mono)" id="combinedEarn">₹0</div>
+                </div>
+              </div>
+
+              <div class="field-wrap">
+                <label class="field-label">Notes (optional)</label>
+                <input class="form-control" id="orderNotes" type="text" placeholder="Any special instructions" />
+              </div>
               <button class="btn-primary" onclick="submitOrder()" id="orderBtn" style="background:linear-gradient(135deg,#16a34a,#15803d)">
                 <span id="orderBtnText">🛒 Submit Order</span>
                 <span id="orderBtnSpinner" style="display:none"><span class="spinner"></span> Submitting...</span>
@@ -679,7 +724,14 @@ function populateOutletDropdown() {
 }
 
 function goToOrder(outletId) { showGroceryTab("order"); document.getElementById("orderOutlet").value=outletId; outletSelected(); }
-function outletSelected() { var val=document.getElementById("orderOutlet").value; document.getElementById("catalogueSection").style.display=val?"block":"none"; if(val) calculateTotal(); }
+function showOrderTab(tab) {
+  document.getElementById("tabBranded").classList.toggle("active", tab==="branded");
+  document.getElementById("tabBulk").classList.toggle("active",    tab==="bulk");
+  document.getElementById("orderPanelBranded").style.display = tab==="branded" ? "block" : "none";
+  document.getElementById("orderPanelBulk").style.display    = tab==="bulk"    ? "block" : "none";
+}
+
+  function outletSelected() { var val=document.getElementById("orderOutlet").value; document.getElementById("catalogueSection").style.display=val?"block":"none"; if(val) calculateTotal(); }
 
 // ============================================================
 // PRODUCTS + ORDER
@@ -692,22 +744,160 @@ function loadProductsForOrder() {
 }
 
 function renderProductList() {
-  var html="";
-  myProducts.forEach(function(p){ html+='<div class="product-row"><div><div class="product-name">'+esc(p.productName)+'</div><div class="product-price">₹'+esc(p.price)+' / '+esc(p.unit)+'</div></div><input class="qty-input" type="number" min="0" placeholder="0" id="qty_'+esc(p.productId)+'" data-name="'+esc(p.productName)+'" data-price="'+esc(p.price)+'" data-unit="'+esc(p.unit)+'" onchange="calculateTotal()" /></div>'; });
-  document.getElementById("productList").innerHTML=html||'<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products available</div></div>';
+  // BRANDED TAB
+  var brandedHtml = "";
+  myProducts.forEach(function(p) {
+    var viable = p.brandedViable || "";
+    var notViable = viable.indexOf("NOT") !== -1;
+    brandedHtml += '<div class="product-row" style="' + (notViable ? "opacity:0.4;" : "") + '">' +
+      '<div>' +
+        '<div class="product-name">' + esc(p.productName) + '</div>' +
+        '<div class="product-price">Our MRP: ' + esc(p.yourMRP||"—") + ' / ' + esc(p.unit) + '</div>' +
+        '<div class="product-price">You buy: ' + esc(p.partnerBuys||"—") + '</div>' +
+        '<div class="product-price" style="color:#16a34a;font-weight:700">Earn: ' + esc(p.partnerEarns||"—") + '/' + esc(p.unit) + '</div>' +
+        (notViable ? '<div style="font-size:10px;color:#dc2626;font-weight:700">❌ NOT VIABLE</div>' : '') +
+      '</div>' +
+      '<input class="qty-input" type="number" min="0" placeholder="0" ' +
+        'id="bqty_' + esc(p.productId) + '" ' +
+        'data-type="branded" ' +
+        'data-name="' + esc(p.productName) + '" ' +
+        'data-price="' + esc((p.partnerBuys||"0").replace("₹","")) + '" ' +
+        'data-earn="' + esc((p.partnerEarns||"0").replace("₹","")) + '" ' +
+        'data-unit="' + esc(p.unit) + '" ' +
+        (notViable ? 'disabled ' : '') +
+        'onchange="calculateTotal()" />' +
+    '</div>';
+  });
+
+  // BULK TAB
+  var bulkHtml = "";
+  myProducts.forEach(function(p) {
+    var viable = p.bulkViable || "";
+    var notViable = viable.indexOf("NOT") !== -1;
+    bulkHtml += '<div class="product-row" style="' + (notViable ? "opacity:0.4;" : "") + '">' +
+      '<div>' +
+        '<div class="product-name">' + esc(p.productName) + '</div>' +
+        '<div class="product-price">Bulk price: ' + esc(p.bulkYourPrice||"—") + ' / ' + esc(p.unit) + '</div>' +
+        '<div class="product-price" style="color:#16a34a;font-weight:700">Earn: ' + esc(p.bulkPartnerEarns||"—") + '/' + esc(p.unit) + '</div>' +
+        '<div class="product-price" style="color:#7c3aed;font-weight:600">Retailer headroom: ' + esc(p.retailerHeadroom||"—") + ' (' + esc(p.retailerHdPct||"—") + ')</div>' +
+        (notViable ? '<div style="font-size:10px;color:#dc2626;font-weight:700">❌ NOT VIABLE</div>' : '') +
+      '</div>' +
+      '<input class="qty-input" type="number" min="0" placeholder="0" ' +
+        'id="bulkqty_' + esc(p.productId) + '" ' +
+        'data-type="bulk" ' +
+        'data-name="' + esc(p.productName) + '" ' +
+        'data-price="' + esc((p.bulkYourPrice||"0").replace("₹","")) + '" ' +
+        'data-earn="' + esc((p.bulkPartnerEarns||"0").replace("₹","")) + '" ' +
+        'data-unit="' + esc(p.unit) + '" ' +
+        (notViable ? 'disabled ' : '') +
+        'onchange="calculateTotal()" />' +
+    '</div>';
+  });
+
+  // Render both
+  document.getElementById("productListBranded").innerHTML = brandedHtml ||
+    '<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products available</div></div>';
+  document.getElementById("productListBulk").innerHTML = bulkHtml ||
+    '<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products available</div></div>';
 }
 
 function calculateTotal() {
-  var total=0;
-  myProducts.forEach(function(p){ var inp=document.getElementById("qty_"+p.productId); if(inp){ var qty=parseFloat(inp.value)||0; total+=qty*parseFloat(p.price||0); } });
-  document.getElementById("orderTotal").textContent="₹"+total.toFixed(2);
+  var brandedTotal  = 0;
+  var brandedEarn   = 0;
+  var bulkTotal     = 0;
+  var bulkEarn      = 0;
+
+  myProducts.forEach(function(p) {
+    // Branded
+    var binp = document.getElementById("bqty_" + p.productId);
+    if (binp) {
+      var bqty   = parseFloat(binp.value) || 0;
+      var bprice = parseFloat((p.partnerBuys||"0").replace("₹","")) || 0;
+      var bearn  = parseFloat((p.partnerEarns||"0").replace("₹","")) || 0;
+      brandedTotal += bqty * bprice;
+      brandedEarn  += bqty * bearn;
+    }
+    // Bulk
+    var buinp = document.getElementById("bulkqty_" + p.productId);
+    if (buinp) {
+      var buqty   = parseFloat(buinp.value) || 0;
+      var buprice = parseFloat((p.bulkYourPrice||"0").replace("₹","")) || 0;
+      var buearn  = parseFloat((p.bulkPartnerEarns||"0").replace("₹","")) || 0;
+      bulkTotal += buqty * buprice;
+      bulkEarn  += buqty * buearn;
+    }
+  });
+
+  document.getElementById("brandedTotal").textContent  = "₹" + brandedTotal.toFixed(2);
+  document.getElementById("brandedEarn").textContent   = "₹" + brandedEarn.toFixed(2);
+  document.getElementById("bulkTotal").textContent     = "₹" + bulkTotal.toFixed(2);
+  document.getElementById("bulkEarn").textContent      = "₹" + bulkEarn.toFixed(2);
+  document.getElementById("combinedEarn").textContent  = "₹" + (brandedEarn + bulkEarn).toFixed(2);
+  document.getElementById("orderTotal").textContent    = "₹" + (brandedTotal + bulkTotal).toFixed(2);
 }
 
 function submitOrder() {
-  var outletId=document.getElementById("orderOutlet").value;
-  if (!outletId) { toast("Please select an outlet!","err"); return; }
-  var items=[],total=0;
-  myProducts.forEach(function(p){ var inp=document.getElementById("qty_"+p.productId); if(inp){ var qty=parseFloat(inp.value)||0; if(qty>0){ items.push({id:p.productId,name:p.productName,qty:qty,unit:p.unit,price:p.price}); total+=qty*parseFloat(p.price||0); } } });
+  var outletId = document.getElementById("orderOutlet").value;
+  if (!outletId) { toast("Please select an outlet!", "err"); return; }
+
+  // Build branded items
+  var brandedItems = [];
+  var brandedTotal = 0;
+  var brandedEarn  = 0;
+  myProducts.forEach(function(p) {
+    var inp = document.getElementById("bqty_" + p.productId);
+    if (inp) {
+      var qty = parseFloat(inp.value) || 0;
+      if (qty > 0) {
+        var price = parseFloat((p.partnerBuys||"0").replace("₹","")) || 0;
+        var earn  = parseFloat((p.partnerEarns||"0").replace("₹","")) || 0;
+        brandedItems.push({
+          id   : p.productId,
+          name : p.productName,
+          qty  : qty,
+          unit : p.unit,
+          price: price,
+          earn : earn,
+          type : "branded"
+        });
+        brandedTotal += qty * price;
+        brandedEarn  += qty * earn;
+      }
+    }
+  });
+
+  // Build bulk items
+  var bulkItems = [];
+  var bulkTotal = 0;
+  var bulkEarn  = 0;
+  myProducts.forEach(function(p) {
+    var inp = document.getElementById("bulkqty_" + p.productId);
+    if (inp) {
+      var qty = parseFloat(inp.value) || 0;
+      if (qty > 0) {
+        var price = parseFloat((p.bulkYourPrice||"0").replace("₹","")) || 0;
+        var earn  = parseFloat((p.bulkPartnerEarns||"0").replace("₹","")) || 0;
+        bulkItems.push({
+          id   : p.productId,
+          name : p.productName,
+          qty  : qty,
+          unit : p.unit,
+          price: price,
+          earn : earn,
+          type : "bulk"
+        });
+        bulkTotal += qty * price;
+        bulkEarn  += qty * earn;
+      }
+    }
+  });
+
+  var allItems = brandedItems.concat(bulkItems);
+  if (allItems.length === 0) { toast("Please add at least one item!", "err"); return; }
+
+  var total = brandedTotal + bulkTotal;
+  var items = allItems; // for compatibility
+
   if (items.length===0) { toast("Please add at least one item!","err"); return; }
   var outlet=myOutlets.find(function(o){ return o.outletId===outletId; });
   var outName=outlet?outlet.outletName:outletId;
