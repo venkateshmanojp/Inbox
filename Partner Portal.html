@@ -665,7 +665,12 @@ function outletSelected() { var val=document.getElementById("orderOutlet").value
 function loadProductsForOrder() {
   fetch(APPS_SCRIPT_URL + "?action=getCatalogue")
   .then(function(r){ return r.json(); })
-  .then(function(d){ myProducts=d.products||[]; renderProductList(); })
+  .then(function(d){
+    myProducts=d.products||[];
+    var cardamom = myProducts.find(function(p){ return p.productName.indexOf("Cardamom")!==-1; });
+    if (cardamom) alert("bulkPartnerSells: " + cardamom.bulkPartnerSells + "\nbulkYourPrice: " + cardamom.bulkYourPrice);
+    renderProductList();
+  })
   .catch(function(){});
 }
 function renderProductList() {
