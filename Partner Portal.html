@@ -705,7 +705,7 @@ function renderProductList() {
       '<input class="qty-input" type="number" min="0" placeholder="0" '+
         'id="bulkqty_'+esc(p.productId)+'" '+
         'data-name="'+esc(p.productName)+'" '+
-        'data-price="'+esc(String(p.bulkYourPrice||"0").replace(/[₹,]/g,""))+'" '+
+        'data-price="'+esc(String(p.bulkPartnerSells||"0").replace(/[₹,]/g,""))+'" '+
         'data-earn="'+esc(String(p.bulkPartnerEarns||"0").replace(/[₹,]/g,""))+'" '+
         'data-unit="'+esc(p.unit)+'" '+
         (buNotViable?'disabled ':'')+
