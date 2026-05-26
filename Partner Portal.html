@@ -725,20 +725,13 @@ function showOrderTab(tab) {
   document.getElementById("orderPanelBranded").style.display = tab==="branded" ? "block" : "none";
   document.getElementById("orderPanelBulk").style.display    = tab==="bulk"    ? "block" : "none";
 }
-function showOrderTab(tab) {
-  document.getElementById("tabBranded").classList.toggle("active", tab==="branded");
-  document.getElementById("tabBulk").classList.toggle("active",    tab==="bulk");
-  document.getElementById("orderPanelBranded").style.display = tab==="branded" ? "block" : "none";
-  document.getElementById("orderPanelBulk").style.display    = tab==="bulk"    ? "block" : "none";
-}
-
   function outletSelected() { var val=document.getElementById("orderOutlet").value; document.getElementById("catalogueSection").style.display=val?"block":"none"; if(val) calculateTotal(); }
 
 // ============================================================
 // PRODUCTS + ORDER
 // ============================================================
 function loadProductsForOrder() {
-  fetch(APPS_SCRIPT_URL+"?action=getProducts")
+  fetch(APPS_SCRIPT_URL+"?action=getCatalogue")
   .then(function(r){ return r.json(); })
   .then(function(d){ myProducts=d.products||[]; renderProductList(); })
   .catch(function(){});
@@ -979,7 +972,8 @@ function addToOrder() {
   closePopup(); showGroceryTab("order");
   if (selectedProduct) {
     setTimeout(function(){
-      var inp=document.getElementById("qty_"+selectedProduct.productId);
+      var inp=document.getElementById("bqty_"+selectedProduct.productId);
+
       if (inp) { inp.focus(); inp.style.borderColor="#16a34a"; inp.style.background="#f0fdf4"; inp.scrollIntoView({behavior:"smooth",block:"center"}); setTimeout(function(){ inp.style.borderColor=""; inp.style.background=""; },3000); }
     },300);
   }
