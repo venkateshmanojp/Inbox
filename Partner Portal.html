@@ -667,9 +667,7 @@ function loadProductsForOrder() {
   .then(function(r){ return r.json(); })
   .then(function(d){
     myProducts=d.products||[];
-    var cardamom = myProducts.find(function(p){ return p.productName.indexOf("Cardamom")!==-1; });
-    if (cardamom) alert("bulkPartnerSells: " + cardamom.bulkPartnerSells + "\nbulkYourPrice: " + cardamom.bulkYourPrice);
-    renderProductList();
+        renderProductList();
   })
   .catch(function(){});
 }
