@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VMW Partner">
+<meta name="theme-color" content="#004a99">
 <title>VastMyWealth Partner Portal</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -27,7 +32,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .card-title { font-size:15px; font-weight:700; }
 .card-sub   { font-size:11px; opacity:0.8; margin-top:1px; }
 .card-body  { padding:16px; }
-.field-label    { font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; display:block; }
+.field-label { font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:0.4px; margin-bottom:6px; display:block; }
 .field-required::after { content:" *"; color:var(--red); }
 .form-control, .form-select { width:100%; border:1.5px solid var(--border); border-radius:10px; padding:12px 14px; font-size:15px; color:var(--text); background:#fafafa; font-family:'Outfit',sans-serif; outline:none; transition:border-color 0.15s; -webkit-appearance:none; }
 .form-control:focus, .form-select:focus { border-color:var(--primary); background:white; box-shadow:0 0 0 3px rgba(0,74,153,0.1); }
@@ -110,7 +115,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 .outlet-area { font-size:12px; color:var(--text2); margin-top:2px; }
 .outlet-id   { font-size:11px; color:var(--primary); font-family:var(--mono); font-weight:700; margin-top:4px; }
 .btn-order   { padding:8px 16px; background:linear-gradient(135deg,#16a34a,#15803d); border:none; border-radius:8px; font-size:12px; font-weight:700; color:white; cursor:pointer; font-family:'Outfit',sans-serif; margin-top:8px; }
-.product-row { display:grid; grid-template-columns:1fr auto auto; gap:8px; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); }
+.product-row { display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; padding:10px 0; border-bottom:1px solid var(--border); }
 .product-name { font-size:13px; font-weight:600; color:var(--text); }
 .product-price { font-size:12px; color:var(--text2); }
 .qty-input { width:70px; border:1.5px solid var(--border); border-radius:8px; padding:6px; font-size:14px; text-align:center; font-family:'Outfit',sans-serif; outline:none; }
@@ -135,7 +140,6 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
 </style>
 </head>
 <body>
-
 <!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-card">
@@ -163,22 +167,15 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
       <span class="header-user" onclick="doLogout()" style="cursor:pointer;margin-left:6px">🚪 Logout</span>
     </div>
   </div>
-
   <div class="main-wrap">
-
-    <!-- SECTION TABS -->
     <div class="section-tabs">
       <button class="section-tab loans" id="sectionLoans" onclick="showSection('loans')">💼 Loans</button>
       <button class="section-tab inactive" id="sectionGrocery" onclick="showSection('grocery')">🛒 Grocery</button>
     </div>
-
-    <!-- LOANS SUB TABS -->
     <div id="loansTabs" class="tab-bar">
       <button class="tab active" id="tabQR" onclick="showTab('qr')">🔗 QR Code</button>
       <button class="tab" id="tabLeads" onclick="showTab('leads')">📋 My Leads</button>
     </div>
-
-    <!-- GROCERY SUB TABS -->
     <div id="groceryTabs" class="tab-bar" style="display:none">
       <button class="tab active" id="tabOutlets" onclick="showGroceryTab('outlets')">🏪 Outlets</button>
       <button class="tab" id="tabCatalogue" onclick="showGroceryTab('catalogue')">🛍️ Catalogue</button>
@@ -186,7 +183,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
       <button class="tab" id="tabOrders" onclick="showGroceryTab('orders')">📦 History</button>
     </div>
 
-    <!-- QR CODE TAB (default) -->
+    <!-- QR CODE TAB -->
     <div id="panelQR">
       <div class="card">
         <div class="card-head">
@@ -197,8 +194,6 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
           </div>
         </div>
         <div class="card-body">
-
-          <!-- UNIVERSAL QR -->
           <div style="background:#f0fdf4;border:1.5px solid #a7f3d0;border-radius:12px;padding:16px;margin-bottom:16px;text-align:center">
             <div style="font-size:13px;font-weight:700;color:#065f46;margin-bottom:4px">🔗 My Universal QR</div>
             <div style="font-size:11px;color:#047857;margin-bottom:12px">Share anywhere — print on card, share on WhatsApp!</div>
@@ -209,15 +204,10 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
               <button onclick="shareUniversalQR()" class="btn-primary" style="background:linear-gradient(135deg,#25d366,#128c7e);font-size:13px;padding:10px">📱 Share</button>
             </div>
           </div>
-
           <div style="border-top:2px dashed var(--border);margin:16px 0;position:relative;text-align:center">
             <span style="background:white;padding:0 10px;color:var(--text2);font-size:12px;font-weight:600;position:relative;top:-10px">OR GENERATE CUSTOM QR</span>
           </div>
-
-          <div class="info-box">
-            <span>ℹ️</span>
-            <span>Fill customer details → Generate QR → Customer scans → Bot starts automatically!</span>
-          </div>
+          <div class="info-box"><span>ℹ️</span><span>Fill customer details → Generate QR → Customer scans → Bot starts automatically!</span></div>
           <div class="field-wrap">
             <label class="field-label field-required">Customer Full Name</label>
             <input class="form-control" id="qrName" type="text" placeholder="Customer full name" />
@@ -268,8 +258,7 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
         <div class="empty-state"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading your leads...</div></div>
       </div>
     </div>
-
-    <!-- GROCERY PANELS -->
+<!-- GROCERY PANELS -->
     <div id="groceryPanels" style="display:none">
 
       <!-- OUTLETS TAB -->
@@ -344,12 +333,10 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
               <select class="form-select" id="orderPayment"><option value="Cash">Cash on Delivery</option><option value="Credit">Credit</option></select>
             </div>
             <div id="catalogueSection" style="display:none">
-              <!-- ORDER TYPE TABS -->
               <div class="tab-bar" style="margin-bottom:10px">
                 <button class="tab active" id="tabBranded" onclick="showOrderTab('branded')">🏷️ Branded</button>
                 <button class="tab" id="tabBulk" onclick="showOrderTab('bulk')">📦 Bulk</button>
               </div>
-              <!-- BRANDED -->
               <div id="orderPanelBranded">
                 <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">🏷️ Branded Items:</div>
                 <div id="productListBranded"></div>
@@ -361,7 +348,6 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
                   <div class="order-total-amount" style="color:#004a99" id="brandedTotal">₹0</div>
                 </div>
               </div>
-              <!-- BULK -->
               <div id="orderPanelBulk" style="display:none">
                 <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">📦 Bulk Items:</div>
                 <div id="productListBulk"></div>
@@ -373,7 +359,6 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
                   <div class="order-total-amount" id="bulkTotal">₹0</div>
                 </div>
               </div>
-              <!-- COMBINED -->
               <div style="background:#1a1a2e;border-radius:12px;padding:14px;margin:14px 0">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
                   <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.7)">Combined Total</div>
@@ -405,15 +390,17 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
     </div>
   </div>
 </div>
-
 <div class="toast" id="toast"></div>
-
 <script>
 var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbytDsEm2Z1_JD1Gpn-faYSdF1lVMIXxotMQ3qcB4P_7QIZC3juK8PZuhSTinkdlhASdEA/exec";
 var partnerMobile = "";
 var partnerName   = "";
 var allLeads      = [];
-
+var myOutlets     = [];
+var myProducts    = [];
+var allProducts   = [];
+var selectedProduct = null;
+var universalQRUrl  = "";
 var STATUS_STAGES = [
   {key:"submitted",label:"Submitted",icon:"📝"},
   {key:"qualified",label:"Qualified",icon:"✅"},
@@ -421,7 +408,6 @@ var STATUS_STAGES = [
   {key:"approved",label:"Approved",icon:"🎉"},
   {key:"disbursed",label:"Disbursed",icon:"💰"}
 ];
-
 function getStageIndex(status) {
   var s = (status||"").toLowerCase();
   if (s.includes("disburse")) return 4;
@@ -431,7 +417,6 @@ function getStageIndex(status) {
   if (s.includes("reject")) return -1;
   return 0;
 }
-
 function doLogin() {
   var mobile = (document.getElementById("loginMobile").value || "").trim();
   var err    = document.getElementById("loginErr");
@@ -446,12 +431,11 @@ function doLogin() {
       btn.innerHTML = "Enter Portal →";
       btn.disabled  = false;
       if (d.isPartner) { partnerMobile = mobile; partnerName = d.partnerName || mobile; proceedToApp(); }
-      else if (d.isPending) { err.textContent = "⏳ Your registration is pending approval."; err.style.display = "block"; }
-      else { err.textContent = "❌ Mobile not registered as a partner."; err.style.display = "block"; }
+      else if (d.isPending) { err.textContent = "⏳ Your registration is pending approval. Please contact VastMyWealth."; err.style.display = "block"; }
+      else { err.textContent = "❌ Mobile not registered as a partner. Please contact VastMyWealth."; err.style.display = "block"; }
     })
-    .catch(function() { btn.innerHTML = "Enter Portal →"; btn.disabled = false; err.textContent = "❌ Connection error."; err.style.display = "block"; });
+    .catch(function() { btn.innerHTML = "Enter Portal →"; btn.disabled = false; err.textContent = "❌ Connection error. Please try again."; err.style.display = "block"; });
 }
-
 function proceedToApp() {
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("mainApp").style.display     = "block";
@@ -459,7 +443,6 @@ function proceedToApp() {
   window.scrollTo(0, 0);
   generateUniversalQR();
 }
-
 function doLogout() {
   partnerMobile = ""; partnerName = ""; allLeads = [];
   document.getElementById("loginScreen").style.display = "flex";
@@ -467,32 +450,26 @@ function doLogout() {
   document.getElementById("loginMobile").value         = "";
   document.getElementById("loginErr").style.display    = "none";
 }
-
 function showSection(section) {
   var isLoans = section === "loans";
   document.getElementById("sectionLoans").className   = "section-tab loans"   + (isLoans ? "" : " inactive");
   document.getElementById("sectionGrocery").className = "section-tab grocery" + (isLoans ? " inactive" : "");
-  document.getElementById("loansTabs").style.display    = isLoans ? "flex" : "none";
-  document.getElementById("groceryTabs").style.display  = isLoans ? "none" : "flex";
-  document.getElementById("panelQR").style.display      = isLoans ? "block" : "none";
-  document.getElementById("panelLeads").style.display   = "none";
-  document.getElementById("groceryPanels").style.display= isLoans ? "none" : "block";
+  document.getElementById("loansTabs").style.display     = isLoans ? "flex" : "none";
+  document.getElementById("groceryTabs").style.display   = isLoans ? "none" : "flex";
+  document.getElementById("panelQR").style.display       = isLoans ? "block" : "none";
+  document.getElementById("panelLeads").style.display    = "none";
+  document.getElementById("groceryPanels").style.display = isLoans ? "none" : "block";
   if (!isLoans) { showGroceryTab("outlets"); loadOutlets(); loadProductsForOrder(); }
-  else {
-    document.getElementById("tabQR").classList.add("active");
-    document.getElementById("tabLeads").classList.remove("active");
-  }
+  else { document.getElementById("tabQR").classList.add("active"); document.getElementById("tabLeads").classList.remove("active"); }
 }
-
 function showTab(tab) {
   ["tabQR","tabLeads"].forEach(function(id){ document.getElementById(id).classList.remove("active"); });
   document.getElementById("tabQR").classList.toggle("active",    tab==="qr");
   document.getElementById("tabLeads").classList.toggle("active", tab==="leads");
-  document.getElementById("panelQR").style.display     = tab==="qr"    ? "block" : "none";
-  document.getElementById("panelLeads").style.display  = tab==="leads" ? "block" : "none";
+  document.getElementById("panelQR").style.display    = tab==="qr"    ? "block" : "none";
+  document.getElementById("panelLeads").style.display = tab==="leads" ? "block" : "none";
   if (tab==="leads") loadLeads();
 }
-
 function showGroceryTab(tab) {
   ["tabOutlets","tabCatalogue","tabOrder","tabOrders"].forEach(function(id){ document.getElementById(id).classList.remove("active"); });
   document.getElementById("tabOutlets").classList.toggle("active",   tab==="outlets");
@@ -506,39 +483,30 @@ function showGroceryTab(tab) {
   if (tab==="orders")    loadMyOrders();
   if (tab==="catalogue") loadCatalogue();
 }
-
-// ============================================================
-// UNIVERSAL QR
-// ============================================================
-var universalQRUrl = "";
-
+function showOrderTab(tab) {
+  document.getElementById("tabBranded").classList.toggle("active", tab==="branded");
+  document.getElementById("tabBulk").classList.toggle("active",    tab==="bulk");
+  document.getElementById("orderPanelBranded").style.display = tab==="branded" ? "block" : "none";
+  document.getElementById("orderPanelBulk").style.display    = tab==="bulk"    ? "block" : "none";
+}
 function generateUniversalQR() {
-  var waNumber = "918976899400";
-  var message  = "VMWREF:Walk-in|Unknown|Unknown|" + partnerMobile;
-  var waUrl    = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
+  var waNumber   = "918976899400";
+  var message    = "VMWREF:Walk-in|Unknown|Unknown|" + partnerMobile;
+  var waUrl      = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
   universalQRUrl = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(waUrl) + "&format=png&margin=10";
   var box = document.getElementById("universalQRBox");
   var img = document.createElement("img");
-  img.src    = universalQRUrl;
-  img.width  = 160; img.height = 160;
-  img.style.borderRadius = "12px";
-  img.style.border       = "3px solid #a7f3d0";
-  box.innerHTML = "";
-  box.appendChild(img);
+  img.src = universalQRUrl; img.width = 160; img.height = 160;
+  img.style.borderRadius = "12px"; img.style.border = "3px solid #a7f3d0";
+  box.innerHTML = ""; box.appendChild(img);
 }
-
 function downloadUniversalQR() {
   if (!universalQRUrl) return;
-  fetch(universalQRUrl)
-    .then(function(r){ return r.blob(); })
-    .then(function(blob) {
-      var a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "VastMyWealth_" + partnerMobile + "_QR.png";
-      a.click(); URL.revokeObjectURL(a.href);
-    }).catch(function(){ window.open(universalQRUrl, "_blank"); });
+  fetch(universalQRUrl).then(function(r){ return r.blob(); }).then(function(blob) {
+    var a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = "VastMyWealth_" + partnerMobile + "_QR.png"; a.click(); URL.revokeObjectURL(a.href);
+  }).catch(function(){ window.open(universalQRUrl, "_blank"); });
 }
-
 function shareUniversalQR() {
   var waNumber = "918976899400";
   var message  = "VMWREF:Walk-in|Unknown|Unknown|" + partnerMobile;
@@ -546,16 +514,12 @@ function shareUniversalQR() {
   if (navigator.share) { navigator.share({title:"VastMyWealth — Apply for Loan", text:"Scan QR to apply for loan!", url:waUrl}); }
   else { navigator.clipboard.writeText(waUrl); toast("✅ Link copied!", "ok"); }
 }
-
-// ============================================================
-// CUSTOM QR
-// ============================================================
 function generateQR() {
-  var name  = (document.getElementById("qrName").value  || "").trim();
-  var mobile= (document.getElementById("qrMobile").value|| "").trim();
-  var loan  = (document.getElementById("qrLoan").value  || "").trim();
-  var city  = (document.getElementById("qrCity").value  || "").trim();
-  var state = (document.getElementById("qrState").value || "").trim();
+  var name   = (document.getElementById("qrName").value   || "").trim();
+  var mobile = (document.getElementById("qrMobile").value || "").trim();
+  var loan   = (document.getElementById("qrLoan").value   || "").trim();
+  var city   = (document.getElementById("qrCity").value   || "").trim();
+  var state  = (document.getElementById("qrState").value  || "").trim();
   if (!name || !mobile || !loan || !city) { toast("Please fill all required fields!", "err"); return; }
   if (mobile.length !== 10) { toast("Enter valid 10-digit mobile!", "err"); return; }
   document.getElementById("qrBtnText").style.display    = "none";
@@ -571,12 +535,9 @@ function generateQR() {
     var message  = "VMWREF:" + name + "|" + loan + "|" + city + "|" + partnerMobile;
     var waUrl    = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
     var qrUrl    = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(waUrl) + "&format=png&margin=10";
-    var img      = document.createElement("img");
-    img.src      = qrUrl; img.width = 200; img.height = 200;
+    var img = document.createElement("img"); img.src = qrUrl; img.width = 200; img.height = 200;
     img.crossOrigin = "anonymous"; img.style.borderRadius = "12px";
-    var qrBox = document.getElementById("qrBox");
-    qrBox.innerHTML = "";
-    qrBox.appendChild(img);
+    var qrBox = document.getElementById("qrBox"); qrBox.innerHTML = ""; qrBox.appendChild(img);
     var title = document.createElement("div"); title.className = "qr-title"; title.textContent = name + " — " + loan; qrBox.appendChild(title);
     var sub = document.createElement("div"); sub.className = "qr-sub"; sub.textContent = "📍 " + city + " | 🤝 " + partnerMobile; qrBox.appendChild(sub);
     var btnRow = document.createElement("div"); btnRow.style = "display:flex;gap:8px;margin-top:14px";
@@ -586,14 +547,11 @@ function generateQR() {
     shareBtn.onclick = function() { if (navigator.share) { navigator.share({title:"Loan — "+name, text:"Scan QR to apply!", url:waUrl}); } else { navigator.clipboard.writeText(waUrl); toast("✅ Link copied!", "ok"); } };
     btnRow.appendChild(dlBtn); btnRow.appendChild(shareBtn); qrBox.appendChild(btnRow);
     qrBox.style.display = "block";
-    toast("✅ QR generated!", "ok");
+    if (d && d.existing) { toast("⚠️ Customer already registered — QR generated!", ""); }
+    else { toast("✅ QR generated!", "ok"); }
   })
   .catch(function() { document.getElementById("qrBtnText").style.display="inline"; document.getElementById("qrBtnSpinner").style.display="none"; document.getElementById("qrBtn").disabled=false; toast("❌ Connection error!", "err"); });
 }
-
-// ============================================================
-// LEADS
-// ============================================================
 function loadLeads() {
   document.getElementById("leadsContainer").innerHTML = '<div class="empty-state"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading your leads...</div></div>';
   fetch(APPS_SCRIPT_URL + "?action=getLeads&role=partner&source=" + encodeURIComponent(partnerMobile))
@@ -601,11 +559,7 @@ function loadLeads() {
     .then(function(d) { if (d.success) { allLeads = d.leads || []; renderLeads(); } else showEmptyLeads("Failed to load leads."); })
     .catch(function() { showEmptyLeads("Connection error."); });
 }
-
-function showEmptyLeads(msg) {
-  document.getElementById("leadsContainer").innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">' + msg + '</div></div>';
-}
-
+function showEmptyLeads(msg) { document.getElementById("leadsContainer").innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">' + msg + '</div></div>'; }
 function renderLeads() {
   var container = document.getElementById("leadsContainer");
   if (allLeads.length === 0) {
@@ -621,32 +575,28 @@ function renderLeads() {
   var html = '<div class="leads-list">';
   allLeads.forEach(function(l) {
     var lt = (l.loanType||"").toUpperCase();
-    var tagCls="tag-pl",tagLbl="PL";
-    if (lt.includes("PERSONAL")) {tagCls="tag-pl";tagLbl="PL";}
-    else if (lt.includes("BUSINESS")) {tagCls="tag-bl";tagLbl="BL";}
-    else if (lt.includes("HOME")) {tagCls="tag-hl";tagLbl="HL";}
-    else if (lt.includes("PROPERTY")||lt.includes("AGAINST")) {tagCls="tag-lap";tagLbl="LAP";}
-    else if (lt.includes("CONSTRUCTION")) {tagCls="tag-cf";tagLbl="CF";}
-    var status    = l.vendorStatus && l.vendorStatus!=="—" ? l.vendorStatus : (l.status||"In Review");
+    var tagCls="tag-pl", tagLbl="PL";
+    if (lt.includes("PERSONAL"))                                { tagCls="tag-pl";  tagLbl="PL"; }
+    else if (lt.includes("BUSINESS"))                           { tagCls="tag-bl";  tagLbl="BL"; }
+    else if (lt.includes("HOME"))                               { tagCls="tag-hl";  tagLbl="HL"; }
+    else if (lt.includes("PROPERTY")||lt.includes("AGAINST"))  { tagCls="tag-lap"; tagLbl="LAP"; }
+    else if (lt.includes("CONSTRUCTION"))                       { tagCls="tag-cf";  tagLbl="CF"; }
+    var status = l.vendorStatus && l.vendorStatus!=="—" ? l.vendorStatus : (l.status||"In Review");
     var statusCls = getStatusBadgeClass(status);
     var stageIdx  = getStageIndex(status);
     var isRejected= stageIdx===-1;
-    var dt="";
-    try { var d=new Date(l.timestamp); if(!isNaN(d)) dt=d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}); } catch(e){}
+    var dt=""; try { var d=new Date(l.timestamp); if(!isNaN(d)) dt=d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"}); } catch(e){}
     html += '<div class="lead-card"><div class="lead-card-head"><div class="lead-ref">'+esc(l.refId)+'</div><div class="lead-date">'+dt+'</div></div><div class="lead-card-body"><div class="lead-name">'+esc(l.fullName||"Unknown")+'</div><div class="lead-city">📍 '+esc(l.city||"—")+'</div><div class="lead-tags"><span class="tag '+tagCls+'">'+tagLbl+'</span><span class="status-badge '+statusCls+'">'+esc(getStatusLabel(status))+'</span></div>'+(l.disbursedAmount&&l.disbursedAmount!=="—"?'<div style="margin-top:6px;font-size:12px;color:#16a34a;font-weight:600">💰 Disbursed: ₹'+esc(l.disbursedAmount)+'</div>':'')+'</div>';
     if (!isRejected) {
       html += '<div class="status-timeline"><div class="timeline-title">Case Progress</div><div class="timeline-steps">';
       STATUS_STAGES.forEach(function(stage,i){ var cls=i<stageIdx?"done":i===stageIdx?"active":""; var icon=i<stageIdx?"✓":stage.icon; html+='<div class="tstep '+cls+'"><div class="tstep-dot">'+icon+'</div><div class="tstep-label">'+stage.label+'</div></div>'; });
       html += '</div></div>';
-    } else {
-      html += '<div class="status-timeline"><div style="font-size:12px;color:#dc2626;font-weight:600">❌ Case could not be processed.</div></div>';
-    }
+    } else { html += '<div class="status-timeline"><div style="font-size:12px;color:#dc2626;font-weight:600">❌ Case could not be processed.</div></div>'; }
     html += '</div>';
   });
   html += '</div>';
   container.innerHTML = html;
 }
-
 function getStatusLabel(status) {
   var s=(status||"").toLowerCase();
   if (s.includes("disburse"))   return "💰 Disbursed";
@@ -658,7 +608,6 @@ function getStatusLabel(status) {
   if (s.includes("pending"))    return "📄 Docs Pending";
   return "📝 In Review";
 }
-
 function getStatusBadgeClass(status) {
   var s=(status||"").toLowerCase();
   if (s.includes("disburse")) return "status-disbursed";
@@ -668,43 +617,38 @@ function getStatusBadgeClass(status) {
   if (s.includes("reject"))   return "status-rejected";
   return "status-review";
 }
-
-// ============================================================
-// OUTLETS
-// ============================================================
-var myOutlets  = [];
-var myProducts = [];
-
 function registerOutlet() {
   var name    = (document.getElementById("outletName").value   ||"").trim();
   var owner   = (document.getElementById("outletOwner").value  ||"").trim();
   var mobile  = (document.getElementById("outletMobile").value ||"").trim();
   var area    = (document.getElementById("outletArea").value   ||"").trim();
   var address = (document.getElementById("outletAddress").value||"").trim();
-  if (!name||!area) { toast("Outlet name and area required!","err"); return; }
+  if (!name || !area) { toast("Outlet name and area required!", "err"); return; }
   document.getElementById("outletBtnText").style.display    = "none";
   document.getElementById("outletBtnSpinner").style.display = "inline-flex";
   document.getElementById("outletBtn").disabled             = true;
-  fetch(APPS_SCRIPT_URL+"?action=registerOutlet&partnerMobile="+encodeURIComponent(partnerMobile)+"&outletName="+encodeURIComponent(name)+"&ownerName="+encodeURIComponent(owner)+"&mobile="+encodeURIComponent(mobile)+"&area="+encodeURIComponent(area)+"&address="+encodeURIComponent(address))
+  fetch(APPS_SCRIPT_URL + "?action=registerOutlet&partnerMobile=" + encodeURIComponent(partnerMobile) + "&outletName=" + encodeURIComponent(name) + "&ownerName=" + encodeURIComponent(owner) + "&mobile=" + encodeURIComponent(mobile) + "&area=" + encodeURIComponent(area) + "&address=" + encodeURIComponent(address))
   .then(function(r){ return r.json(); })
   .then(function(d) {
     document.getElementById("outletBtnText").style.display    = "inline";
     document.getElementById("outletBtnSpinner").style.display = "none";
     document.getElementById("outletBtn").disabled             = false;
-    if (d.success) { document.getElementById("outletName").value=""; document.getElementById("outletOwner").value=""; document.getElementById("outletMobile").value=""; document.getElementById("outletArea").value=""; document.getElementById("outletAddress").value=""; toast("✅ Outlet registered! ID: "+d.outletId,"ok"); loadOutlets(); }
-    else { toast("❌ "+(d.error||"Failed!"),"err"); }
+    if (d.success) {
+      document.getElementById("outletName").value=""; document.getElementById("outletOwner").value="";
+      document.getElementById("outletMobile").value=""; document.getElementById("outletArea").value="";
+      document.getElementById("outletAddress").value="";
+      toast("✅ Outlet registered! ID: "+d.outletId,"ok"); loadOutlets();
+    } else { toast("❌ "+(d.error||"Failed!"),"err"); }
   })
   .catch(function(){ document.getElementById("outletBtnText").style.display="inline"; document.getElementById("outletBtnSpinner").style.display="none"; document.getElementById("outletBtn").disabled=false; toast("❌ Connection error!","err"); });
 }
-
 function loadOutlets() {
   document.getElementById("outletsList").innerHTML = '<div class="empty-state"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading outlets...</div></div>';
-  fetch(APPS_SCRIPT_URL+"?action=getMyOutlets&partnerMobile="+encodeURIComponent(partnerMobile))
+  fetch(APPS_SCRIPT_URL + "?action=getMyOutlets&partnerMobile=" + encodeURIComponent(partnerMobile))
   .then(function(r){ return r.json(); })
   .then(function(d){ myOutlets=d.outlets||[]; renderOutlets(); populateOutletDropdown(); })
   .catch(function(){ document.getElementById("outletsList").innerHTML='<div class="empty-state"><div class="empty-icon">🏪</div><div class="empty-title">Could not load outlets</div></div>'; });
 }
-
 function renderOutlets() {
   var container = document.getElementById("outletsList");
   if (myOutlets.length===0) { container.innerHTML='<div class="empty-state"><div class="empty-icon">🏪</div><div class="empty-title">No outlets registered yet</div><div class="empty-sub">Add your first outlet above!</div></div>'; return; }
@@ -712,220 +656,152 @@ function renderOutlets() {
   myOutlets.forEach(function(o){ html+='<div class="outlet-card"><div class="outlet-id">'+esc(o.outletId)+'</div><div class="outlet-name">'+esc(o.outletName)+'</div><div class="outlet-area">📍 '+esc(o.area)+' | 👤 '+esc(o.ownerName)+'</div>'+(o.mobile?'<div style="font-size:12px;color:var(--text2);margin-top:2px">📱 '+esc(o.mobile)+'</div>':'')+'<button class="btn-order" onclick="goToOrder(\''+esc(o.outletId)+'\')">🛒 Place Order</button></div>'; });
   document.getElementById("outletsList").innerHTML = html;
 }
-
 function populateOutletDropdown() {
   var sel=document.getElementById("orderOutlet"); sel.innerHTML='<option value="">Select outlet...</option>';
   myOutlets.forEach(function(o){ sel.innerHTML+='<option value="'+esc(o.outletId)+'">'+esc(o.outletName)+' — '+esc(o.area)+'</option>'; });
 }
-
 function goToOrder(outletId) { showGroceryTab("order"); document.getElementById("orderOutlet").value=outletId; outletSelected(); }
-function showOrderTab(tab) {
-  document.getElementById("tabBranded").classList.toggle("active", tab==="branded");
-  document.getElementById("tabBulk").classList.toggle("active",    tab==="bulk");
-  document.getElementById("orderPanelBranded").style.display = tab==="branded" ? "block" : "none";
-  document.getElementById("orderPanelBulk").style.display    = tab==="bulk"    ? "block" : "none";
-}
-  function outletSelected() { var val=document.getElementById("orderOutlet").value; document.getElementById("catalogueSection").style.display=val?"block":"none"; if(val) calculateTotal(); }
-
-// ============================================================
-// PRODUCTS + ORDER
-// ============================================================
+function outletSelected() { var val=document.getElementById("orderOutlet").value; document.getElementById("catalogueSection").style.display=val?"block":"none"; if(val) calculateTotal(); }
 function loadProductsForOrder() {
-  fetch(APPS_SCRIPT_URL+"?action=getCatalogue")
+  fetch(APPS_SCRIPT_URL + "?action=getCatalogue")
   .then(function(r){ return r.json(); })
   .then(function(d){ myProducts=d.products||[]; renderProductList(); })
   .catch(function(){});
 }
-
 function renderProductList() {
-  var brandedHtml = "";
-  var bulkHtml    = "";
-
+  var brandedHtml="", bulkHtml="";
   myProducts.forEach(function(p) {
-    // ── BRANDED ──────────────────────────────
-    var bViable    = String(p.brandedViable || "");
-    var bNotViable = bViable.indexOf("NOT") !== -1;
-    var noPricing  = !p.competitorMRP || p.competitorMRP === "";
-
-    brandedHtml += '<div class="product-row" style="' + (bNotViable || noPricing ? "opacity:0.5;" : "") + '">' +
-      '<div style="flex:1">' +
-        '<div class="product-name">' + esc(p.productName) + '</div>' +
-        (noPricing ?
-          '<div style="font-size:11px;color:#f59e0b;font-weight:600">⏳ Competitor MRP not set</div>' :
-          '<div class="product-price">Our MRP: <b>' + esc(p.yourMRP) + '</b> / ' + esc(p.unit) + '</div>' +
-'<div class="product-price">Retailer buys at: ' + esc(p.retailerBuys) + '</div>' +
-'<div class="product-price" style="color:#16a34a;font-weight:700">💰 Your Earning: ' + esc(p.partnerEarns) + '/' + esc(p.unit) + '</div>’
-
-        ) +
-        (bNotViable ? '<div style="font-size:10px;color:#dc2626;font-weight:700">❌ NOT VIABLE</div>' : '') +
-      '</div>' +
-      '<input class="qty-input" type="number" min="0" placeholder="0" ' +
-        'id="bqty_' + esc(p.productId) + '" ' +
-        'data-name="' + esc(p.productName) + '" ' +
-        'data-price="' + esc(String(p.partnerBuys||"0").replace(/[₹,]/g,"")) + '" ' +
-        'data-earn="' + esc(String(p.partnerEarns||"0").replace(/[₹,]/g,"")) + '" ' +
-        'data-unit="' + esc(p.unit) + '" ' +
-        (bNotViable || noPricing ? 'disabled ' : '') +
-        'onchange="calculateTotal()" />' +
+    var bViable=String(p.brandedViable||""); var bNotViable=bViable.indexOf("NOT")!==-1;
+    var noPricing=!p.competitorMRP||p.competitorMRP==="";
+    brandedHtml+='<div class="product-row" style="'+(bNotViable||noPricing?"opacity:0.5;":"")+'">'+
+      '<div style="flex:1">'+
+        '<div class="product-name">'+esc(p.productName)+'</div>'+
+        (noPricing?
+          '<div style="font-size:11px;color:#f59e0b;font-weight:600">⏳ Competitor MRP not set</div>':
+          '<div class="product-price">Our MRP: <b>'+esc(p.yourMRP)+'</b> / '+esc(p.unit)+'</div>'+
+          '<div class="product-price">Retailer buys at: '+esc(p.retailerBuys)+'</div>'+
+          '<div class="product-price" style="color:#16a34a;font-weight:700">💰 Your Earning: '+esc(p.partnerEarns)+'/'+esc(p.unit)+'</div>'
+        )+
+        (bNotViable?'<div style="font-size:10px;color:#dc2626;font-weight:700">❌ NOT VIABLE</div>':'')+
+      '</div>'+
+      '<input class="qty-input" type="number" min="0" placeholder="0" '+
+        'id="bqty_'+esc(p.productId)+'" '+
+        'data-name="'+esc(p.productName)+'" '+
+        'data-price="'+esc(String(p.partnerBuys||"0").replace(/[₹,]/g,""))+'" '+
+        'data-earn="'+esc(String(p.partnerEarns||"0").replace(/[₹,]/g,""))+'" '+
+        'data-unit="'+esc(p.unit)+'" '+
+        (bNotViable||noPricing?'disabled ':'')+
+        'onchange="calculateTotal()" />'+
     '</div>';
-
-    // ── BULK ──────────────────────────────────
-    var buViable    = String(p.bulkViable || "");
-    var buNotViable = buViable.indexOf("NOT") !== -1;
-
-    bulkHtml += '<div class="product-row" style="' + (buNotViable ? "opacity:0.5;" : "") + '">' +
-      '<div style="flex:1">' +
-        '<div class="product-name">' + esc(p.productName) + '</div>' +
-        '<div class="product-price">Bulk price: <b>' + esc(p.bulkYourPrice||"—") + '</b> / ' + esc(p.unit) + '</div>' +
-        '<div class="product-price" style="color:#16a34a;font-weight:700">💰 Earn: ' + esc(p.bulkPartnerEarns||"—") + '/' + esc(p.unit) + '</div>' +
-        (p.retailerHeadroom ?
-          '<div class="product-price" style="color:#7c3aed;font-weight:600">🏪 Retailer headroom: ' + esc(p.retailerHeadroom) + ' (' + esc(p.retailerHdPct) + ')</div>' : ''
-        ) +
-        (buNotViable ? '<div style="font-size:10px;color:#dc2626;font-weight:700">❌ NOT VIABLE</div>' : '') +
-      '</div>' +
-      '<input class="qty-input" type="number" min="0" placeholder="0" ' +
-        'id="bulkqty_' + esc(p.productId) + '" ' +
-        'data-name="' + esc(p.productName) + '" ' +
-        'data-price="' + esc(String(p.bulkYourPrice||"0").replace(/[₹,]/g,"")) + '" ' +
-        'data-earn="' + esc(String(p.bulkPartnerEarns||"0").replace(/[₹,]/g,"")) + '" ' +
-        'data-unit="' + esc(p.unit) + '" ' +
-        (buNotViable ? 'disabled ' : '') +
-        'onchange="calculateTotal()" />' +
+    var buViable=String(p.bulkViable||""); var buNotViable=buViable.indexOf("NOT")!==-1;
+    bulkHtml+='<div class="product-row" style="'+(buNotViable?"opacity:0.5;":"")+'">'+
+      '<div style="flex:1">'+
+        '<div class="product-name">'+esc(p.productName)+'</div>'+
+        '<div class="product-price">Bulk price: <b>'+esc(p.bulkYourPrice||"—")+'</b> / '+esc(p.unit)+'</div>'+
+        '<div class="product-price" style="color:#16a34a;font-weight:700">💰 Earn: '+esc(p.bulkPartnerEarns||"—")+'/'+esc(p.unit)+'</div>'+
+        (p.retailerHeadroom?'<div class="product-price" style="color:#7c3aed;font-weight:600">🏪 Retailer headroom: '+esc(p.retailerHeadroom)+' ('+esc(p.retailerHdPct)+')</div>':'')+
+        (buNotViable?'<div style="font-size:10px;color:#dc2626;font-weight:700">❌ NOT VIABLE</div>':'')+
+      '</div>'+
+      '<input class="qty-input" type="number" min="0" placeholder="0" '+
+        'id="bulkqty_'+esc(p.productId)+'" '+
+        'data-name="'+esc(p.productName)+'" '+
+        'data-price="'+esc(String(p.bulkYourPrice||"0").replace(/[₹,]/g,""))+'" '+
+        'data-earn="'+esc(String(p.bulkPartnerEarns||"0").replace(/[₹,]/g,""))+'" '+
+        'data-unit="'+esc(p.unit)+'" '+
+        (buNotViable?'disabled ':'')+
+        'onchange="calculateTotal()" />'+
     '</div>';
   });
-
-  document.getElementById("productListBranded").innerHTML = brandedHtml ||
-    '<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products available</div></div>';
-  document.getElementById("productListBulk").innerHTML = bulkHtml ||
-    '<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products available</div></div>';
+  document.getElementById("productListBranded").innerHTML=brandedHtml||'<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products available</div></div>';
+  document.getElementById("productListBulk").innerHTML=bulkHtml||'<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No products available</div></div>';
 }
-
 function calculateTotal() {
-  var brandedTotal = 0, brandedEarn = 0;
-  var bulkTotal    = 0, bulkEarn    = 0;
-
+  var brandedTotal=0, brandedEarn=0, bulkTotal=0, bulkEarn=0;
   myProducts.forEach(function(p) {
-    var binp = document.getElementById("bqty_" + p.productId);
+    var binp=document.getElementById("bqty_"+p.productId);
     if (binp) {
-      var qty   = parseFloat(binp.value) || 0;
-      var price = parseFloat(String(p.partnerBuys||"0").replace(/[₹,]/g,"")) || 0;
-      var earn  = parseFloat(String(p.partnerEarns||"0").replace(/[₹,]/g,"")) || 0;
-      brandedTotal += qty * price;
-      brandedEarn  += qty * earn;
+      var qty=parseFloat(binp.value)||0;
+      var price=parseFloat(String(p.retailerBuys||"0").replace(/[₹,]/g,""))||0;
+      var earn=parseFloat(String(p.partnerEarns||"0").replace(/[₹,]/g,""))||0;
+      brandedTotal+=qty*price; brandedEarn+=qty*earn;
     }
-    var buinp = document.getElementById("bulkqty_" + p.productId);
+    var buinp=document.getElementById("bulkqty_"+p.productId);
     if (buinp) {
-      var qty2   = parseFloat(buinp.value) || 0;
-      var price2 = parseFloat(String(p.bulkYourPrice||"0").replace(/[₹,]/g,"")) || 0;
-      var earn2  = parseFloat(String(p.bulkPartnerEarns||"0").replace(/[₹,]/g,"")) || 0;
-      bulkTotal += qty2 * price2;
-      bulkEarn  += qty2 * earn2;
+      var qty2=parseFloat(buinp.value)||0;
+      var price2=parseFloat(String(p.bulkYourPrice||"0").replace(/[₹,]/g,""))||0;
+      var earn2=parseFloat(String(p.bulkPartnerEarns||"0").replace(/[₹,]/g,""))||0;
+      bulkTotal+=qty2*price2; bulkEarn+=qty2*earn2;
     }
   });
-
-  document.getElementById("brandedTotal").textContent = "₹" + brandedTotal.toFixed(2);
-  document.getElementById("brandedEarn").textContent  = "₹" + brandedEarn.toFixed(2);
-  document.getElementById("bulkTotal").textContent    = "₹" + bulkTotal.toFixed(2);
-  document.getElementById("bulkEarn").textContent     = "₹" + bulkEarn.toFixed(2);
-  document.getElementById("combinedEarn").textContent = "₹" + (brandedEarn + bulkEarn).toFixed(2);
-  document.getElementById("orderTotal").textContent   = "₹" + (brandedTotal + bulkTotal).toFixed(2);
+  document.getElementById("brandedTotal").textContent="₹"+brandedTotal.toFixed(2);
+  document.getElementById("brandedEarn").textContent ="₹"+brandedEarn.toFixed(2);
+  document.getElementById("bulkTotal").textContent   ="₹"+bulkTotal.toFixed(2);
+  document.getElementById("bulkEarn").textContent    ="₹"+bulkEarn.toFixed(2);
+  document.getElementById("combinedEarn").textContent="₹"+(brandedEarn+bulkEarn).toFixed(2);
+  document.getElementById("orderTotal").textContent  ="₹"+(brandedTotal+bulkTotal).toFixed(2);
 }
-
 function submitOrder() {
-  var outletId = document.getElementById("orderOutlet").value;
-  if (!outletId) { toast("Please select an outlet!", "err"); return; }
-
-  var allItems = [];
-  var total    = 0;
-  var totalEarn= 0;
-
-  // Branded items
+  var outletId=document.getElementById("orderOutlet").value;
+  if (!outletId) { toast("Please select an outlet!","err"); return; }
+  var allItems=[], total=0, totalEarn=0;
   myProducts.forEach(function(p) {
-    var inp = document.getElementById("bqty_" + p.productId);
+    var inp=document.getElementById("bqty_"+p.productId);
     if (inp) {
-      var qty = parseFloat(inp.value) || 0;
-      if (qty > 0) {
-        var price = parseFloat(String(p.partnerBuys||"0").replace(/[₹,]/g,"")) || 0;
-        var earn  = parseFloat(String(p.partnerEarns||"0").replace(/[₹,]/g,"")) || 0;
-        allItems.push({id:p.productId, name:p.productName, qty:qty, unit:p.unit, price:price, earn:earn, type:"branded"});
-        total     += qty * price;
-        totalEarn += qty * earn;
+      var qty=parseFloat(inp.value)||0;
+      if (qty>0) {
+        var price=parseFloat(String(p.retailerBuys||"0").replace(/[₹,]/g,""))||0;
+        var buyPrice=parseFloat(String(p.partnerBuys||"0").replace(/[₹,]/g,""))||0;
+        var earn=parseFloat(String(p.partnerEarns||"0").replace(/[₹,]/g,""))||0;
+        allItems.push({id:p.productId,name:p.productName,qty:qty,unit:p.unit,price:price,buyPrice:buyPrice,earn:earn,type:"branded"});
+        total+=qty*price; totalEarn+=qty*earn;
       }
     }
   });
-
-  // Bulk items
   myProducts.forEach(function(p) {
-    var inp = document.getElementById("bulkqty_" + p.productId);
+    var inp=document.getElementById("bulkqty_"+p.productId);
     if (inp) {
-      var qty = parseFloat(inp.value) || 0;
-      if (qty > 0) {
-        var price = parseFloat(String(p.bulkYourPrice||"0").replace(/[₹,]/g,"")) || 0;
-        var earn  = parseFloat(String(p.bulkPartnerEarns||"0").replace(/[₹,]/g,"")) || 0;
-        allItems.push({id:p.productId, name:p.productName, qty:qty, unit:p.unit, price:price, earn:earn, type:"bulk"});
-        total     += qty * price;
-        totalEarn += qty * earn;
+      var qty=parseFloat(inp.value)||0;
+      if (qty>0) {
+        var price=parseFloat(String(p.bulkYourPrice||"0").replace(/[₹,]/g,""))||0;
+        var earn=parseFloat(String(p.bulkPartnerEarns||"0").replace(/[₹,]/g,""))||0;
+        allItems.push({id:p.productId,name:p.productName,qty:qty,unit:p.unit,price:price,earn:earn,type:"bulk"});
+        total+=qty*price; totalEarn+=qty*earn;
       }
     }
   });
-
-  if (allItems.length === 0) { toast("Please add at least one item!", "err"); return; }
-
-  var outlet  = myOutlets.find(function(o){ return o.outletId === outletId; });
-  var outName = outlet ? outlet.outletName : outletId;
-  var payment = document.getElementById("orderPayment").value;
-  var notes   = (document.getElementById("orderNotes").value || "").trim();
-
-  document.getElementById("orderBtnText").style.display    = "none";
-  document.getElementById("orderBtnSpinner").style.display = "inline-flex";
-  document.getElementById("orderBtn").disabled             = true;
-
-  fetch(APPS_SCRIPT_URL +
-    "?action=submitGroceryOrder" +
-    "&partnerMobile=" + encodeURIComponent(partnerMobile) +
-    "&outletId="      + encodeURIComponent(outletId) +
-    "&outletName="    + encodeURIComponent(outName) +
-    "&items="         + encodeURIComponent(JSON.stringify(allItems)) +
-    "&total="         + encodeURIComponent(total.toFixed(2)) +
-    "&totalEarn="     + encodeURIComponent(totalEarn.toFixed(2)) +
-    "&paymentType="   + encodeURIComponent(payment) +
-    "&notes="         + encodeURIComponent(notes)
-  )
+  if (allItems.length===0) { toast("Please add at least one item!","err"); return; }
+  var outlet=myOutlets.find(function(o){ return o.outletId===outletId; });
+  var outName=outlet?outlet.outletName:outletId;
+  var payment=document.getElementById("orderPayment").value;
+  var notes=(document.getElementById("orderNotes").value||"").trim();
+  document.getElementById("orderBtnText").style.display    ="none";
+  document.getElementById("orderBtnSpinner").style.display ="inline-flex";
+  document.getElementById("orderBtn").disabled             =true;
+  fetch(APPS_SCRIPT_URL+"?action=submitGroceryOrder&partnerMobile="+encodeURIComponent(partnerMobile)+"&outletId="+encodeURIComponent(outletId)+"&outletName="+encodeURIComponent(outName)+"&items="+encodeURIComponent(JSON.stringify(allItems))+"&total="+encodeURIComponent(total.toFixed(2))+"&totalEarn="+encodeURIComponent(totalEarn.toFixed(2))+"&paymentType="+encodeURIComponent(payment)+"&notes="+encodeURIComponent(notes))
   .then(function(r){ return r.json(); })
   .then(function(d) {
-    document.getElementById("orderBtnText").style.display    = "inline";
-    document.getElementById("orderBtnSpinner").style.display = "none";
-    document.getElementById("orderBtn").disabled             = false;
+    document.getElementById("orderBtnText").style.display    ="inline";
+    document.getElementById("orderBtnSpinner").style.display ="none";
+    document.getElementById("orderBtn").disabled             =false;
     if (d.success) {
       myProducts.forEach(function(p) {
-        var b = document.getElementById("bqty_"    + p.productId);
-        var u = document.getElementById("bulkqty_" + p.productId);
-        if (b) b.value = "";
-        if (u) u.value = "";
+        var b=document.getElementById("bqty_"+p.productId);
+        var u=document.getElementById("bulkqty_"+p.productId);
+        if (b) b.value=""; if (u) u.value="";
       });
       calculateTotal();
-      document.getElementById("orderNotes").value = "";
-      toast("✅ Order submitted! ID: " + d.orderId, "ok");
-      showGroceryTab("orders");
-      loadMyOrders();
-    } else {
-      toast("❌ " + (d.error || "Failed!"), "err");
-    }
+      document.getElementById("orderNotes").value="";
+      toast("✅ Order submitted! ID: "+d.orderId,"ok");
+      showGroceryTab("orders"); loadMyOrders();
+    } else { toast("❌ "+(d.error||"Failed!"),"err"); }
   })
   .catch(function() {
-    document.getElementById("orderBtnText").style.display    = "inline";
-    document.getElementById("orderBtnSpinner").style.display = "none";
-    document.getElementById("orderBtn").disabled             = false;
-    toast("❌ Connection error!", "err");
+    document.getElementById("orderBtnText").style.display    ="inline";
+    document.getElementById("orderBtnSpinner").style.display ="none";
+    document.getElementById("orderBtn").disabled             =false;
+    toast("❌ Connection error!","err");
   });
 }
-
-// ============================================================
-// CATALOGUE
-// ============================================================
-var allProducts    = [];
-var selectedProduct= null;
-
 function loadCatalogue() {
   document.getElementById("catalogueGrid").innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading catalogue...</div></div>';
   fetch(APPS_SCRIPT_URL+"?action=getCatalogue")
@@ -933,7 +809,6 @@ function loadCatalogue() {
   .then(function(d){ allProducts=d.products||[]; renderCatalogue(allProducts); })
   .catch(function(){ document.getElementById("catalogueGrid").innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🛍️</div><div class="empty-title">Could not load catalogue</div></div>'; });
 }
-
 function renderCatalogue(products) {
   var grid=document.getElementById("catalogueGrid");
   if (products.length===0) { grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🛍️</div><div class="empty-title">No products found</div></div>'; return; }
@@ -946,43 +821,34 @@ function renderCatalogue(products) {
   });
   grid.innerHTML=html;
 }
-
 function filterCatalogue() {
   var search=(document.getElementById("catalogueSearch").value||"").toLowerCase().trim();
   if (!search) { renderCatalogue(allProducts); return; }
-  renderCatalogue(allProducts.filter(function(p){ return p.productName.toLowerCase().includes(search)||p.category.toLowerCase().includes(search); }));
+  renderCatalogue(allProducts.filter(function(p){ return p.productName.toLowerCase().includes(search)||(p.category||"").toLowerCase().includes(search); }));
 }
-
 function openPopup(productId) {
   var p=allProducts.find(function(x){ return x.productId===productId; });
   if (!p) return;
   selectedProduct=p;
-  document.getElementById("popupImage").src=p.image||"";
-  document.getElementById("popupImage").style.display=p.image?"block":"none";
-  document.getElementById("popupCategory").textContent=p.category||"";
-  document.getElementById("popupName").textContent=p.productName;
-  document.getElementById("popupUnit").textContent="Unit: "+p.unit;
-  document.getElementById("popupDesc").textContent=p.description||"Premium quality product.";
-  document.getElementById("productPopup").style.display="block";
+  document.getElementById("popupImage").src             =p.image||"";
+  document.getElementById("popupImage").style.display   =p.image?"block":"none";
+  document.getElementById("popupCategory").textContent  =p.category||"";
+  document.getElementById("popupName").textContent      =p.productName;
+  document.getElementById("popupUnit").textContent      ="Unit: "+p.unit;
+  document.getElementById("popupDesc").textContent      =p.description||"Premium quality product.";
+  document.getElementById("productPopup").style.display ="block";
   document.body.style.overflow="hidden";
 }
-
 function closePopup() { document.getElementById("productPopup").style.display="none"; document.body.style.overflow=""; selectedProduct=null; }
-
 function addToOrder() {
   closePopup(); showGroceryTab("order");
   if (selectedProduct) {
     setTimeout(function(){
       var inp=document.getElementById("bqty_"+selectedProduct.productId);
-
       if (inp) { inp.focus(); inp.style.borderColor="#16a34a"; inp.style.background="#f0fdf4"; inp.scrollIntoView({behavior:"smooth",block:"center"}); setTimeout(function(){ inp.style.borderColor=""; inp.style.background=""; },3000); }
     },300);
   }
 }
-
-// ============================================================
-// ORDER HISTORY
-// ============================================================
 function loadMyOrders() {
   document.getElementById("ordersContainer").innerHTML='<div class="empty-state"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading orders...</div></div>';
   fetch(APPS_SCRIPT_URL+"?action=getMyOrders&partnerMobile="+encodeURIComponent(partnerMobile))
@@ -999,22 +865,15 @@ function loadMyOrders() {
       if (s==="rejected")  statusCls="order-status-rejected";
       var dt=""; try { var d2=new Date(o.date); if(!isNaN(d2)) dt=d2.toLocaleDateString("en-IN",{day:"2-digit",month:"short"}); } catch(e){}
       var itemsHtml="";
-      try { var itemsArr=JSON.parse(o.items); itemsArr.forEach(function(item){ itemsHtml+='<div style="font-size:12px;color:var(--text2)">→ '+esc(item.name)+': '+item.qty+' '+esc(item.unit)+'</div>'; }); } catch(e){ itemsHtml='<div style="font-size:12px;color:var(--text2)">'+esc(o.items)+'</div>'; }
+      try { var itemsArr=JSON.parse(o.items); itemsArr.forEach(function(item){ itemsHtml+='<div style="font-size:12px;color:var(--text2)">→ '+esc(item.name)+' ('+esc(item.type||"")+') : '+item.qty+' '+esc(item.unit)+'</div>'; }); } catch(e){ itemsHtml='<div style="font-size:12px;color:var(--text2)">'+esc(o.items)+'</div>'; }
       html+='<div class="order-hist-card"><div class="order-hist-head"><div style="font-size:12px;font-weight:700;color:var(--primary);font-family:var(--mono)">'+esc(o.orderId)+'</div><span class="status-badge '+statusCls+'">'+esc(o.status)+'</span></div><div class="order-hist-body"><div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">🏪 '+esc(o.outletName)+'</div><div style="font-size:11px;color:var(--text3);margin-bottom:8px">📅 '+dt+' | 💳 '+esc(o.paymentType)+'</div>'+itemsHtml+'<div style="font-size:14px;font-weight:700;color:#16a34a;margin-top:8px">💰 ₹'+esc(o.total)+'</div></div></div>';
     });
     document.getElementById("ordersContainer").innerHTML=html;
   })
   .catch(function(){ document.getElementById("ordersContainer").innerHTML='<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">Could not load orders</div></div>'; });
 }
-
 function esc(s) { return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-
-function toast(msg, type) {
-  var t=document.getElementById("toast");
-  t.textContent=msg; t.className="toast "+(type||""); t.classList.add("show");
-  setTimeout(function(){ t.classList.remove("show"); },3500);
-}
+function toast(msg,type) { var t=document.getElementById("toast"); t.textContent=msg; t.className="toast "+(type||""); t.classList.add("show"); setTimeout(function(){ t.classList.remove("show"); },3500); }
 </script>
 </body>
 </html>
-
