@@ -697,7 +697,7 @@ function renderProductList() {
     bulkHtml+='<div class="product-row" style="'+(buNotViable?"opacity:0.5;":"")+'">'+
       '<div style="flex:1">'+
         '<div class="product-name">'+esc(p.productName)+'</div>'+
-        '<div class="product-price">Bulk price: <b>'+esc(p.bulkYourPrice||"—")+'</b> / '+esc(p.unit)+'</div>'+
+        '<div class="product-price">Bulk price: <b>'+esc(p.bulkPartnerSells||"—")+'</b> / '+esc(p.unit)+'</div>'+
         '<div class="product-price" style="color:#16a34a;font-weight:700">💰 Earn: '+esc(p.bulkPartnerEarns||"—")+'/'+esc(p.unit)+'</div>'+
         (p.retailerHeadroom?'<div class="product-price" style="color:#7c3aed;font-weight:600">🏪 Retailer headroom: '+esc(p.retailerHeadroom)+' ('+esc(p.retailerHdPct)+')</div>':'')+
         (buNotViable?'<div style="font-size:10px;color:#dc2626;font-weight:700">❌ NOT VIABLE</div>':'')+
@@ -728,7 +728,7 @@ function calculateTotal() {
     var buinp=document.getElementById("bulkqty_"+p.productId);
     if (buinp) {
       var qty2=parseFloat(buinp.value)||0;
-      var price2=parseFloat(String(p.bulkYourPrice||"0").replace(/[₹,]/g,""))||0;
+      var price2=parseFloat(String(p.bulkPartnerSells||"0").replace(/[₹,]/g,""))||0;
       var earn2=parseFloat(String(p.bulkPartnerEarns||"0").replace(/[₹,]/g,""))||0;
       bulkTotal+=qty2*price2; bulkEarn+=qty2*earn2;
     }
@@ -762,7 +762,7 @@ function submitOrder() {
     if (inp) {
       var qty=parseFloat(inp.value)||0;
       if (qty>0) {
-        var price=parseFloat(String(p.bulkYourPrice||"0").replace(/[₹,]/g,""))||0;
+        var price=parseFloat(String(p.bulkPartnerSells||"0").replace(/[₹,]/g,""))||0;
         var earn=parseFloat(String(p.bulkPartnerEarns||"0").replace(/[₹,]/g,""))||0;
         allItems.push({id:p.productId,name:p.productName,qty:qty,unit:p.unit,price:price,earn:earn,type:"bulk"});
         total+=qty*price; totalEarn+=qty*earn;
