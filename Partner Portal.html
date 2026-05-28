@@ -698,7 +698,7 @@ function renderProductList() {
         (bNotViable||noPricing?'disabled ':'')+
         'onchange="calculateTotal()" />'+
     '</div>';
-    var buViable=String(p.bulkViable||""); var buNotViable=buViable.indexOf("NOT")!==-1;
+    
     bulkHtml+='<div class="product-row">'+
       '<div style="flex:1">'+
         '<div class="product-name">'+esc(p.productName)+'</div>'+
