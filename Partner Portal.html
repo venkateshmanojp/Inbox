@@ -558,11 +558,11 @@ function loadLeads() {
   document.getElementById("leadsContainer").innerHTML = '<div class="empty-state"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading your leads...</div></div>';
   fetch(APPS_SCRIPT_URL + "?action=getLeads&role=partner&source=" + encodeURIComponent(partnerMobile))
     .then(function(r){ return r.json(); })
-    .then(function(d) { if (d.success) { allLeads = d.leads || []; renderLeads(); } else showEmptyLeads("Failed to load leads."); })
+    .then(function(d) { if (d.success) { allLeads = d.leads || []; Leads(); } else showEmptyLeads("Failed to load leads."); })
     .catch(function() { showEmptyLeads("Connection error."); });
 }
 function showEmptyLeads(msg) { document.getElementById("leadsContainer").innerHTML = '<div class="empty-state"><div class="empty-icon">📋</div><div class="empty-title">' + msg + '</div></div>'; }
-function renderLeads() {
+function Leads() {
   var container = document.getElementById("leadsContainer");
   if (allLeads.length === 0) {
     document.getElementById("statsRow").style.display = "none";
@@ -648,10 +648,10 @@ function loadOutlets() {
   document.getElementById("outletsList").innerHTML = '<div class="empty-state"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading outlets...</div></div>';
   fetch(APPS_SCRIPT_URL + "?action=getMyOutlets&partnerMobile=" + encodeURIComponent(partnerMobile))
   .then(function(r){ return r.json(); })
-  .then(function(d){ myOutlets=d.outlets||[]; renderOutlets(); populateOutletDropdown(); })
+  .then(function(d){ myOutlets=d.outlets||[]; Outlets(); populateOutletDropdown(); })
   .catch(function(){ document.getElementById("outletsList").innerHTML='<div class="empty-state"><div class="empty-icon">🏪</div><div class="empty-title">Could not load outlets</div></div>'; });
 }
-function renderOutlets() {
+function Outlets() {
   var container = document.getElementById("outletsList");
   if (myOutlets.length===0) { container.innerHTML='<div class="empty-state"><div class="empty-icon">🏪</div><div class="empty-title">No outlets registered yet</div><div class="empty-sub">Add your first outlet above!</div></div>'; return; }
   var html="";
@@ -669,11 +669,11 @@ function loadProductsForOrder() {
   .then(function(r){ return r.json(); })
   .then(function(d){
     myProducts=d.products||[];
-        renderProductList();
+        ProductList();
   })
   .catch(function(){});
 }
-function renderProductList() {
+function ProductList() {
   var brandedHtml="", bulkHtml="";
   myProducts.forEach(function(p) {
     var bViable=String(p.brandedViable||""); var bNotViable=bViable.indexOf("NOT")!==-1;
@@ -702,8 +702,7 @@ function renderProductList() {
       '<div style="flex:1">'+
         '<div class="product-name">'+esc(p.productName)+'</div>'+
         '<div class="product-price">MRP: <b>'+esc(p.mrp||"—")+'</b> / '+esc(p.unit)+'</div>'+
-        '<div class="product-price" style="color:#16a34a;font-weight:700">💰 Your Earning: '+esc(p.partnerEarns||"—")+'/'+esc(p.unit)+'</div>'+
-      '</div>'+
+        
       '<input class="qty-input" type="number" min="0" placeholder="0" '+
         'id="bulkqty_'+esc(p.productId)+'" '+
         'data-name="'+esc(p.productName)+'" '+
@@ -811,10 +810,10 @@ function loadCatalogue() {
   document.getElementById("catalogueGrid").innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="spinner spinner-dark" style="margin:0 auto 12px"></div><div class="empty-title">Loading catalogue...</div></div>';
   fetch(APPS_SCRIPT_URL+"?action=getCatalogue")
   .then(function(r){ return r.json(); })
-  .then(function(d){ allProducts=d.products||[]; renderCatalogue(allProducts); })
+  .then(function(d){ allProducts=d.products||[]; Catalogue(allProducts); })
   .catch(function(){ document.getElementById("catalogueGrid").innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🛍️</div><div class="empty-title">Could not load catalogue</div></div>'; });
 }
-function renderCatalogue(products) {
+function Catalogue(products) {
   var grid=document.getElementById("catalogueGrid");
   if (products.length===0) { grid.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">🛍️</div><div class="empty-title">No products found</div></div>'; return; }
   var html="";
@@ -828,8 +827,8 @@ function renderCatalogue(products) {
 }
 function filterCatalogue() {
   var search=(document.getElementById("catalogueSearch").value||"").toLowerCase().trim();
-  if (!search) { renderCatalogue(allProducts); return; }
-  renderCatalogue(allProducts.filter(function(p){ return p.productName.toLowerCase().includes(search)||(p.category||"").toLowerCase().includes(search); }));
+  if (!search) { Catalogue(allProducts); return; }
+  Catalogue(allProducts.filter(function(p){ return p.productName.toLowerCase().includes(search)||(p.category||"").toLowerCase().includes(search); }));
 }
 function openPopup(productId) {
   var p=allProducts.find(function(x){ return x.productId===productId; });
