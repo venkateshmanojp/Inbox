@@ -334,10 +334,12 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
             </div>
             <div id="catalogueSection" style="display:none">
               <div class="tab-bar" style="margin-bottom:10px">
-                <button class="tab active" id="tabBranded" onclick="showOrderTab('branded')">🏷️ Branded</button>
+                <button class="tab active" id="tabBranded" onclick="showOrderTab('branded')" style="display:none">🏷️ Branded</button>
+
                 <button class="tab" id="tabBulk" onclick="showOrderTab('bulk')">📦 Bulk</button>
               </div>
-              <div id="orderPanelBranded">
+              <div id="orderPanelBranded" style="display:none">
+
                 <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">🏷️ Branded Items:</div>
                 <div id="productListBranded"></div>
                 <div class="order-total" style="background:#e8f0fb;border-color:#004a99">
@@ -700,8 +702,11 @@ function renderProductList() {
     bulkHtml+='<div class="product-row" style="'+(buNotViable?"opacity:0.5;":"")+'">'+
       '<div style="flex:1">'+
         '<div class="product-name">'+esc(p.productName)+'</div>'+
-        '<div class="product-price">Bulk price: <b>'+esc(p.bulkPartnerSells||"—")+'</b> / '+esc(p.unit)+'</div>'+
-        '<div class="product-price" style="color:#16a34a;font-weight:700">💰 Earn: '+esc(p.bulkPartnerEarns||"—")+'/'+esc(p.unit)+'</div>'+
+        '<div class="product-price">Our MRP: <b>'+esc(p.yourMRP||"—")+'</b> / '+esc(p.unit)+'</div>'+
+'<div class="product-price">Retailer buys at: <b>'+esc(p.bulkPartnerSells||"—")+'</b> / '+esc(p.unit)+'</div>'+
+'<div class="product-price">Retailer margin: <b>'+esc(p.retailerHeadroom||"—")+'</b></div>'+
+'<div class="product-price" style="color:#16a34a;font-weight:700">💰 Your Earning: '+esc(p.bulkPartnerEarns||"—")+'/'+esc(p.unit)+'</div>'+
+
         (p.retailerHeadroom?'<div class="product-price" style="color:#7c3aed;font-weight:600">🏪 Retailer headroom: '+esc(p.retailerHeadroom)+' ('+esc(p.retailerHdPct)+')</div>':'')+
         (buNotViable?'<div style="font-size:10px;color:#dc2626;font-weight:700">❌ NOT VIABLE</div>':'')+
       '</div>'+
