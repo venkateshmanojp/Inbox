@@ -669,7 +669,7 @@ function loadProductsForOrder() {
   .then(function(r){ return r.json(); })
   .then(function(d){
     myProducts=d.products||[];
-        ProductList();
+        renderProductList();
   })
   .catch(function(){});
 }
