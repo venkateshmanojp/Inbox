@@ -702,8 +702,9 @@ function ProductList() {
       '<div style="flex:1">'+
         '<div class="product-name">'+esc(p.productName)+'</div>'+
         '<div class="product-price">MRP: <b>'+esc(p.mrp||"—")+'</b> / '+esc(p.unit)+'</div>'+
-        '</div>'+
-      '<input class="qty-input" type="number" min="0" placeholder="0" '+
+      '</div>'+
+      '<input class="qty-input”
+ type="number" min="0" placeholder="0" '+
         'id="bulkqty_'+esc(p.productId)+'" '+
         'data-name="'+esc(p.productName)+'" '+
         'data-price="'+esc(String(p.mrp||"0").replace(/[₹,]/g,""))+'" '+
