@@ -685,8 +685,7 @@ function renderProductList() {
           '<div style="font-size:11px;color:#f59e0b;font-weight:600">⏳ Competitor MRP not set</div>':
           '<div class="product-price">Our MRP: <b>'+esc(p.yourMRP)+'</b> / '+esc(p.unit)+'</div>'+
           '<div class="product-price">Retailer buys at: '+esc(p.retailerBuys)+'</div>'+
-          '<div class="product-price" style="color:#16a34a;font-weight:700">💰 Your Earning: '+esc(p.partnerEarns)+'/'+esc(p.unit)+'</div>'
-        )+
+                 )+
         (bNotViable?'<div style="font-size:10px;color:#dc2626;font-weight:700">❌ NOT VIABLE</div>':'')+
       '</div>'+
       '<input class="qty-input" type="number" min="0" placeholder="0" '+
