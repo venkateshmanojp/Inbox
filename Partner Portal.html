@@ -333,7 +333,9 @@ html, body { height:100%; width:100%; font-family:'Outfit', sans-serif; backgrou
               <select class="form-select" id="orderPayment"><option value="Cash">Cash on Delivery</option><option value="Credit">Credit</option></select>
             </div>
             <div id="catalogueSection" style="display:none">
+              <input class="form-control" id="orderSearch" placeholder="🔍 Search products..." oninput="filterOrderProducts()" style="margin-bottom:10px" />
               <div class="tab-bar" style="margin-bottom:10px">
+
                 <button class="tab active" id="tabBranded" onclick="showOrderTab('branded')" style="display:none">🏷️ Branded</button>
 
                 <button class="tab" id="tabBulk" onclick="showOrderTab('bulk')">📦 Bulk</button>
@@ -663,13 +665,30 @@ function populateOutletDropdown() {
   myOutlets.forEach(function(o){ sel.innerHTML+='<option value="'+esc(o.outletId)+'">'+esc(o.outletName)+' — '+esc(o.area)+'</option>'; });
 }
 function goToOrder(outletId) { showGroceryTab("order"); document.getElementById("orderOutlet").value=outletId; outletSelected(); }
-function outletSelected() { var val=document.getElementById("orderOutlet").value; document.getElementById("catalogueSection").style.display=val?"block":"none"; if(val) calculateTotal(); }
+function filterOrderProducts() {
+  var search = (document.getElementById("orderSearch").value||"").toLowerCase().trim();
+  if (!search) {
+    renderProductList();
+    return;
+  }
+  var filtered = myProducts.filter(function(p){
+    return p.productName.toLowerCase().indexOf(search) !== -1;
+  });
+  var savedProducts = myProducts;
+  myProducts = filtered;
+  renderProductList();
+  myProducts = savedProducts;
+}
+
+  function outletSelected() { var val=document.getElementById("orderOutlet").value; document.getElementById("catalogueSection").style.display=val?"block":"none"; if(val) calculateTotal(); }
 function loadProductsForOrder() {
   fetch(APPS_SCRIPT_URL + "?action=getCatalogue")
   .then(function(r){ return r.json(); })
   .then(function(d){
-    myProducts=d.products||[];
-        renderProductList();
+    myProducts=(d.products||[]).sort(function(a,b){
+      return a.productName.localeCompare(b.productName);
+    });
+    renderProductList();
   })
   .catch(function(){});
 }
