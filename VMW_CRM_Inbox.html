@@ -456,14 +456,6 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
             <button class="dsa-btn full" onclick="allocateDSA('Manual Decision')">⚙️ Manual Decision</button>
           </div>
         </div>
-<!-- Generate Case Brief -->
-<div class="action-section">
-  <div class="action-section-title">🔄 Generate Case Brief</div>
-  <button class="action-card" onclick="generateCaseBrief()" style="width:100%;text-align:left;display:flex;gap:10px;align-items:center">
-    <div style="font-size:20px">📋</div>
-    <div><div style="font-size:12px;font-weight:700;color:var(--text)">Generate Case Brief</div><div style="font-size:11px;color:var(--text2)">Generate case brief from collected details</div></div>
-  </button>
-</div>
 
         <!-- Document Request -->
         <div class="action-section">
@@ -995,19 +987,26 @@ function loadConversation(mobile) {
 function buildDetails(l) {
   var src    = String(l.source||"").replace(/\D/g,"");
   var srcLbl = src.length >= 10 ? "🤝 Partner +" + src : "📢 Direct";
-  var amount = l.plAmount !== "—" ? l.plAmount : l.blAmount !== "—" ? l.blAmount : l.hlAmount !== "—" ? l.hlAmount : l.lapAmount !== "—" ? l.lapAmount : "—";
+  var amount      = l.plAmount !== "—" ? l.plAmount : l.blAmount !== "—" ? l.blAmount : l.hlAmount !== "—" ? l.hlAmount : l.lapAmount !== "—" ? l.lapAmount : (l.loanAmount || "—");
+  var cibil       = (l.appCibil && l.appCibil !== "—") ? l.appCibil : (l.cibilScore || "—");
+  var employment  = (l.applicantType && l.applicantType !== "—") ? l.applicantType : (l.employmentType || "—");
+  var cityPin     = (l.city||"—") + (l.pincode ? " - "+l.pincode : (l.state ? ", "+l.state : ""));
 
   document.getElementById("detailPersonal").innerHTML =
     '<div class="detail-section-title">👤 Applicant</div>' +
     drow("Name", l.fullName) + drow("Mobile", l.mobile) +
-    drow("City", (l.city||"—") + (l.state ? ", "+l.state : "")) +
-    drow("Employment", l.applicantType) + drow("CIBIL", l.appCibil) +
-    drow("Source", srcLbl) + drow("Ref ID", l.refId) +
-    (l.callbackDate ? drow("📅 Callback", l.callbackDate + (l.callbackTime?" at "+l.callbackTime:"")) : "");
+    drow("Age", l.age) +
+    drow("City / Pincode", cityPin) +
+    drow("Employment", employment) +
+    (employment === "Self-Employed" && l.gstDate ? drow("GST Since", l.gstDate) : "") +
+    drow("CIBIL", cibil) +
+    drow("Source", srcLbl) + drow("Ref ID", l.refId);
 
   document.getElementById("detailLoan").innerHTML =
     '<div class="detail-section-title">💼 Loan Details</div>' +
     drow("Loan Type", l.loanType) + drow("Amount", amount) +
+    drow("Bounces (6mo)", l.bounces) +
+    drow("Enquiries (3mo)", (l.enquiries||"—") + (l.enquiryLenders ? " — "+l.enquiryLenders : "")) +
     (l.plSalary && l.plSalary !== "—" ? drow("Salary", l.plSalary) : "") +
     (l.blVintage && l.blVintage !== "—" ? drow("Vintage", l.blVintage) : "");
 
