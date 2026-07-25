@@ -640,7 +640,7 @@ function isCallNow(lead) {
 
 function isCaseReady(lead) {
   var s = (lead.status||"").toLowerCase();
-  return s.includes("case ready") || (lead.aiProfile && lead.aiProfile.length > 50);
+  return s.includes("case ready") || (lead.caseSummary && lead.caseSummary.length > 50) || (lead.aiProfile && lead.aiProfile.length > 50);
 }
 
 function isManualDecision(lead) {
