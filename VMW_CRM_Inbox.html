@@ -882,23 +882,13 @@ function buildBriefTab(l) {
   if (isManualDecision(l)) alerts += '<div class="alert-box alert-yellow">⚠️ Manual Decision — Review carefully before allocating.</div>';
   document.getElementById("briefAlerts").innerHTML = alerts;
 
-  // Callback banner
-  var cb = "";
-  if (l.callbackDate) {
-    cb = '<div class="callback-banner">' +
-      '<div class="callback-banner-icon">📅</div>' +
-      '<div class="callback-banner-text">' +
-        '<div class="callback-banner-title">Callback Scheduled</div>' +
-        '<div class="callback-banner-sub">' + esc(l.callbackDate) + (l.callbackTime ? " at " + esc(l.callbackTime) : "") + ' · Manoj: ' + RM_MOBILE + '</div>' +
-      '</div>' +
-    '</div>';
-  }
-  document.getElementById("callbackBanner").innerHTML = cb;
+  document.getElementById("callbackBanner").innerHTML = "";
 
-  // Case brief
   var briefEl = document.getElementById("caseBriefContent");
-  if (l.aiProfile && l.aiProfile.length > 20) {
-    briefEl.textContent = l.aiProfile;
+  var briefText = (l.caseSummary && l.caseSummary.length > 20) ? l.caseSummary :
+                  (l.aiProfile   && l.aiProfile.length   > 20) ? l.aiProfile   : "";
+  if (briefText) {
+    briefEl.textContent = briefText;
   } else {
     briefEl.innerHTML = '<span class="case-brief-empty">No case summary yet.\nWill appear after Rahul completes qualification.</span>';
   }
