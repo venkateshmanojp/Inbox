@@ -345,7 +345,6 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
     <div class="ftab active" onclick="setSourceFilter('all',this)">All</div>
     <div class="ftab" onclick="setSourceFilter('direct',this)">📢 Direct</div>
     <div class="ftab" onclick="setSourceFilter('partner',this)">🤝 Partner</div>
-    <div class="ftab" onclick="setSourceFilter('callnow',this)">🔴 Call Now</div>
     <div class="ftab" onclick="setSourceFilter('caseready',this)">✅ Case Ready</div>
     <div class="ftab" onclick="setSourceFilter('callback',this)">📅 Callback</div>
   </div>
@@ -630,13 +629,7 @@ function isInactive(lead) {
 }
 
 function isCallNow(lead) {
-  if (!lead.timestamp) return false;
-  var s = (lead.status||"").toLowerCase();
-  if (s.includes("allocat")||s.includes("approv")||s.includes("disburse")||s.includes("reject")||s.includes("case ready")) return false;
-  try {
-    var hours = (new Date() - new Date(lead.timestamp)) / (1000*60*60);
-    return hours >= 24 && hours <= INACTIVE_DAYS*24;
-  } catch(e) { return false; }
+  return false; // Call Now feature disabled
 }
 
 function isCaseReady(lead) {
