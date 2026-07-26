@@ -453,7 +453,8 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
             <button class="dsa-btn" onclick="allocateDSA('RU Loans')">RU Loans</button>
             <button class="dsa-btn" onclick="allocateDSA('Andromeda')">Andromeda</button>
             <button class="dsa-btn" onclick="allocateDSA('Urban Money')">Urban Money</button>
-            <button class="dsa-btn full" onclick="allocateDSA('Manual Decision')">⚙️ Manual Decision</button>
+            <button class="dsa-btn full" onclick="allocateManual()">⚙️ Manual Decision</button>
+
           </div>
         </div>
 
@@ -1085,6 +1086,12 @@ function copyBrief() {
   var text = document.getElementById("caseBriefContent").textContent || "";
   if (!text || text.includes("No case summary")) { toast("No case brief to copy!", "err"); return; }
   navigator.clipboard.writeText(text).then(function(){ toast("✅ Case brief copied!", "ok"); }).catch(function(){ toast("❌ Copy failed", "err"); });
+}
+function allocateManual() {
+  if (!selectedLead) return;
+  var lender = prompt("Enter lender/bank name:");
+  if (!lender || !lender.trim()) return;
+  allocateDSA(lender.trim());
 }
 
 function allocateDSA(dsa) {
