@@ -433,10 +433,11 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
               <div class="action-card-icon">💬</div>
               <div class="action-card-label">WhatsApp</div>
             </button>
-            <button class="action-card" onclick="sendMissedCall()">
-              <div class="action-card-icon">📋</div>
-              <div class="action-card-label">Missed Call Msg</div>
+            <button class="action-card" onclick="assignRM()">
+              <div class="action-card-icon">🧑‍💼</div>
+              <div class="action-card-label">RM Assignment</div>
             </button>
+
             <button class="action-card" onclick="openEmail()">
               <div class="action-card-icon">📧</div>
               <div class="action-card-label">Email Case</div>
@@ -836,7 +837,7 @@ function openLead(idx) {
   document.getElementById("quickActions").innerHTML =
     '<a class="'+callClass+'" href="tel:+'+cleanMob+'">'+callText+'</a>' +
     '<a class="qa-btn wa" href="https://wa.me/'+cleanMob+'" target="_blank">💬 WhatsApp</a>' +
-    '<button class="qa-btn missed" onclick="sendMissedCall()">📋 Missed Call</button>' +
+    '<button class="qa-btn missed" onclick="assignRM()">🧑‍💼 RM Assign</button>' +
     '<button class="qa-btn email" onclick="openEmail()">📧 Email</button>';
 
   // Status tab
@@ -1042,25 +1043,22 @@ function openWhatsApp() {
   window.open("https://wa.me/" + cleanMob, "_blank");
 }
 
-function sendMissedCall() {
+function assignRM() {
   if (!selectedLead) return;
-  var l        = selectedLead;
-  var name     = (l.fullName||"there").split(" ")[0];
-  var loanType = l.loanType || "loan";
-  var amount   = l.plAmount !== "—" ? l.plAmount : l.blAmount !== "—" ? l.blAmount : l.hlAmount !== "—" ? l.hlAmount : l.lapAmount !== "—" ? l.lapAmount : "";
-  var amtText  = amount && amount !== "—" ? " of " + amount : "";
+  var l    = selectedLead;
+  var name = (l.fullName||"there").split(" ")[0];
 
   var msg = "Hi " + name + "! 😊\n\n" +
-    "I tried calling you just now regarding your " + loanType + " requirement" + amtText + ".\n\n" +
-    "Please call me back or share a convenient time!\n\n" +
-    "📱 " + RM_NAME + ": " + RM_MOBILE + "\n" +
+    "To take your application forward, we have assigned " + RM_NAME + " as your RM.\n\n" +
+    "You can reach out to hiectly:\n" +
+    "📱 " + RM_MOBILE + "\n\n" +t
     "VastMyWealth Advisory";
 
-  toast("📤 Sending missed call message...", "ok");
+  toast("📤 Sending RM assignment message...", "ok");
   fetch(APPS_SCRIPT_URL + "?action=sendText&mobile=" + encodeURIComponent(l.mobile) + "&message=" + encodeURIComponent(msg))
     .then(function(r){ return r.json(); })
     .then(function(d) {
-      if (d.success) toast("✅ Missed call message sent!", "ok");
+      if (d.success) toast("✅ RM assignment message sent!", "ok");
       else toast("❌ Failed — 24hr window expired", "err");
     })
     .catch(function(){ toast("❌ Connection error", "err"); });
