@@ -74,6 +74,8 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 .lead-item.is-case     { border-left-color:#16a34a; }
 .lead-item.is-callnow  { border-left-color:#ef4444; background:#fff5f5; animation:pulse-red 2s infinite; }
 .lead-item.is-manual   { border-left-color:#f59e0b; }
+  .lead-item.is-referral { border-left-color:#7c3aed; background:#f5f3ff; }
+
 .lead-item.is-hot      { border-left-color:#dc2626; }
 .lead-item.is-warm     { border-left-color:#f59e0b; }
 .lead-item.is-cold     { border-left-color:#94a3b8; }
@@ -103,6 +105,8 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 .badge-case    { background:#16a34a; color:white; }
 .badge-callnow { background:#ef4444; color:white; animation:blink 1s infinite; }
 .badge-manual  { background:#f59e0b; color:white; }
+  .badge-referral{ background:#7c3aed; color:white; }
+
 .badge-callback{ background:#7c3aed; color:white; font-size:9px; }
 
 .status-badge { font-size:10px; font-weight:700; padding:2px 5px; border-radius:5px; }
@@ -652,6 +656,9 @@ function isCaseReady(lead) {
 function isManualDecision(lead) {
   return (lead.status||"").toLowerCase().includes("manual");
 }
+function isReferral(lead) {
+  return (lead.status||"").toLowerCase().includes("referral");
+}
 
 function hasCallback(lead) {
   return lead.callbackDate && lead.callbackDate.length > 2;
@@ -760,10 +767,11 @@ function applyFilters() {
 
   // Sort: Case Ready → New → by date
   filteredLeads.sort(function(a, b) {
+    var aRef  = isReferral(a)?4:0,  bRef  = isReferral(b)?4:0;
     var aCase = isCaseReady(a)?3:0, bCase = isCaseReady(b)?3:0;
     var aNew  = (!a.seen||a.seen==="No")?2:0, bNew = (!b.seen||b.seen==="No")?2:0;
-    var aScore = Math.max(aCase,aNew);
-    var bScore = Math.max(bCase,bNew);
+    var aScore = Math.max(aRef,aCase,aNew);
+    var bScore = Math.max(bRef,bCase,bNew);
     if (bScore !== aScore) return bScore - aScore;
     return new Date(b.timestamp) - new Date(a.timestamp);
   });
@@ -796,7 +804,8 @@ function renderLeadList() {
 
     // Priority class and badge
     var pClass = "", pBadge = "";
-    if      (isCaseReady(l))     { pClass=" is-case";    pBadge='<span class="badge badge-case">✅ Case Ready</span>'; }
+    if      (isReferral(l))      { pClass=" is-referral"; pBadge='<span class="badge badge-referral">🔔 Referral</span>'; }
+    else if (isCaseReady(l))     { pClass=" is-case";    pBadge='<span class="badge badge-case">✅ Case Ready</span>'; }
     else if (isManualDecision(l)){ pClass=" is-manual";  pBadge='<span class="badge badge-manual">⚠️ Manual</span>'; }
     else if (!l.seen||l.seen==="No"){ pClass=" is-new";  pBadge='<span class="badge badge-new">New</span>'; }
 
@@ -877,6 +886,8 @@ function buildBriefTab(l) {
   var alerts = "";
   if (isCaseReady(l)) alerts += '<div class="alert-box alert-green">✅ Case ready! Review and forward to lender.</div>';
   if (isManualDecision(l)) alerts += '<div class="alert-box alert-yellow">⚠️ Manual Decision — Review carefully before allocating.</div>';
+  if (isReferral(l)) alerts += '<div class="alert-box alert-yellow">🔔 Referral lead (family member / property) — verify details before proceeding.</div>';
+
   document.getElementById("briefAlerts").innerHTML = alerts;
 
   document.getElementById("callbackBanner").innerHTML = "";
