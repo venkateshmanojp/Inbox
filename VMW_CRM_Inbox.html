@@ -292,6 +292,16 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
         <div class="pstat-num" id="cnt-manual">0</div>
         <div class="pstat-label">Manual</div>
       </div>
+      <div class="pstat" onclick="filterByStatus('Application Started')" id="ps-started">
+        <div class="pstat-icon">🔗</div>
+        <div class="pstat-num" id="cnt-started">0</div>
+        <div class="pstat-label">Started</div>
+      </div>
+      <div class="pstat" onclick="filterByStatus('Referral')" id="ps-referral">
+        <div class="pstat-icon">🔔</div>
+        <div class="pstat-num" id="cnt-referral">0</div>
+        <div class="pstat-label">Referral</div>
+      </div>
       <div class="pstat" onclick="filterByStatus('In Process')" id="ps-process">
         <div class="pstat-icon">⚙️</div>
         <div class="pstat-num" id="cnt-process">0</div>
@@ -346,7 +356,6 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
     <div class="ftab" onclick="setSourceFilter('direct',this)">📢 Direct</div>
     <div class="ftab" onclick="setSourceFilter('partner',this)">🤝 Partner</div>
     <div class="ftab" onclick="setSourceFilter('caseready',this)">✅ Case Ready</div>
-    <div class="ftab" onclick="setSourceFilter('callback',this)">📅 Callback</div>
   </div>
 
   <!-- Lead List -->
@@ -437,7 +446,6 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
               <div class="action-card-icon">🧑‍💼</div>
               <div class="action-card-label">RM Assignment</div>
             </button>
-
             <button class="action-card" onclick="openEmail()">
               <div class="action-card-icon">📧</div>
               <div class="action-card-label">Email Case</div>
@@ -454,7 +462,6 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
             <button class="dsa-btn" onclick="allocateDSA('Andromeda')">Andromeda</button>
             <button class="dsa-btn" onclick="allocateDSA('Urban Money')">Urban Money</button>
             <button class="dsa-btn full" onclick="allocateManual()">⚙️ Manual Decision</button>
-
           </div>
         </div>
 
@@ -590,7 +597,7 @@ function loadLeads() {
 // PIPELINE
 // ============================================================
 function updatePipeline() {
-  var c = {all:0,case:0,captured:0,manual:0,process:0,allocated:0,approved:0,disbursed:0,rejected:0};
+  var c = {all:0,case:0,captured:0,manual:0,process:0,allocated:0,approved:0,disbursed:0,rejected:0,started:0,referral:0};
   allLeads.forEach(function(l) {
     if (isInactive(l)) return;
     c.all++;
@@ -603,6 +610,8 @@ function updatePipeline() {
     if (s.includes("approv"))       c.approved++;
     if (s.includes("disburse"))     c.disbursed++;
     if (s.includes("reject"))       c.rejected++;
+    if (s.includes("application started")) c.started++;
+    if (s.includes("referral"))     c.referral++;
   });
   document.getElementById("cnt-all").textContent       = c.all;
   document.getElementById("cnt-case").textContent      = c.case;
@@ -613,6 +622,8 @@ function updatePipeline() {
   document.getElementById("cnt-approved").textContent  = c.approved;
   document.getElementById("cnt-disbursed").textContent = c.disbursed;
   document.getElementById("cnt-rejected").textContent  = c.rejected;
+  document.getElementById("cnt-started").textContent   = c.started;
+  document.getElementById("cnt-referral").textContent  = c.referral;
   document.getElementById("crmSub").textContent        = c.all + " active leads";
 }
 
@@ -694,7 +705,9 @@ function filterByStatus(status) {
     status.toLowerCase().includes("allocat")    ? "allocated" :
     status.toLowerCase().includes("approv")     ? "approved" :
     status.toLowerCase().includes("disburse")   ? "disbursed" :
-    status.toLowerCase().includes("reject")     ? "rejected" : "all";
+    status.toLowerCase().includes("reject")     ? "rejected" :
+    status.toLowerCase().includes("started")    ? "started" :
+    status.toLowerCase().includes("referral")   ? "referral" : "all";
   var el = document.getElementById("ps-" + key);
   if (el) el.classList.add("active");
   applyFilters();
@@ -741,20 +754,16 @@ function applyFilters() {
     }
     if (sourceFilter === "direct")   { if (String(l.source||"").replace(/\D/g,"").length >= 10) return false; }
     if (sourceFilter === "partner")  { if (String(l.source||"").replace(/\D/g,"").length < 10)  return false; }
-    if (sourceFilter === "callnow")  { if (!isCallNow(l))   return false; }
     if (sourceFilter === "caseready"){ if (!isCaseReady(l)) return false; }
-    if (sourceFilter === "callback") { if (!hasCallback(l)) return false; }
     return true;
   });
 
-  // Sort: Call Now → Case Ready → New → Callback → by date
+  // Sort: Case Ready → New → by date
   filteredLeads.sort(function(a, b) {
-    var aCall = isCallNow(a)?4:0, bCall = isCallNow(b)?4:0;
     var aCase = isCaseReady(a)?3:0, bCase = isCaseReady(b)?3:0;
     var aNew  = (!a.seen||a.seen==="No")?2:0, bNew = (!b.seen||b.seen==="No")?2:0;
-    var aCB   = hasCallback(a)?1:0, bCB = hasCallback(b)?1:0;
-    var aScore = Math.max(aCall,aCase,aNew,aCB);
-    var bScore = Math.max(bCall,bCase,bNew,bCB);
+    var aScore = Math.max(aCase,aNew);
+    var bScore = Math.max(bCase,bNew);
     if (bScore !== aScore) return bScore - aScore;
     return new Date(b.timestamp) - new Date(a.timestamp);
   });
@@ -787,8 +796,7 @@ function renderLeadList() {
 
     // Priority class and badge
     var pClass = "", pBadge = "";
-    if      (isCallNow(l))       { pClass=" is-callnow"; pBadge='<span class="badge badge-callnow">📞 Call Now</span>'; }
-    else if (isCaseReady(l))     { pClass=" is-case";    pBadge='<span class="badge badge-case">✅ Case Ready</span>'; }
+    if      (isCaseReady(l))     { pClass=" is-case";    pBadge='<span class="badge badge-case">✅ Case Ready</span>'; }
     else if (isManualDecision(l)){ pClass=" is-manual";  pBadge='<span class="badge badge-manual">⚠️ Manual</span>'; }
     else if (!l.seen||l.seen==="No"){ pClass=" is-new";  pBadge='<span class="badge badge-new">New</span>'; }
 
@@ -832,10 +840,8 @@ function openLead(idx) {
 
   // Quick action buttons
   var cleanMob = l.mobile.replace(/\D/g,"");
-  var callClass = isCallNow(l) ? "qa-btn callnow" : "qa-btn call";
-  var callText  = isCallNow(l) ? "📞 CALL NOW!" : "📞 Call";
   document.getElementById("quickActions").innerHTML =
-    '<a class="'+callClass+'" href="tel:+'+cleanMob+'">'+callText+'</a>' +
+    '<a class="qa-btn call" href="tel:+'+cleanMob+'">📞 Call</a>' +
     '<a class="qa-btn wa" href="https://wa.me/'+cleanMob+'" target="_blank">💬 WhatsApp</a>' +
     '<button class="qa-btn missed" onclick="assignRM()">🧑‍💼 RM Assign</button>' +
     '<button class="qa-btn email" onclick="openEmail()">📧 Email</button>';
@@ -869,10 +875,6 @@ function openLead(idx) {
 function buildBriefTab(l) {
   // Alerts
   var alerts = "";
-  if (isCallNow(l)) {
-    var hrs = Math.round((new Date() - new Date(l.timestamp)) / (1000*60*60));
-    alerts += '<div class="alert-box alert-red">📞 CALL NOW! Customer inactive for ' + hrs + ' hours. Call: ' + l.mobile + '</div>';
-  }
   if (isCaseReady(l)) alerts += '<div class="alert-box alert-green">✅ Case ready! Review and forward to lender.</div>';
   if (isManualDecision(l)) alerts += '<div class="alert-box alert-yellow">⚠️ Manual Decision — Review carefully before allocating.</div>';
   document.getElementById("briefAlerts").innerHTML = alerts;
@@ -1049,9 +1051,9 @@ function assignRM() {
   var name = (l.fullName||"there").split(" ")[0];
 
   var msg = "Hi " + name + "! 😊\n\n" +
-    "To take your application forward, we have assigned " + RM_NAME + " as your RM.\n\n" +
-    "You can reach out to hiectly:\n" +
-    "📱 " + RM_MOBILE + "\n\n" +t
+    "We have assigned your application to our underwriting team. It will take 3 working days to process.\n\n" +
+    "If you'd like to expedite it, you can proactively connect with " + RM_NAME + ":\n" +
+    "📱 " + RM_MOBILE + "\n\n" +
     "VastMyWealth Advisory";
 
   toast("📤 Sending RM assignment message...", "ok");
@@ -1077,12 +1079,6 @@ function copyBrief() {
   var text = document.getElementById("caseBriefContent").textContent || "";
   if (!text || text.includes("No case summary")) { toast("No case brief to copy!", "err"); return; }
   navigator.clipboard.writeText(text).then(function(){ toast("✅ Case brief copied!", "ok"); }).catch(function(){ toast("❌ Copy failed", "err"); });
-}
-function allocateManual() {
-  if (!selectedLead) return;
-  var lender = prompt("Enter lender/bank name:");
-  if (!lender || !lender.trim()) return;
-  allocateDSA(lender.trim());
 }
 
 function allocateDSA(dsa) {
@@ -1116,6 +1112,13 @@ function allocateDSA(dsa) {
       } else toast("❌ Failed!", "err");
     })
     .catch(function(){ toast("❌ Connection error", "err"); });
+}
+
+function allocateManual() {
+  if (!selectedLead) return;
+  var lender = prompt("Enter lender/bank name:");
+  if (!lender || !lender.trim()) return;
+  allocateDSA(lender.trim());
 }
 
 function sendWAMessage() {
@@ -1234,53 +1237,23 @@ function loadDemoLeads() {
      loanType:"Home Loan",appCibil:"750+",hlAmount:"50 Lacs",plAmount:"—",blAmount:"—",lapAmount:"—",plSalary:"—",blVintage:"—",
      vendorAllocation:"",status:"Lead Captured",allocationStamp:"",whatsappSent:"No",
      vendorStatus:"",rejectionReason:"",disbursedAmount:"",driveFolderUrl:"",
-     seen:"No",feedback:"",aiProfile:"",callbackDate:"12 May 2026",callbackTime:"3:00 PM"},
+     seen:"No",feedback:"",aiProfile:""},
     {row:3,refId:"WA-0002",timestamp:new Date(Date.now()-2*3600000).toISOString(),source:"9594594567",
      fullName:"Priya Desai",mobile:"918765432109",city:"Pune",state:"Maharashtra",applicantType:"Self-Employed",
      loanType:"Loan Against Property",appCibil:"700",hlAmount:"—",plAmount:"—",blAmount:"—",lapAmount:"40 Lacs",plSalary:"—",blVintage:"—",
      vendorAllocation:"",status:"Case Ready",allocationStamp:"",whatsappSent:"Yes",
      vendorStatus:"",rejectionReason:"",disbursedAmount:"",driveFolderUrl:"",
      seen:"Yes",feedback:"",
-     aiProfile:"━━━━━━━━━━━━━━━━━━━━━━━━━\nVASTMYWEALTH ADVISORY — CASE NOTE\n━━━━━━━━━━━━━━━━━━━━━━━━━\n\n1. APPLICANT DETAILS\nName    : Priya Desai\nMobile  : 918765432109\nCity    : Pune, Maharashtra\nAge     : 38\nEmployment: Self-Employed\nBusiness: Trading Business\nVintage : 5 Years\n\n2. LOAN REQUIREMENT\nLoan Type: LAP\nAmount   : 40 Lacs\nPurpose  : Business Expansion\n\n7. CASE OBSERVATIONS\nStrong profile with 5 year business vintage. CIBIL 700 is acceptable for LAP. Property in Pune is marketable. Recommend proceed with cautious underwriting.",
-     callbackDate:"11 May 2026",callbackTime:"11:00 AM"},
+     aiProfile:"━━━━━━━━━━━━━━━━━━━━━━━━━\nVASTMYWEALTH ADVISORY — CASE NOTE\n━━━━━━━━━━━━━━━━━━━━━━━━━\n\n1. APPLICANT DETAILS\nName    : Priya Desai\nMobile  : 918765432109\nCity    : Pune, Maharashtra\nAge     : 38\nEmployment: Self-Employed\nBusiness: Trading Business\nVintage : 5 Years\n\n2. LOAN REQUIREMENT\nLoan Type: LAP\nAmount   : 40 Lacs\nPurpose  : Business Expansion\n\n7. CASE OBSERVATIONS\nStrong profile with 5 year business vintage. CIBIL 700 is acceptable for LAP. Property in Pune is marketable. Recommend proceed with cautious underwriting."},
     {row:4,refId:"WA-0003",timestamp:new Date(Date.now()-3*3600000).toISOString(),source:"",
      fullName:"Amit Shah",mobile:"917654321098",city:"Delhi",state:"Delhi",applicantType:"Salaried",
      loanType:"Personal Loan",appCibil:"680",hlAmount:"—",plAmount:"5 Lacs",blAmount:"—",lapAmount:"—",plSalary:"45K",blVintage:"—",
      vendorAllocation:"",status:"Manual Decision",allocationStamp:"",whatsappSent:"Yes",
      vendorStatus:"",rejectionReason:"",disbursedAmount:"",driveFolderUrl:"",
-     seen:"Yes",feedback:"",aiProfile:"",callbackDate:"",callbackTime:""}
+     seen:"Yes",feedback:"",aiProfile:""}
   ];
   updatePipeline();
   applyFilters();
-}
-
-function generateCaseBrief() {
-  if (!selectedLead) return;
-  var l = selectedLead;
-  toast("⏳ Generating case brief...", "");
-
-  fetch(APPS_SCRIPT_URL +
-    "?action=triggerCaseSummary" +
-    "&mobile="   + encodeURIComponent(l.mobile) +
-    "&name="     + encodeURIComponent(l.fullName     || "") +
-    "&loanType=" + encodeURIComponent(l.loanType     || "") +
-    "&city="     + encodeURIComponent(l.city         || "") +
-    "&state="    + encodeURIComponent(l.state        || "") +
-    "&income="   + encodeURIComponent(l.monthlyIncome|| "") +
-    "&cibil="    + encodeURIComponent(l.cibilScore   || "") +
-    "&emi="      + encodeURIComponent(l.existingEMI  || "") +
-    "&bounces="  + encodeURIComponent(l.bounces      || "") +
-    "&amount="   + encodeURIComponent(l.loanAmount   || "")
-  )
-  .then(function(r){ return r.json(); })
-  .then(function(d) {
-    if (d.success) {
-      toast("✅ Case brief generated! Check Case Brief tab!", "ok");
-    } else {
-      toast("❌ Failed! " + (d.error||""), "err");
-    }
-  })
-  .catch(function(){ toast("❌ Connection error!", "err"); });
 }
 
 // ============================================================
@@ -1314,7 +1287,7 @@ function sendDocumentRequest() {
     docList + "\n\n" +
     "Please share one document at a time as clear photos or PDF.\n\n" +
     "Our team will review and process your file immediately! 😊\n\n" +
-    "📱 Manoj: " + RM_MOBILE + "\n" +
+    "📱 " + RM_NAME + ": " + RM_MOBILE + "\n" +
     "VastMyWealth Advisory";
 
   var cleanMob = l.mobile.replace(/\D/g,"");
@@ -1337,4 +1310,3 @@ setInterval(function(){ loadLeads(); }, 180000);
 </script>
 </body>
 </html>
-
