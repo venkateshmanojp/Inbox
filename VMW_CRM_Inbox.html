@@ -74,8 +74,7 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 .lead-item.is-case     { border-left-color:#16a34a; }
 .lead-item.is-callnow  { border-left-color:#ef4444; background:#fff5f5; animation:pulse-red 2s infinite; }
 .lead-item.is-manual   { border-left-color:#f59e0b; }
-  .lead-item.is-referral { border-left-color:#7c3aed; background:#f5f3ff; }
-
+.lead-item.is-referral { border-left-color:#7c3aed; background:#f5f3ff; }
 .lead-item.is-hot      { border-left-color:#dc2626; }
 .lead-item.is-warm     { border-left-color:#f59e0b; }
 .lead-item.is-cold     { border-left-color:#94a3b8; }
@@ -105,8 +104,7 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 .badge-case    { background:#16a34a; color:white; }
 .badge-callnow { background:#ef4444; color:white; animation:blink 1s infinite; }
 .badge-manual  { background:#f59e0b; color:white; }
-  .badge-referral{ background:#7c3aed; color:white; }
-
+.badge-referral{ background:#7c3aed; color:white; }
 .badge-callback{ background:#7c3aed; color:white; font-size:9px; }
 
 .status-badge { font-size:10px; font-weight:700; padding:2px 5px; border-radius:5px; }
@@ -562,6 +560,14 @@ var sourceFilter   = "all";
 var loanTypeFilter = "";
 var isMobile       = window.innerWidth < 769;
 
+// Map lender bank name (must match "bank" field from getLendersByCity) → approved Meta template
+var LENDER_TEMPLATE_MAP = {
+  "Finwizz"    : { template: "finwizz_apply_link",   hasNameParam: true },
+  "RU Loans"   : { template: "ruloans_apply_link",   hasNameParam: true },
+  "Andromeda"  : { template: "andromeda_apply_link", hasNameParam: true }
+  // Add more lenders here once their templates are Meta-approved.
+};
+
 var INACTIVE_DAYS = 30;
 var COLORS = ["#004a99","#0891b2","#7c3aed","#b45309","#dc2626","#047857","#9333ea"];
 
@@ -656,6 +662,7 @@ function isCaseReady(lead) {
 function isManualDecision(lead) {
   return (lead.status||"").toLowerCase().includes("manual");
 }
+
 function isReferral(lead) {
   return (lead.status||"").toLowerCase().includes("referral");
 }
@@ -884,10 +891,9 @@ function openLead(idx) {
 function buildBriefTab(l) {
   // Alerts
   var alerts = "";
+  if (isReferral(l)) alerts += '<div class="alert-box alert-yellow">🔔 Referral lead (family member / property) — verify details before proceeding.</div>';
   if (isCaseReady(l)) alerts += '<div class="alert-box alert-green">✅ Case ready! Review and forward to lender.</div>';
   if (isManualDecision(l)) alerts += '<div class="alert-box alert-yellow">⚠️ Manual Decision — Review carefully before allocating.</div>';
-  if (isReferral(l)) alerts += '<div class="alert-box alert-yellow">🔔 Referral lead (family member / property) — verify details before proceeding.</div>';
-
   document.getElementById("briefAlerts").innerHTML = alerts;
 
   document.getElementById("callbackBanner").innerHTML = "";
@@ -905,6 +911,27 @@ function buildBriefTab(l) {
 // ============================================================
 // LOAD LENDERS
 // ============================================================
+function sendLenderTemplate(bankName) {
+  if (!selectedLead) return;
+  var cfg = LENDER_TEMPLATE_MAP[bankName];
+  if (!cfg) { toast("No template set up for " + bankName + " yet", "err"); return; }
+
+  var name   = (selectedLead.fullName||"Customer").split(" ")[0];
+  var params = cfg.hasNameParam ? JSON.stringify([name]) : JSON.stringify([]);
+
+  toast("📤 Sending " + bankName + " application link...", "ok");
+  fetch(APPS_SCRIPT_URL + "?action=sendTemplate" +
+    "&mobile="       + encodeURIComponent(selectedLead.mobile) +
+    "&templateName=" + encodeURIComponent(cfg.template) +
+    "&params="       + encodeURIComponent(params))
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.success) toast("✅ " + bankName + " link sent!", "ok");
+      else toast("❌ Failed to send template", "err");
+    })
+    .catch(function(){ toast("❌ Connection error", "err"); });
+}
+
 function loadLenders(city) {
   var container = document.getElementById("lendersContent");
   if (!city || city === "—") {
@@ -933,6 +960,7 @@ function loadLenders(city) {
 
       var html = '<div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:10px">🏦 '+lenders.length+' Lenders in '+esc(city)+'</div>';
       lenders.forEach(function(l) {
+        var hasTemplate = !!LENDER_TEMPLATE_MAP[l.bank];
         html += '<div class="lender-card">' +
           '<div class="lender-bank">'+esc(l.bank||"—")+'</div>' +
           '<div class="lender-product">'+esc(l.product||"—")+'</div>' +
@@ -940,6 +968,7 @@ function loadLenders(city) {
             '<div class="lender-name">'+esc(l.smName||"—")+'</div>' +
             (l.smMobile ? '<a class="lender-call" href="tel:'+esc(l.smMobile)+'">📞 '+esc(l.smMobile)+'</a>' : '') +
           '</div>' +
+          (hasTemplate ? '<button class="lender-call" style="margin-top:6px;width:100%;justify-content:center;background:#dbeafe;color:#1d4ed8" onclick="sendLenderTemplate(\''+esc(l.bank)+'\')">📤 Send Application Link</button>' : '') +
         '</div>';
       });
       container.innerHTML = html;
@@ -1062,8 +1091,8 @@ function assignRM() {
   var name = (l.fullName||"there").split(" ")[0];
 
   var msg = "Hi " + name + "! 😊\n\n" +
-    "We have assigned your application to our underwriting team. It will take 3 working days to process.\n\n" +
-    "If you'd like to expedite it, you can proactively connect with " + RM_NAME + ":\n" +
+    "We have assigned " + RM_NAME + " as your RM for this application.\n\n" +
+    "You can now share the documents mentioned earlier directly with him:\n" +
     "📱 " + RM_MOBILE + "\n\n" +
     "VastMyWealth Advisory";
 
@@ -1270,41 +1299,63 @@ function loadDemoLeads() {
 // ============================================================
 // SEND DOCUMENT REQUEST
 // ============================================================
-function sendDocumentRequest() {
-  if (!selectedLead) return;
-  var l        = selectedLead;
-  var name     = (l.fullName||"there").split(" ")[0];
-  var loanType = (l.loanType||"").toUpperCase();
-  var lt       = loanType;
-
-  var docList = "";
+function getDocumentChecklist(loanType, companyType) {
+  var lt = (loanType||"").toUpperCase();
+  var ct = (companyType||"").toLowerCase();
 
   if (lt.includes("PERSONAL")) {
-    docList = "📄 IDENTITY & ADDRESS:\n• PAN Card\n• Aadhar Card\n\n💰 INCOME DOCUMENTS:\n• Last 3 months salary slips\n• Last 6 months bank statement\n• Form 16 / Latest ITR";
-  } else if (lt.includes("BUSINESS")) {
-    docList = "📄 IDENTITY & ADDRESS:\n• PAN Card (Personal + Business)\n• Aadhar Card\n\n💼 BUSINESS DOCUMENTS:\n• GST Certificate / Udyam Registration\n• Last 2 years ITR with computation\n• Last 12 months bank statement\n• Business proof (Shop Act / MOA)";
-  } else if (lt.includes("HOME")) {
-    docList = "📄 IDENTITY & ADDRESS:\n• PAN Card\n• Aadhar Card\n\n💰 INCOME DOCUMENTS:\n• Last 3 months salary slips\n• Last 6 months bank statement\n• Form 16 / Latest ITR\n\n🏠 PROPERTY DOCUMENTS:\n• Agreement / Title Deed\n• Society NOC (if applicable)\n• Approved building plan";
-  } else if (lt.includes("PROPERTY") || lt.includes("AGAINST") || lt.includes("LAP")) {
-    docList = "📄 IDENTITY & ADDRESS:\n• PAN Card\n• Aadhar Card\n\n💰 INCOME DOCUMENTS:\n• Last 3 months salary slips or ITR\n• Last 12 months bank statement\n\n🏢 PROPERTY DOCUMENTS:\n• Original title deed / Sale deed\n• Property tax receipts\n• Society share certificate\n• Encumbrance certificate";
-  } else if (lt.includes("CONSTRUCTION")) {
-    docList = "📄 IDENTITY & ADDRESS:\n• PAN Card\n• Aadhar Card\n\n🏗️ PROJECT DOCUMENTS:\n• Land ownership documents\n• Approved building plan\n• Construction cost estimate\n• Contractor agreement";
-  } else {
-    docList = "📄 IDENTITY:\n• PAN Card\n• Aadhar Card\n\n💰 INCOME:\n• Bank Statement (6 months)\n• Income proof (Salary slip / ITR)";
+    return "📄 IDENTITY & ADDRESS:\n• PAN Card\n• Aadhar Card\n\n💰 INCOME DOCUMENTS:\n• Last 3 months salary slips\n• Last 6 months bank statement\n• Form 16 / Latest ITR";
   }
+  if (lt.includes("BUSINESS")) {
+    var base = "📄 IDENTITY & ADDRESS:\n• PAN Card (Personal + Business)\n• Aadhar Card\n\n💼 BUSINESS DOCUMENTS:\n• GST Certificate / Udyam Registration\n• Last 2 years ITR with computation\n• Last 12 months bank statement\n\n🏢 CONSTITUTION DOCUMENTS:\n";
+    if (ct.includes("proprietorship")) {
+      base += "• Shop Act License / Udyam Registration\n• Proprietor's PAN & Aadhar";
+    } else if (ct.includes("partnership")) {
+      base += "• Partnership Deed\n• PAN of Firm\n• All Partners' PAN & Aadhar";
+    } else if (ct.includes("pvt") || ct.includes("private")) {
+      base += "• Certificate of Incorporation\n• MOA & AOA\n• Board Resolution\n• Company PAN\n• All Directors' PAN & Aadhar";
+    } else if (ct.includes("llp")) {
+      base += "• LLP Agreement\n• Certificate of Incorporation\n• Designated Partners' PAN & Aadhar";
+    } else {
+      base += "• Business proof (Shop Act / MOA / Partnership Deed as applicable)";
+    }
+    return base;
+  }
+  if (lt.includes("HOME")) {
+    return "📄 IDENTITY & ADDRESS:\n• PAN Card\n• Aadhar Card\n\n💰 INCOME DOCUMENTS:\n• Last 3 months salary slips\n• Last 6 months bank statement\n• Form 16 / Latest ITR\n\n🏠 PROPERTY DOCUMENTS:\n• Agreement / Title Deed\n• Society NOC (if applicable)\n• Approved building plan";
+  }
+  if (lt.includes("PROPERTY") || lt.includes("AGAINST") || lt.includes("LAP")) {
+    return "📄 IDENTITY & ADDRESS:\n• PAN Card\n• Aadhar Card\n\n💰 INCOME DOCUMENTS:\n• Last 3 months salary slips or ITR\n• Last 12 months bank statement\n\n🏢 PROPERTY DOCUMENTS:\n• Original title deed / Sale deed\n• Property tax receipts\n• Society share certificate\n• Encumbrance certificate";
+  }
+  if (lt.includes("CONSTRUCTION")) {
+    return "📄 IDENTITY & ADDRESS:\n• PAN Card\n• Aadhar Card\n\n🏗️ PROJECT DOCUMENTS:\n• Land ownership documents\n• Approved building plan\n• Construction cost estimate\n• Contractor agreement";
+  }
+  return "📄 IDENTITY:\n• PAN Card\n• Aadhar Card\n\n💰 INCOME:\n• Bank Statement (6 months)\n• Income proof (Salary slip / ITR)";
+}
+
+function sendDocumentRequest() {
+  if (!selectedLead) return;
+  var l    = selectedLead;
+  var name = (l.fullName||"there").split(" ")[0];
+  var docList = getDocumentChecklist(l.loanType, l.companyType);
 
   var msg = "Hi " + name + "! 😊\n\n" +
-    "To process your " + (selectedLead.loanType||"loan") + " application, please share the following documents:\n\n" +
+    "To process your " + (l.loanType||"loan") + " application, please keep the following documents ready:\n\n" +
     docList + "\n\n" +
-    "Please share one document at a time as clear photos or PDF.\n\n" +
-    "Our team will review and process your file immediately! 😊\n\n" +
-    "📱 " + RM_NAME + ": " + RM_MOBILE + "\n" +
+    "⚠️ IMPORTANT: Please do NOT send documents in this chat.\n\n" +
+    "Message our RM " + RM_NAME + " directly on his number below and share everything there — one document at a time as clear photos or PDF:\n" +
+    "📱 " + RM_MOBILE + "\n\n" +
+    "He'll personally guide you through the rest! 😊\n\n" +
     "VastMyWealth Advisory";
 
-  var cleanMob = l.mobile.replace(/\D/g,"");
-  var waUrl    = "https://wa.me/" + cleanMob + "?text=" + encodeURIComponent(msg);
-  window.open(waUrl, "_blank");
-  toast("📋 WhatsApp opened with document checklist!", "ok");
+  toast("📤 Sending document checklist...", "ok");
+  fetch(APPS_SCRIPT_URL + "?action=sendText&mobile=" + encodeURIComponent(l.mobile) + "&message=" + encodeURIComponent(msg))
+    .then(function(r){ return r.json(); })
+    .then(function(d) {
+      if (d.success) toast("✅ Document checklist sent!", "ok");
+      else toast("❌ Failed — 24hr window expired", "err");
+    })
+    .catch(function(){ toast("❌ Connection error", "err"); });
 
   // Auto update status to Documents Pending
   fetch(APPS_SCRIPT_URL + "?action=updateWALeadStatus" +
