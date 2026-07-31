@@ -105,6 +105,8 @@ html, body { height:100%; width:100%; overflow:hidden; font-family:'Plus Jakarta
 .badge-callnow { background:#ef4444; color:white; animation:blink 1s infinite; }
 .badge-manual  { background:#f59e0b; color:white; }
 .badge-referral{ background:#7c3aed; color:white; }
+  .badge-rm      { background:#0891b2; color:white; }
+
 .badge-callback{ background:#7c3aed; color:white; font-size:9px; }
 
 .status-badge { font-size:10px; font-weight:700; padding:2px 5px; border-radius:5px; }
@@ -666,6 +668,9 @@ function isManualDecision(lead) {
 function isReferral(lead) {
   return (lead.status||"").toLowerCase().includes("referral");
 }
+function isRMAssigned(lead) {
+  return (lead.status||"").toLowerCase().includes("rm assigned");
+}
 
 function hasCallback(lead) {
   return lead.callbackDate && lead.callbackDate.length > 2;
@@ -813,6 +818,7 @@ function renderLeadList() {
     var pClass = "", pBadge = "";
     if      (isReferral(l))      { pClass=" is-referral"; pBadge='<span class="badge badge-referral">🔔 Referral</span>'; }
     else if (isCaseReady(l))     { pClass=" is-case";    pBadge='<span class="badge badge-case">✅ Case Ready</span>'; }
+    else if (isRMAssigned(l))    { pBadge='<span class="badge badge-rm">🧑‍💼 RM Assigned</span>'; }
     else if (isManualDecision(l)){ pClass=" is-manual";  pBadge='<span class="badge badge-manual">⚠️ Manual</span>'; }
     else if (!l.seen||l.seen==="No"){ pClass=" is-new";  pBadge='<span class="badge badge-new">New</span>'; }
 
@@ -1100,11 +1106,17 @@ function assignRM() {
   fetch(APPS_SCRIPT_URL + "?action=sendText&mobile=" + encodeURIComponent(l.mobile) + "&message=" + encodeURIComponent(msg))
     .then(function(r){ return r.json(); })
     .then(function(d) {
-      if (d.success) toast("✅ RM assignment message sent!", "ok");
-      else toast("❌ Failed — 24hr window expired", "err");
+      if (d.success) {
+        toast("✅ RM assignment message sent!", "ok");
+        fetch(APPS_SCRIPT_URL + "?action=updateWALeadStatus&mobile=" + encodeURIComponent(l.mobile) + "&status=" + encodeURIComponent("RM Assigned")).catch(function(){});
+        l.status = "RM Assigned";
+        updatePipeline();
+        renderLeadList();
+      } else toast("❌ Failed — 24hr window expired", "err");
     })
     .catch(function(){ toast("❌ Connection error", "err"); });
 }
+
 
 function openEmail() {
   if (!selectedLead) return;
